@@ -1,0 +1,149 @@
+# Technische Architektur
+
+## Ausgangslage und Ziel
+
+Stand: 29.10.2026. Die Spezifikation entstand auf Basis eines Repositorys mit nur einer README. Der erste beauftragte Umsetzungsschritt ist nun Home → Mechanics → Kinematics. Die übrige Rechner- und Visualisierungsarchitektur bleibt Zielbild.
+
+calcPhysics verbindet Theorie, nach verschiedenen Grössen auflösbare Formeln, automatische Folgeergebnisse und Visualisierungen. Das vom Betreiber beschriebene Konzept von elecalculate.com bleibt erhalten und wird um anspruchsvollere Mathematik erweitert. Die öffentliche [Referenzseite](https://elecalculate.com/) dient als Produktkontext; deren interner Code wurde nicht untersucht.
+
+Bestätigt sind Englisch als Standardsprache mit späterer deutscher Sprachoption und ein höheres mathematisches Niveau als Lehrlings-Grundformeln. Die Plattform richtet sich sowohl an Lernende als auch an Ingenieurinnen und Ingenieure für einfache Berechnungen in der Industrie. Gestufte Erklärungen reichen von elementarer Umstellung bis zur Differential- und Integralrechnung; mathematische Voraussetzungen werden je Thema benannt. Übungsaufgaben, Quiz, Bewertungen und Lernfortschritt gehören derzeit nicht zum Produktumfang. Zunächst keine Konten, Datenbank, Bezahlfunktionen oder CMS; dafür besteht noch kein bestätigter Bedarf.
+
+## Technische Entscheidungen
+
+| Bereich | Empfehlung | Begründung |
+| --- | --- | --- |
+| Anwendung | SvelteKit, TypeScript strict | Routing, HTML-Erzeugung und interaktive Komponenten in einem Projekt |
+| Auslieferung | Öffentliche Inhalte vorab rendern; offizieller Netlify-Adapter | Schnelle, indexierbare Seiten; später gezielt Serverfunktionen möglich |
+| Inhalte | Redaktionelle Svelte-Komponenten plus typisierte Metadaten | Formeln und didaktische Sonderfälle ohne eigenes CMS oder Markup-System |
+| Mathematikdarstellung | KaTeX, statische Formeln beim Rendern | Theorie benötigt kein nachträgliches Browser-Rendering |
+| Skizzen | SVG | Responsive, präzise und unmittelbar an Ergebnisse bindbar |
+| Wissenschaftliche Diagramme | Plotly.js mit kleinstem geeigneten Teilbundle | Achsen, Zoom und wissenschaftliche Diagrammtypen; Ladegewicht bewusst begrenzen |
+| 3D | Three.js erst bei fachlichem Mehrwert | Keine zusätzliche 3D-Laufzeit für gewöhnliche 2D-Aufgaben |
+| Prüfungen | Vitest; Playwright für zentrale Abläufe | Isolierte Physiktests und wenige aussagekräftige Integrationsprüfungen |
+
+Keine Microservices, kein Monorepo und kein generischer Gleichungslöser im Einstieg. Stabile kompatible Versionen und Node-Version beim späteren Setup festlegen, Lockdatei einchecken. Die Dokumentation schreibt keine ungeprüften Paketversionen oder versionsabhängigen Konfigurationsdateien fest.
+
+## Empfohlene Repository-Struktur
+
+```text
+AGENTS.md
+docs/
+src/
+  lib/
+    content/
+      topics.ts                 # Stabile IDs, sprachabhängige Slugs und Metadaten
+      en/                       # Englische Theorie; de/ erst mit Übersetzungen
+      mechanics/kinematics/     # Redaktionelle Theorie-Komponenten
+    i18n/                       # Locale-Regeln und UI-Wörterbücher (zunächst en)
+    physics/
+      quantities.ts             # Grössen, Dimensionen, SI-Konventionen
+      units.ts                  # Umrechnung, einschliesslich Offsets
+      constants.ts
+      mechanics/kinematics/     # Reine fachliche Funktionen und deren Tests
+      numerics/                 # Erst mit numerischen Anwendungsfällen
+    calculators/
+      types.ts
+      registry.ts               # Metadaten und explizite lazy Loader
+      mechanics/kinematics/     # Modi, Validierung, Ablauf, Rechenschritte
+    components/
+      layout/                   # Header, Navigation, Breadcrumbs
+      ui/                       # Felder, Hinweise, Theme-Auswahl
+      math/                     # KaTeX-Ausgabe
+      calculator/               # Gemeinsame Rechneroberfläche
+      topic/                    # Übersichts- und Themenseitenvorlage
+    visualization/
+      types.ts                  # Bibliotheksneutrale Datenmodelle
+      svg/
+      charts/                   # Plotly-Adapter
+      three/                    # Erst bei erster echter 3D-Anwendung
+    styles/                     # Tokens, Basis, Typografie
+  routes/
+    +layout.svelte
+    +page.svelte
+    [...topic]/+page.ts          # Registry-Auflösung und Prerender-Einträge
+    [...topic]/+page.svelte      # Auswahl Übersicht oder Thema
+    sitemap.xml/+server.ts
+static/                         # Lokale Assets und robots.txt
+tests/e2e/
+```
+
+Leere Zukunftsverzeichnisse müssen nicht vorab angelegt werden. Inhalts-, Physik- und Rechnerdateien werden thematisch gruppiert; kein npm-Paket pro Thema.
+
+## Themen und Routing
+
+Ein Themenbaum führt stabile ID, Eltern-ID, Slug-Segment, Titel, Kurzbeschreibung, Seitentyp und Publikationsstatus. Alle Eltern sind echte Übersichten. Englische Standardseiten erhalten URLs ohne Sprachpräfix, beispielsweise `/mechanics/kinematics/uniform-motion`. Deutsche Übersetzungen folgen später unter `/de/`, beispielsweise `/de/mechanik/kinematik/gleichfoermige-bewegung`. Deutsche Umlaute werden für Slugs ausgeschrieben, sichtbare Titel behalten korrekte Schreibweise. Gross-/Kleinschreibung und abschliessende Slashes erhalten eine einheitliche Regel.
+
+Der Baum umfasst Mechanik mit Kinematik und Dynamik sowie Thermodynamik, Elektrizität und Magnetismus, Schwingungen und Wellen, Optik und Moderne Physik. Die vom Auftrag genannten Unterthemen werden in der Roadmap geführt. Home zeigt alle sechs Hauptthemen als Kacheln; unveröffentlichte Themen erhalten deaktivierte Buttons mit «Coming soon». Mechanics enthält zunächst ausschliesslich Kinematics. Die Kinematics-Übersicht führt vier geplante Modelle mit KaTeX-Formeln und getrennten, bis zur Implementierung deaktivierten Theory-/Calculate-Aktionen auf. Unveröffentlichte Themen erzeugen keine leeren indexierbaren Seiten. Unbekannte Pfade liefern HTTP 404; umbenannte veröffentlichte Pfade erhalten Weiterleitungen.
+
+Registry und Routing sind getrennt: gemeinsame Vorlagen rendern alle Themen; explizite Lazy-Imports laden nur benötigte Theorie und Rechner. Die Catch-all-Route liefert vollständige Einträge für alle veröffentlichten Pfade an den Prerenderer. Navigation, Breadcrumbs und Sitemap entstehen aus demselben Baum. Build-Prüfungen erkennen doppelte Slugs, fehlende Eltern und ungültige Referenzen.
+
+## Sprache und spätere Lokalisierung
+
+Englisch (`en`) ist die Standard- und erste Veröffentlichungssprache. Deutsch (`de`) ist als spätere Erweiterung bestätigt. UI-Beschriftungen, Validierungstexte und Rechenweg-Erläuterungen werden ab dem ersten Rechner über ein kleines typisiertes Wörterbuch referenziert; ein umfangreiches i18n-Framework ist dafür zunächst nicht nötig. Theorie-Komponenten und SEO-Metadaten werden pro Sprache gepflegt, die Fachfunktionen und Rechnerdefinitionen bleiben gemeinsam. Symbole und Formeln benötigen keine duplizierte Berechnungslogik.
+
+Stabile sprachneutrale Themen-IDs verbinden Übersetzungen; Slugs, Titel und Publikationsstatus sind sprachabhängig. Der Bereich `/de` ist für die spätere Sprachroute reserviert. Beim Ausbau erhält er eine eigene schlanke Route mit derselben Seitenvorlage; die englische Catch-all-Route darf ihn nicht als englischen Inhalt behandeln. Prerender-Einträge werden aus tatsächlich veröffentlichten Sprachfassungen erzeugt.
+
+Die URL bestimmt die Sprache, anfangs immer Englisch. Keine automatische Browser-Sprachumleitung. Ein Sprachschalter erscheint erst mit verfügbaren Übersetzungen und führt zur entsprechenden Themenseite. Fehlende Übersetzungen erzeugen keine deutschen URLs mit englischem Volltext; ihre Nichtverfügbarkeit wird im Sprachmenü erklärt. Ein Sprachwechsel bewahrt kompatible Eingaben und Einheiten, soweit der Zustand im Rechner gehalten beziehungsweise ausdrücklich übertragen wird.
+
+HTML erhält das passende `lang`; Titel, Beschreibung, Breadcrumbs und zugängliche Beschriftungen folgen derselben Sprache. Jede Sprachfassung hat eine eigene kanonische URL. Sobald Übersetzungen veröffentlicht sind, verweisen reziproke `hreflang`-Alternativen für `en` und `de` auf vorhandene Fassungen; `x-default` zeigt auf die englische Standardfassung. Die Sitemap bildet die veröffentlichten Sprachfassungen ab.
+
+## Komponenten und Datenfluss
+
+`AppShell` enthält Navigation, Theme und Hauptbereich. `OverviewPage` zeigt Einordnung und Unterthemen. `TopicPage` enthält genau zwei Hauptbereiche: «Theory» mit Grundlagen, Formeln, Herleitungen und Modellgrenzen sowie «Calculate» mit Eingaben, Resultaten, Rechenweg und dynamischen Visualisierungen. `CalculatorPanel` setzt sich aus `ModeSelect`, `QuantityInput`, `UnitSelect`, `ResultList` und `CalculationSteps` zusammen. Spezielle Eingaben oder Skizzen kommen über typisierte Komponentenreferenzen hinzu.
+
+Der lokale Controller verarbeitet: Rohtext → Parsing → Einheitenkonversion → Validierung → reine Berechnung → abhängige Berechnungen → Ergebnis- und Visualisierungsmodell → formatierte Darstellung. Die Physik importiert keine höheren Schichten. Komponenten enthalten keine Formelumstellungen. Gleichungen bleiben redaktionell erklärt; ein kleiner typisierter Rechnervertrag ersetzt keine allgemeine Formularsprache.
+
+Zustand bleibt pro Rechnerinstanz. Keine nutzerspezifischen Daten in serverweiten Stores. Einheitenwechsel verändert die Darstellung, nicht die physikalische Grösse. Beim Zielgrössenwechsel wird ein früheres Ergebnis nicht stillschweigend zur Nutzereingabe.
+
+## Zwei Nutzungswege: Nachschlagen und direkt berechnen
+
+Beide Hauptbereiche liegen auf derselben indexierbaren Themenseite. Eine kurze Abschnittsnavigation verlinkt direkt auf `#theory` und `#calculate`; der Rechner ist ohne vorheriges Lesen oder Durcharbeiten der Theorie erreichbar. Ein eigener Übungsbereich ist nicht vorgesehen. Erläuterte Beispiele und vorbelegte Demonstrationswerte sind Hilfen und keine zu lösenden Aufgaben; sie sind eindeutig als Beispiele erkennbar und lassen sich zurücksetzen.
+
+Für den industriellen Alltag stehen schnelle Zielgrössenwahl, explizite Einheiten, nachvollziehbare Resultate und Folgewerte im Vordergrund. Modellannahmen und Gültigkeitsgrenzen sind auch direkt im Berechnungsbereich sichtbar. Vereinfachungen wie konstante Beschleunigung oder fehlender Luftwiderstand werden nicht erst in einer langen Herleitung genannt. Es entstehen keine getrennten Physikimplementierungen oder obligatorischen Lernabläufe für unterschiedliche Zielgruppen. Branchenspezifische Normen, Werkstoffdatenbanken und umfassende Auslegungsverfahren sind damit nicht automatisch zugesagt.
+
+## Rechnervertrag und Folgeergebnisse
+
+Ein `CalculatorDefinition` beschreibt ID, Modellversion, Eingabegrössen, Einheiten, Modi, Standardbeispiel und Resolver. Jeder Modus benennt Zielgrösse, erforderliche Eingaben und zulässige Ergebniszweige. Die konkrete Resolver-Funktion bleibt normales TypeScript und wird separat getestet.
+
+Ein Resultat ist eine diskriminierte Union: `success`, `incomplete`, `invalid`, `no-solution`, `multiple-solutions` oder bei Numerik `non-convergent`. Erfolg enthält SI-Werte, Herkunft, Modellannahmen, strukturierte Rechenschritte und optionale Diagrammdaten. Fehlermeldungen verwenden stabile Codes und Feldbezüge; lokalisierte Texte entstehen in der Darstellung. `0` ist ein Wert, kein fehlendes Feld.
+
+Beispiel gleichförmige Bewegung: Modi für `s = v · t`, `v = s / t` und `t = s / v`, jeweils mit eigenen Definitionsbereichen. Folgeergebnisse innerhalb eines Rechners werden als explizite gerichtete Abhängigkeiten beschrieben und topologisch berechnet. Zyklen sind Definitionsfehler. Gleichungssysteme werden später als eigener fachlicher Solver modelliert und nicht durch wiederholtes Durchlaufen eines Zyklus angenähert.
+
+Jeder Wert ist entweder eine direkte Eingabe, eine dokumentierte Konstante oder abgeleitet. Ableitungen referenzieren Ursprungswerte, Berechnungsmodus und Modellversion. Ändert sich eine Quelle, wird der abhängige Teil neu berechnet; bei ungültigen Quellen werden alle Nachfolger ungültig. Konfligierende manuelle und berechnete Werte werden nicht still überschrieben.
+
+Im MVP funktionieren Folgeergebnisse innerhalb eines Themas. Themenübergreifende Übergaben folgen als explizite Aktion «Als Eingabe übernehmen»: nur bei kompatibler Dimension und physikalischer Bedeutung, mit Herkunftsanzeige. Gleiche Dimension allein genügt nicht, etwa bei Energie und Drehmoment. Keine automatische Kopplung allein über Symbolnamen. Ein seitenübergreifender Arbeitsbereich mit persistenten Verknüpfungen ist eine spätere Produktentscheidung.
+
+## Differential- und Integralrechnung
+
+Zuerst bekannte analytische Modelle: `x(t) = x₀ + v₀t + ½at²`, `v(t) = dx/dt`, `a(t) = dv/dt`; Ortsänderung aus dem bestimmten Integral der Geschwindigkeit. Herleitung und numerische Auswertung sind getrennt, aber fachlich gemeinsam getestet.
+
+Später werden ausgewählte numerische Verfahren hinter kleinen reinen Funktionen ergänzt: bestimmte Integration, Nullstellensuche und erst bei Bedarf Differentialgleichungen. Jeder Algorithmus erhält Grenzen, Toleranzen, Abbruchbedingungen und Konvergenzstatus. Details stehen in den Physikstandards. Ein allgemeines symbolisches Differenzieren oder Integrieren beliebiger Eingaben ist kein MVP-Ziel. Falls freie Funktionen später benötigt werden, folgt zuerst eine Produktentscheidung über erlaubte Syntax und Funktionsumfang.
+
+## Visualisierungsarchitektur
+
+Rechner liefern SI-Datensätze mit Grössen-IDs, Dimensionen, Achsenbereichen und Ereignissen. Adapter übersetzen diese in SVG- beziehungsweise Plotly-Eigenschaften. Darstellungs-Sampling ersetzt nicht die fachliche Lösung und rundet keine Berechnungswerte.
+
+SVG verwendet `viewBox`, mathematisch dokumentierte Koordinaten, explizite Einheiten und einen gegebenenfalls als schematisch gekennzeichneten Massstab. Plotly wird erst beim benötigten Diagramm im Browser importiert; ein Basisbundle für kartesische Kurven ist der Startpunkt. Theorie und Seiten-SSR bleiben aktiv. Resize-Beobachtung und Aufräumen von Diagrammen gehören in den Adapter.
+
+Ein gemeinsamer lokaler Zeitparameter synchronisiert Skizze, Diagrammcursor und Werte. Animation verwendet `requestAnimationFrame`, pausiert ausserhalb des Sichtbereichs und hat Start, Pause und Zurücksetzen. Keine automatische Bewegung bei reduzierter Bewegung. Three.js kommt nur bei räumlichem Lernziel hinzu, ebenfalls lazy, mit Ressourcenfreigabe und 2D-/Textalternative. Numerik kann später bei nachgewiesenem Hauptthread-Problem in einen Worker verschoben werden; veraltete Antworten werden über Request-IDs verworfen.
+
+## SEO, Performance und Sicherheit
+
+Theorie, Formeln, Seitentitel und Navigation stehen im vorgerenderten HTML. Pro Seite: eindeutiger Titel, Beschreibung, kanonische URL, genau eine H1, sinnvolle Überschriften und Breadcrumbs. Canonical-Basis erst nach Wahl der Domain setzen. Rechnerparameter erzeugen keine eigenen indexierbaren Varianten. Sitemap enthält nur veröffentlichte kanonische URLs. Strukturierte Daten nur passend zum tatsächlichen Inhalt, keine erfundenen Bewertungen.
+
+Keine vollständige Plotly-/Three-Laufzeit im globalen Layout. Fonts und KaTeX-Assets lokal bereitstellen, Layoutflächen reservieren. Planungsziele: initiales JavaScript ohne optionale Visualisierungen höchstens 150 kB gzip; optionales Diagrammchunk separat messen und vor MVP-Freigabe budgetieren. Kernrechner reagieren auf Zielgeräten innerhalb von 100 ms; teure Aufgaben begrenzen und abbrechen. Feldziele am 75. Perzentil: LCP ≤ 2,5 s, INP ≤ 200 ms, CLS ≤ 0,1. Vor ausreichendem Traffic dienen reproduzierbare mobile Labormessungen als Näherung.
+
+Kein `eval` und keine Ausführung von Formeleingaben. KaTeX mit deaktiviertem Vertrauen in gefährliche Befehle; Renderingfehler sichtbar behandeln. URL-Eingaben validieren und begrenzen. Redaktionelle Inhalte sind vertrauenswürdiger Repository-Code; ungeprüftes HTML aus fremden Quellen wird nicht übernommen. Persistenz und Analytics sind nicht vorausgesetzt.
+
+## Entwicklung und Auslieferung
+
+Ein GitHub-Repository, überschaubare Branches und überprüfbare Pull Requests. CI prüft später Typen, Fachtests und Produktionsbuild. Netlify stellt Vorschauen und nach Freigabe die Produktionsauslieferung bereit. Vorschauen werden nicht indexiert. Für öffentliche Theorie reicht statische Ausgabe; Serverfunktionen werden nur für konkrete spätere Anforderungen verwendet. Keine Veröffentlichung im Spezifikationsauftrag.
+
+## Referenzen
+
+- [SvelteKit: Rendering und Prerendering](https://svelte.dev/docs/kit/page-options)
+- [SvelteKit: Adapter](https://svelte.dev/docs/kit/adapters) und [offizieller Netlify-Adapter](https://github.com/sveltejs/kit/blob/main/documentation/docs/25-build-and-deploy/80-adapter-netlify.md)
+- [KaTeX: Ausgabeoptionen und MathML](https://katex.org/docs/options.html)
+- [Plotly: wissenschaftliche Diagramme](https://plotly.com/javascript/scientific-charts/) und [Teilbundles](https://github.com/plotly/plotly.js)
+
+Die Entscheidungen sind projektspezifische Empfehlungen; vor dem Setup sind aktuelle kompatible Versionen und die zugehörige Konfiguration erneut zu prüfen.
