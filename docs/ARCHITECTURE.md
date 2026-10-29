@@ -2,7 +2,7 @@
 
 ## Ausgangslage und Ziel
 
-Stand: 29.10.2026. Die Spezifikation entstand auf Basis eines Repositorys mit nur einer README. Der erste beauftragte Umsetzungsschritt ist nun Home → Mechanics → Kinematics. Die übrige Rechner- und Visualisierungsarchitektur bleibt Zielbild.
+Stand: 29.10.2026. Die Spezifikation entstand auf Basis eines Repositorys mit nur einer README. Der erste beauftragte Umsetzungsschritt ist nun Home → Mechanics → Kinematics. Uniform Motion ist als erster Rechner implementiert und vorerst vom Nutzer als Referenz akzeptiert. Der verbindliche aktuelle UI-Stand und die gemeinsamen Änderungsstellen stehen in [MODEL_PAGE_STANDARD.md](MODEL_PAGE_STANDARD.md); weitere generische Komponenten bleiben Zielbild.
 
 calcPhysics verbindet Theorie, nach verschiedenen Grössen auflösbare Formeln, automatische Folgeergebnisse und Visualisierungen. Das vom Betreiber beschriebene Konzept von elecalculate.com bleibt erhalten und wird um anspruchsvollere Mathematik erweitert. Die öffentliche [Referenzseite](https://elecalculate.com/) dient als Produktkontext; deren interner Code wurde nicht untersucht.
 
@@ -17,13 +17,13 @@ Bestätigt sind Englisch als Standardsprache mit späterer deutscher Sprachoptio
 | Inhalte | Redaktionelle Svelte-Komponenten plus typisierte Metadaten | Formeln und didaktische Sonderfälle ohne eigenes CMS oder Markup-System |
 | Mathematikdarstellung | KaTeX, statische Formeln beim Rendern | Theorie benötigt kein nachträgliches Browser-Rendering |
 | Skizzen | SVG | Responsive, präzise und unmittelbar an Ergebnisse bindbar |
-| Wissenschaftliche Diagramme | Plotly.js mit kleinstem geeigneten Teilbundle | Achsen, Zoom und wissenschaftliche Diagrammtypen; Ladegewicht bewusst begrenzen |
+| Wissenschaftliche Diagramme | SVG für aktuelle Geraden; Plotly bei konkretem Mehrbedarf | Gemeinsames Achsenlayout ohne zusätzliche Laufzeit im Pilot |
 | 3D | Three.js erst bei fachlichem Mehrwert | Keine zusätzliche 3D-Laufzeit für gewöhnliche 2D-Aufgaben |
-| Prüfungen | Vitest; Playwright für zentrale Abläufe | Isolierte Physiktests und wenige aussagekräftige Integrationsprüfungen |
+| Prüfungen | Node-Testläufer für vorhandene Fachtests; Browserprüfungen soweit verfügbar | Keine zusätzliche Testabhängigkeit für reine TypeScript-Funktionen; Browser-Abnahme bleibt separat |
 
 Keine Microservices, kein Monorepo und kein generischer Gleichungslöser im Einstieg. Stabile kompatible Versionen und Node-Version beim späteren Setup festlegen, Lockdatei einchecken. Die Dokumentation schreibt keine ungeprüften Paketversionen oder versionsabhängigen Konfigurationsdateien fest.
 
-## Empfohlene Repository-Struktur
+## Zielstruktur für spätere Erweiterungen
 
 ```text
 AGENTS.md
@@ -71,9 +71,9 @@ Leere Zukunftsverzeichnisse müssen nicht vorab angelegt werden. Inhalts-, Physi
 
 ## Themen und Routing
 
-Ein Themenbaum führt stabile ID, Eltern-ID, Slug-Segment, Titel, Kurzbeschreibung, Seitentyp und Publikationsstatus. Alle Eltern sind echte Übersichten. Englische Standardseiten erhalten URLs ohne Sprachpräfix, beispielsweise `/mechanics/kinematics/uniform-motion`. Deutsche Übersetzungen folgen später unter `/de/`, beispielsweise `/de/mechanik/kinematik/gleichfoermige-bewegung`. Deutsche Umlaute werden für Slugs ausgeschrieben, sichtbare Titel behalten korrekte Schreibweise. Gross-/Kleinschreibung und abschliessende Slashes erhalten eine einheitliche Regel.
+Ein Themenbaum führt stabile ID, Eltern-ID, Slug-Segment, Titel, Kurzbeschreibung, Seitentyp und Publikationsstatus. Alle Eltern sind echte Übersichten. Englische Standardseiten erhalten URLs ohne Sprachpräfix. Aktuell liegen die Modellkarten unter `/mechanics/kinematics`; eigene Modellrouten sind kein Bestandteil der akzeptierten Referenz. Deutsche Übersetzungen sind später unter `/de/` vorgesehen. Deutsche Umlaute werden für Slugs ausgeschrieben, sichtbare Titel behalten korrekte Schreibweise. Gross-/Kleinschreibung und abschliessende Slashes erhalten eine einheitliche Regel.
 
-Der Baum umfasst Mechanik mit Kinematik und Dynamik sowie Thermodynamik, Elektrizität und Magnetismus, Schwingungen und Wellen, Optik und Moderne Physik. Die vom Auftrag genannten Unterthemen werden in der Roadmap geführt. Home zeigt alle sechs Hauptthemen als Kacheln; unveröffentlichte Themen erhalten deaktivierte Buttons mit «Coming soon». Mechanics enthält zunächst ausschliesslich Kinematics. Die Kinematics-Übersicht führt vier geplante Modelle mit KaTeX-Formeln und getrennten, bis zur Implementierung deaktivierten Theory-/Calculate-Aktionen auf. Unveröffentlichte Themen erzeugen keine leeren indexierbaren Seiten. Unbekannte Pfade liefern HTTP 404; umbenannte veröffentlichte Pfade erhalten Weiterleitungen.
+Der Baum umfasst Mechanik mit Kinematik und Dynamik sowie Thermodynamik, Elektrizität und Magnetismus, Schwingungen und Wellen, Optik und Moderne Physik. Die vom Auftrag genannten Unterthemen werden in der Roadmap geführt. Home zeigt alle sechs Hauptthemen als Kacheln; unveröffentlichte Themen erhalten deaktivierte Buttons mit «Coming soon». Mechanics enthält zunächst ausschliesslich Kinematics. Die Kinematics-Seite führt vorerst ausschliesslich Uniform Motion als ausklappbare Karte (`ModelCard`) auf; weitere Modelle folgen erst nach Fertigstellung dieses Piloten. Ein Info-Button blendet die Theory mit KaTeX-Formel ein; Calculate enthält den ersten Rechner mit vier Feldern (s₀, s, v, t), direkter Präfixeingabe per Tastatur, automatischer Berechnung und drei signifikanten Ausgabestellen. Unveröffentlichte Themen erzeugen keine leeren indexierbaren Seiten. Unbekannte Pfade liefern HTTP 404; umbenannte veröffentlichte Pfade erhalten Weiterleitungen.
 
 Registry und Routing sind getrennt: gemeinsame Vorlagen rendern alle Themen; explizite Lazy-Imports laden nur benötigte Theorie und Rechner. Die Catch-all-Route liefert vollständige Einträge für alle veröffentlichten Pfade an den Prerenderer. Navigation, Breadcrumbs und Sitemap entstehen aus demselben Baum. Build-Prüfungen erkennen doppelte Slugs, fehlende Eltern und ungültige Referenzen.
 
@@ -89,15 +89,15 @@ HTML erhält das passende `lang`; Titel, Beschreibung, Breadcrumbs und zugängli
 
 ## Komponenten und Datenfluss
 
-`AppShell` enthält Navigation, Theme und Hauptbereich. `OverviewPage` zeigt Einordnung und Unterthemen. `TopicPage` enthält genau zwei Hauptbereiche: «Theory» mit Grundlagen, Formeln, Herleitungen und Modellgrenzen sowie «Calculate» mit Eingaben, Resultaten, Rechenweg und dynamischen Visualisierungen. `CalculatorPanel` setzt sich aus `ModeSelect`, `QuantityInput`, `UnitSelect`, `ResultList` und `CalculationSteps` zusammen. Spezielle Eingaben oder Skizzen kommen über typisierte Komponentenreferenzen hinzu.
+Die folgenden Komponentenbezeichnungen beschreiben ein späteres Zielbild; die aktuellen Implementierungen und noch vorhandenen Bindungen nennt der Modellseitenstandard. `AppShell` enthält Navigation, Theme und Hauptbereich. `OverviewPage` zeigt Einordnung und Unterthemen. `TopicPage` enthält genau zwei Hauptbereiche: «Theory» mit Grundlagen, Formeln, Herleitungen und Modellgrenzen sowie «Calculate» mit Eingaben, Resultaten, Rechenweg und dynamischen Visualisierungen. `CalculatorPanel` setzt sich aus `ModeSelect`, `QuantityInput`, `UnitSelect`, `ResultList` und `CalculationSteps` zusammen. Spezielle Eingaben oder Skizzen kommen über typisierte Komponentenreferenzen hinzu.
 
 Der lokale Controller verarbeitet: Rohtext → Parsing → Einheitenkonversion → Validierung → reine Berechnung → abhängige Berechnungen → Ergebnis- und Visualisierungsmodell → formatierte Darstellung. Die Physik importiert keine höheren Schichten. Komponenten enthalten keine Formelumstellungen. Gleichungen bleiben redaktionell erklärt; ein kleiner typisierter Rechnervertrag ersetzt keine allgemeine Formularsprache.
 
-Zustand bleibt pro Rechnerinstanz. Keine nutzerspezifischen Daten in serverweiten Stores. Einheitenwechsel verändert die Darstellung, nicht die physikalische Grösse. Beim Zielgrössenwechsel wird ein früheres Ergebnis nicht stillschweigend zur Nutzereingabe.
+Zustand bleibt pro Rechnerinstanz. Keine nutzerspezifischen Daten in serverweiten Stores. Einheitenwechsel erhält die physikalische Grösse, ausser einer explizit konfigurierten Neueinlesung wie derzeit beim Geschwindigkeitsfeld v. Beim Zielgrössenwechsel wird ein früheres Ergebnis nicht stillschweigend zur Nutzereingabe.
 
 ## Zwei Nutzungswege: Nachschlagen und direkt berechnen
 
-Beide Hauptbereiche liegen auf derselben indexierbaren Themenseite. Eine kurze Abschnittsnavigation verlinkt direkt auf `#theory` und `#calculate`; der Rechner ist ohne vorheriges Lesen oder Durcharbeiten der Theorie erreichbar. Ein eigener Übungsbereich ist nicht vorgesehen. Erläuterte Beispiele und vorbelegte Demonstrationswerte sind Hilfen und keine zu lösenden Aufgaben; sie sind eindeutig als Beispiele erkennbar und lassen sich zurücksetzen.
+Beide Hauptbereiche liegen auf derselben indexierbaren Themenseite. Aktuell wird die Theorie innerhalb der Modellkarte unabhängig über ⓘ geöffnet; der Rechner ist ohne vorheriges Lesen oder Durcharbeiten der Theorie erreichbar. Eine zusätzliche Abschnittsnavigation ist nicht implementiert. Ein eigener Übungsbereich ist nicht vorgesehen. Erläuterte Beispiele und vorbelegte Demonstrationswerte sind Hilfen und keine zu lösenden Aufgaben; sie sind eindeutig als Beispiele erkennbar und lassen sich zurücksetzen.
 
 Für den industriellen Alltag stehen schnelle Zielgrössenwahl, explizite Einheiten, nachvollziehbare Resultate und Folgewerte im Vordergrund. Modellannahmen und Gültigkeitsgrenzen sind auch direkt im Berechnungsbereich sichtbar. Vereinfachungen wie konstante Beschleunigung oder fehlender Luftwiderstand werden nicht erst in einer langen Herleitung genannt. Es entstehen keine getrennten Physikimplementierungen oder obligatorischen Lernabläufe für unterschiedliche Zielgruppen. Branchenspezifische Normen, Werkstoffdatenbanken und umfassende Auslegungsverfahren sind damit nicht automatisch zugesagt.
 
@@ -147,3 +147,13 @@ Ein GitHub-Repository, überschaubare Branches und überprüfbare Pull Requests.
 - [Plotly: wissenschaftliche Diagramme](https://plotly.com/javascript/scientific-charts/) und [Teilbundles](https://github.com/plotly/plotly.js)
 
 Die Entscheidungen sind projektspezifische Empfehlungen; vor dem Setup sind aktuelle kompatible Versionen und die zugehörige Konfiguration erneut zu prüfen.
+
+## Implementierter Pilot und gemeinsame Weiterentwicklung
+
+Der [Modellseitenstandard](MODEL_PAGE_STANDARD.md) dokumentiert die aktuelle Referenz einschliesslich Zahlen-/Einheitenverhalten, Rechenschritten, Diagrammen und zentraler Änderungsstellen. Die [Quellcode-Arbeitsregeln](../src/AGENTS.md) schreiben deren Wiederverwendung vor. Keine Seitenkopien und keine doppelten Einheitenlisten, Parser oder Achsenformatierer anlegen.
+
+Aktuell gemeinsam nutzbar sind unter anderem `Formula`, `UnitSelect`, `ThemeToggle`, `MotionChart`, der Einheitenkatalog, Zahl-/Präfixformatter sowie der Achsen- und Dauerformatter. `ModelCard` und Teile des Rechnerlayouts sind noch an den Pilot gebunden. Vor dem zweiten Modell werden diese Bindungen gelöst und gemeinsame Feld-/Ergebnisdarstellungen samt Styles einmal extrahiert, ohne das akzeptierte Aussehen zu verändern. Neue Modellinhalte, Solver und Datenadapter bleiben separat. Kein allgemeiner Gleichungslöser oder Formularframework ist dafür erforderlich.
+
+Uniform Motion löst `s = s₀ + v · t` mit drei bekannten Werten nach dem vierten auf. Bei zwei Eingaben aus s/v/t gilt sichtbar s₀ = 0. Manuelle Rohwerte, validierte SI-Werte und reine Anzeigeformatierung sind getrennt. Nur Ergebnisse werden auf drei signifikante Stellen gerundet dargestellt; auch die Anzeige der Einsetzung und Konversion nutzt drei Stellen, ohne Zwischenrundung im Solver.
+
+Die SVG-Diagramme s(t) und v(t) nutzen ungerundete Solver-Endpunkte. Ihre schematischen Kurven bleiben bei fehlendem Ergebnis sichtbar, die numerische Skala erscheint nur bei gültigen Werten. Es gibt keine Diagrammtabelle. Für diese Geraden genügt SVG; eine umfangreiche Diagrammbibliothek wird erst durch konkrete zusätzliche Anforderungen begründet.

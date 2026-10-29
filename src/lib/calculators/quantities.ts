@@ -1,0 +1,57 @@
+import { getUnit, type QuantityKind } from '../physics/units.ts';
+
+export const prefixes = [
+  { symbol: 'p', factor: 1e-12 }, { symbol: 'n', factor: 1e-9 },
+  { symbol: 'u', factor: 1e-6 }, { symbol: 'm', factor: 1e-3 },
+  { symbol: 'c', factor: 1e-2 }, { symbol: 'd', factor: 1e-1 },
+  { symbol: '', factor: 1 }, { symbol: 'k', factor: 1e3 },
+  { symbol: 'M', factor: 1e6 }, { symbol: 'G', factor: 1e9 },
+  { symbol: 'T', factor: 1e12 }
+] as const;
+export type Prefix = (typeof prefixes)[number]['symbol'];
+export type ParsedQuantity = { status: 'empty' | 'invalid' } | { status: 'valid'; value: number; number: string; prefix: Prefix };
+export function parseQuantity(raw: string, fallbackPrefix: Prefix = ''): ParsedQuantity {
+  const text = raw.trim();
+  if (!text) return { status: 'empty' };
+  const match = text.match(/^([+-]?(?:\d+(?:[.,]\d*)?|[.,]\d+)(?:[eE][+-]?\d+)?)\s*([pnumcdkMGTµμ]?)$/);
+  if (!match) return { status: 'invalid' };
+  const numberText = match[1].replace(',', '.');
+  const suffix = match[2].replace(/[µμ]/, 'u');
+  const prefix = (suffix || fallbackPrefix) as Prefix;
+  const number = Number(numberText);
+  const value = number * prefixes.find(item => item.symbol === prefix)!.factor;
+  if (!Number.isFinite(value) || (number !== 0 && value === 0) || (number === 0 && /[1-9]/.test(numberText.split(/[eE]/)[0]))) return { status: 'invalid' };
+  return { status: 'valid', value, number: numberText, prefix };
+}
+/** Engineering prefixes by default. Round only for display, retaining trailing significant zeroes. */
+export function formatQuantity(value: number): { number: string; prefix: Prefix } {
+  if (!Number.isFinite(value)) throw new RangeError('A finite value is required');
+  if (value === 0) return { number: '0.00', prefix: '' };
+  const engineering = prefixes.filter(item => !['c', 'd'].includes(item.symbol));
+  let index = Math.max(0, engineering.findLastIndex(item => Math.abs(value) >= item.factor));
+  let scaled = value / engineering[index].factor;
+  if (Math.abs(Number(scaled.toPrecision(3))) >= 1000 && index < engineering.length - 1) {
+    index++;
+    scaled = value / engineering[index].factor;
+  }
+  // Scientific notation retains three significant digits outside the available prefix range.
+  return { number: scaled.toPrecision(3), prefix: engineering[index].symbol };
+}
+
+/** Converts typed prefix + selected unit to SI while retaining the original input notation. */
+export function parseQuantityInUnit(raw: string, kind: QuantityKind, unit: string): ParsedQuantity {
+  const definition = getUnit(kind, unit);
+  const parsed = parseQuantity(raw);
+  if (parsed.status !== 'valid') return parsed;
+  const value = parsed.value * definition.factor;
+  if (!Number.isFinite(value) || (parsed.value !== 0 && value === 0)) return { status: 'invalid' };
+  return { ...parsed, value };
+}
+/** Unit switches preserve the physical value and typed prefix, without display rounding. */
+export function changeQuantityUnit(raw: string, kind: QuantityKind, from: string, to: string): string {
+  const oldUnit = getUnit(kind, from);
+  const newUnit = getUnit(kind, to);
+  const parsed = parseQuantity(raw);
+  if (parsed.status !== 'valid' || from === to) return raw;
+  return `${Number(parsed.number) * (oldUnit.factor / newUnit.factor)}${parsed.prefix}`;
+}

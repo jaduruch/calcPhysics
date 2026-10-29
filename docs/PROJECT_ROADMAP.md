@@ -14,13 +14,15 @@ Weitere Entscheidungen erst vor der betreffenden Phase: seitenübergreifende ges
 
 Abnahme: nachvollziehbare Architektur, dokumentierte Annahmen und ein vereinbarter erster vertikaler Anwendungsfall.
 
-## Aktuell beauftragter erster Umsetzungsschritt
+## Aktueller Stand und nächster Erweiterungsschritt
 
-Lokales Grundgerüst mit drei Übersichten: Home zeigt Buttons/Kacheln für alle sechs Hauptthemen; nur Mechanics ist aktiv. Mechanics enthält zunächst nur Kinematics. Kinematics zeigt die vier geplanten Modelle als Übersicht mit KaTeX-Formeln und den späteren Bereichen Theory/Calculate. Rechner und vollständige Theorie-Seiten folgen gesondert. Keine Veröffentlichung in diesem Schritt.
+Lokales Grundgerüst Home → Mechanics → Kinematics ist vorhanden. Home führt alle Hauptthemen, nur Mechanics ist aktiv. Mechanics enthält zunächst nur Kinematics. Uniform Motion ist mit Theorie, vier Eingaben, Präfix-/Einheitenunterstützung, automatischen Resultaten, KaTeX-Rechenweg und zwei SVG-Diagrammen implementiert und vom Nutzer vorerst als Referenz akzeptiert. Keine weiteren Modelle oder Veröffentlichung ohne entsprechenden Auftrag.
+
+Vor dem zweiten Modell: die noch direkte Uniform-Motion-Bindung von `ModelCard` lösen und gemeinsame Feld-/Ergebnisdarstellung samt Styles einmal extrahieren. Den akzeptierten Aufbau erhalten; Details und Änderungsstellen stehen im [Modellseitenstandard](MODEL_PAGE_STANDARD.md). Die folgenden Phasen beschreiben den weiteren Plan, nicht bereits vollständig erledigte Qualitäts-/Veröffentlichungsprüfungen.
 
 ## Phase 1 – Technische und gestalterische Grundlage
 
-Nach Implementierungsauftrag SvelteKit und TypeScript einrichten, kompatible Versionen pinnen, Lockdatei und Node-Version dokumentieren. CSS-Tokens, System/Hell/Dunkel, Navigation, Übersichts-/Themenseitenvorlagen und KaTeX integrieren. Themenregistry als gemeinsame Quelle für Routen und Navigation etablieren. Englische Inhalte und URLs ohne Sprachpräfix verwenden; UI-Texte in einem englischen Wörterbuch führen und `/de/` für die spätere Erweiterung reservieren.
+Nach Implementierungsauftrag SvelteKit und TypeScript einrichten, kompatible Versionen pinnen, Lockdatei und Node-Version dokumentieren. CSS-Tokens, Hell-/Dunkel-Schalter mit initialer Systemübernahme, Navigation, Übersichts-/Themenseitenvorlagen und KaTeX integrieren. Themenregistry als gemeinsame Quelle für Routen und Navigation etablieren. Englische Inhalte und URLs ohne Sprachpräfix verwenden; UI-Texte in einem englischen Wörterbuch führen und `/de/` für die spätere Erweiterung reservieren.
 
 Vitest, Typ-/Svelte-Prüfung und Produktionsbuild in GitHub CI ergänzen. Netlify-Adapter konfigurieren; Vorschauhosting erst bei entsprechendem Auftrag verbinden. Keine Datenbank oder Anmeldung.
 
@@ -28,9 +30,9 @@ Abnahme: responsive Grundstruktur mit lesbarem vorgerendertem Inhalt, vollständ
 
 ## Phase 2 – Vertikaler Pilot: gleichförmige Bewegung
 
-Ein vollständiges Thema mit direkt verlinkbaren Bereichen «Theory» und «Calculate», drei Zielgrössenmodi, SI-/Anzeigeeinheiten, automatischer Berechnung, Rechenweg, SVG und Weg-Zeit-Diagramm. Lokale Folgeergebnisse und Herkunftsanzeige gehören zum Pilot, nicht erst zum späteren Ausbau.
+Ein vollständiges Thema mit direkt verlinkbaren Bereichen «Theory» und «Calculate», vier automatisch bestimmte Zielgrössen, SI-/Anzeigeeinheiten, automatischer Berechnung, Rechenweg, SVG und Weg-Zeit-Diagramm. Lokale Folgeergebnisse und Herkunftsanzeige gehören zum Pilot, nicht erst zum späteren Ausbau.
 
-Mit diesem kleinen Thema werden Rechnervertrag, Definitionsbereiche und Invalidierung geprüft. Erst die zweite konkrete Rechneranforderung rechtfertigt zusätzliche Abstraktionen. Plotly-Basisbundle nur beim Diagramm laden und gegen ein explizites gemessenes Chunk-Budget prüfen.
+Mit diesem kleinen Thema werden Rechnervertrag, Definitionsbereiche und Invalidierung geprüft. Erst die zweite konkrete Rechneranforderung rechtfertigt zusätzliche Abstraktionen. Für die aktuellen Geraden SVG verwenden. Plotly erst bei weitergehenden wissenschaftlichen Diagrammanforderungen ergänzen und dessen Bundle budgetieren.
 
 Abnahme: alle Modi fachlich getestet; `0`, fehlende Eingaben, Nulldivision, Einheitenwechsel und Folgefehler korrekt; keine veralteten Resultate. Rechenweg und Diagramm stimmen mit den Resultaten überein. Browserprüfung des Hauptablaufs, mobile Performance und zugängliche Diagrammalternative. Zusätzlich wird der schnelle Direkteinstieg in «Calculate» geprüft: Zielgrösse wählen, Beispielwerte durch eigene Werte ersetzen, Einheiten anpassen und Ergebnis samt Modellgrenzen beurteilen, ohne zuvor Theorie durchlaufen zu müssen.
 

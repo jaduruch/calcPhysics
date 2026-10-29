@@ -12,7 +12,7 @@ Formeln werden weiterhin mit KaTeX und dessen Mathematikschriften dargestellt. D
 
 ## Zentrale Design-Tokens
 
-Alle Werte liegen später in `src/lib/styles/` als CSS Custom Properties. Komponenten greifen auf semantische Tokens statt auf eigene Farben zu.
+Zentrale Farbwerte liegen in `src/lib/styles/` als CSS Custom Properties. Komponenten greifen auf semantische Tokens statt auf eigene Farben zu.
 
 ### Exakte Referenzpalette
 
@@ -57,46 +57,44 @@ Die festgelegte Palette und ihre konkreten Verwendungen werden in Phase 1 in bei
 
 ## Hell- und Dunkelmodus
 
-Drei Einstellungen: System, Hell und Dunkel. System folgt `prefers-color-scheme`; die explizite Auswahl darf lokal gespeichert werden. Frühe Theme-Initialisierung minimiert Aufblitzen, muss aber mit der späteren Content Security Policy vereinbar sein. Blockierter Speicher darf die Bedienung nicht verhindern. Native Formelemente erhalten das passende `color-scheme`.
+Ein SVG-Button mit Sonne im Hellmodus und Mond im Dunkelmodus wechselt zwischen Hell und Dunkel, angelehnt an das freeCodeCamp-Beispiel (https://www.freecodecamp.org/news/how-to-handle-dark-mode-with-css-and-javascript/). Es gibt keine auswählbare Option «System». Ohne gespeicherte Auswahl folgt die Seite `prefers-color-scheme`. Ein manueller Wechsel überschreibt die Systemeinstellung und wird in Local Storage gespeichert; alle weiteren Seitenaufrufe und erneuten Besuche übernehmen diese Auswahl. Der Button hat mindestens 44 × 44 px Bedienfläche, einen zugänglichen Namen und `aria-pressed` für den Dunkelmodus. Frühe Theme-Initialisierung minimiert Aufblitzen, muss aber mit der späteren Content Security Policy vereinbar sein. Blockierter Speicher darf die Bedienung nicht verhindern. Native Formelemente erhalten das passende `color-scheme`.
 
 Diagramme und SVG nutzen dieselben semantischen Farben. Theme-Wechsel verändert weder Eingaben noch Resultate oder Animationszeit. Schatten und Kontraste werden für beide Themes separat geprüft.
 
-## Layout und Komponenten
+## Verbindlicher Modellseitenaufbau
 
-Mobile zuerst: Hauptnavigation einklappbar, Breadcrumbs umbrechend, eine Inhaltsspalte. Ab etwa 48 rem können Eingaben und Resultate nebeneinander stehen; ab etwa 72 rem kann eine dauerhafte Themennavigation hinzukommen. Breakpoints sind Startwerte und werden anhand des Inhalts geprüft.
+Der [Modellseitenstandard](MODEL_PAGE_STANDARD.md) enthält den aktuellen, vom Nutzer vorerst akzeptierten Uniform-Motion-Stand sowie die Übersicht der gemeinsamen Änderungsstellen. Die [Implementierungsregeln](../src/AGENTS.md) machen dessen Wiederverwendung für neue Modelle verbindlich. Diese Regeln ersetzen frühere Entwürfe mit sichtbarem Theory-Titel, zusätzlicher Theorie-Karte, Modellzähler/Hinweisblock oder Diagrammtabelle.
 
-Eine Themenseite enthält Titel und kurze fachliche Einordnung sowie zwei klar benannte Hauptbereiche: «Theory» und «Calculate» (später Deutsch: «Theorie» und «Berechnen»). «Theory» enthält Grundlagen, Formeln, Herleitungen und Voraussetzungen. «Calculate» enthält Eingaben mit Einheiten, Ergebnisse, Rechenweg und dynamische Skizzen/Diagramme. Eine Abschnittsnavigation mit Ankerlinks ermöglicht den direkten Einstieg in beide Bereiche, ohne die Theorie zuerst durcharbeiten zu müssen. Modellannahmen und Gültigkeitsgrenzen stehen auch beim Rechner. Übungsaufgaben, Quiz und Lernfortschrittsanzeigen sind derzeit nicht vorgesehen. Lange Herleitungen dürfen aufklappbar sein; zentrale Annahmen und Fehlermeldungen bleiben direkt sichtbar. Keine verschachtelten Karten um jeden Absatz.
+Pro Modell eine zunächst eingeklappte Karte. Der links am Theorietext ausgerichtete ⓘ-Button öffnet die Theorie und wird zu ✕. Theorie ohne eigene Fläche oder sichtbaren Titel; Variables und Key Formulas kompakt nebeneinander, mobil untereinander. Die Berechnung liegt in einer dezenten Unterfläche mit Eingaben, Reset, SI-Umrechnung, vollständigen KaTeX-Ergebnisgleichungen und Diagrammen.
 
-Die Referenz gibt 16 px Innenabstand für Hauptkarten, 10 px für Unterbereiche und etwa 8 px Abstand zwischen Karten vor. Buttons und Eingaben haben kompakte, gerundete Flächen. Abschnittslabels dürfen wie in der Referenz fett, in Grossbuchstaben und mit etwa 1 px Laufweite erscheinen, bleiben aber ausreichend gross lesbar. Die dortige Beschränkung auf 480 px Gesamtbreite wird für die responsive Lernplattform auf die oben definierten Inhaltsbreiten erweitert. Browserzoom und normales Seitenscrollen bleiben möglich. Grössere Schrift und mindestens 44 px Bedienflächen haben Vorrang vor den sehr kleinen Labels und Schaltern der Vorlage.
+Modellkarte und Theorie nicht kopieren. `ModelCard` ist aktuell noch direkt an Uniform Motion gekoppelt; vor dem zweiten Modell fachliche Inhalte und Rechner über typisierte Props/Snippets einsetzen und die gemeinsamen Rechnerfeld-/Ergebnis-Styles einmal extrahieren. Referenzmasse und Änderungsstellen stehen im Modellseitenstandard. Bestehende Farben bleiben zentrale Tokens; weitere gemeinsame Grössen bei der Extraktion in semantische Tokens überführen.
 
-Beispielwerte sind ausdrücklich als solche gekennzeichnet und können zurückgesetzt werden. Der Berechnungsablauf verlangt keine Lernbestätigung oder Aufgabenlösung.
+## Eingaben, Fokus und Einheiten
 
-`QuantityInput` zeigt Name, Symbol, editierbaren Zahlenwert, Einheit und Hilfe. «Gesuchte Grösse» und «Einheit» sind getrennte Bedienelemente. `ResultList` kennzeichnet eingegebene und abgeleitete Werte sowie verwendete Konstanten. Herkunft ist auch nach einer Wertübernahme einsehbar.
+Pro Grösse ein Textfeld für Zahl mit Präfix und ein kleineres eigenes Einheitenmenü. Keine Präfix-Dropdowns. Die verfügbaren Einheiten und Faktoren stammen ausschliesslich aus `src/lib/physics/units.ts`; SI ist Standard. Auswahlverhalten wird explizit konfiguriert: Uniform Motions v behält beim Einheitenwechsel den Eingabetext; Positionen und Zeit werden aktuell umgerechnet. Keine ungefragte Vereinheitlichung.
 
-## Eingabe- und Ergebnisverhalten
+Zahlenfelder, Reset und Einheiten-Auslöser verwenden `--color-control`, 8-px-Radien und mindestens 44-px-Höhe. Zahlenfokus grau, 1 px, ohne Abstand; Fehlerzustand derselbe Rahmen gestrichelt, ohne zweiten Rahmen. Der Einheiten-Auslöser bleibt gemäss ausdrücklichem Nutzerwunsch ohne Fokusrahmen und Unterstreichung. Die eigene Optionsliste nutzt Theme-Flächen, 10-px-Rundung, dezenten Schatten und ein Häkchen beim ausgewählten Eintrag. Der aktive Eintrag erhält eine neutrale Fläche; keine blauen Hover-Flächen. Pfeilabstand rechts 14 px.
 
-- Leeres Feld, ungültige Eingabe, fachlich unzulässiger Wert und mehrdeutige Lösung erhalten unterschiedliche Meldungen.
-- Zahlen dürfen während der Eingabe unvollständig sein, etwa ein einzelnes Minuszeichen. In diesem Zustand kein altes Ergebnis als aktuell präsentieren.
-- Dezimalkomma und Dezimalpunkt werden unterstützt; Gruppierungszeichen zunächst nicht. Wissenschaftliche Schreibweise wird erklärt.
-- Einheitenwechsel rechnet den aktuellen Wert um. Zielgrössenwechsel zeigt nur die benötigten Eingaben und behandelt bisherige Werte nachvollziehbar.
-- Aktualisierung erfolgt automatisch. Kurze Berechnungen unmittelbar, teure Aufgaben verzögert oder mit explizitem Start und Abbruch.
-- Mehrere Lösungen werden getrennt mit Bedingungen ausgegeben; keine versteckte Auswahl des ersten Zweigs.
-- Rechenweg: Ausgangsgleichung → Umstellung → SI-Umrechnung → Einsetzen → Ergebnis mit Einheit und Annahmen.
+Nur manuelle Rohwerte in den Feldern. Berechnete oder angenommene Werte erscheinen darunter, niemals automatisch als Eingabe. Keine lange Eingabeanleitung anzeigen. Ungültige und unvollständige Eingaben entfernen alte Resultate; Nullwerte zählen als echte Eingaben. Parsing, Rundung und vollständige Ergebnisgleichungen sind im Modellseitenstandard und in den Physikstandards festgelegt.
 
-Zahlen werden abhängig von der gewählten Seitensprache formatiert: Englisch mit Dezimalpunkt, später Deutsch mit Dezimalkomma, zunächst ohne Tausendergruppierung. Wissenschaftliche Schreibweise wird bei sehr kleinen/grossen Werten verwendet. Interne Genauigkeit und Anzeigepräzision sind getrennt. Rundung, Näherungszeichen und numerisch geschätzte Fehler werden verständlich benannt.
+## Diagramme
 
-## Sprache und Übersetzbarkeit
+Die Diagramme erscheinen unter den Resultaten und bleiben innerhalb der geöffneten Modellkarte sichtbar. Ohne gültige Werte werden schematische Kurven ohne numerische Skalen gezeigt. Keine Datentabelle. Diagrammachsen, Pfeile, Nullachse, Einheitenlabels und wissenschaftliche Tickbeschriftung in `MotionChart.svelte` und `visualization/axis-label.ts` gemeinsam pflegen. Genaues Verhalten einschliesslich t = 0 siehe [Modellseitenstandard](MODEL_PAGE_STANDARD.md).
 
-UI-Texte, Hilfen, Fehlermeldungen und Diagrammbeschriftungen starten auf Englisch und werden zentral übersetzbar gehalten. Layouts müssen längere deutsche Texte und umbrechende Beschriftungen aufnehmen können. Keine Flaggen als Sprachkennzeichnung; der spätere Sprachschalter verwendet «English» und «Deutsch». Die URL bestimmt die Sprache. Fachsymbole, KaTeX-Darstellung und Einheitenwahl bleiben davon unabhängig.
+## Navigation und Theme
 
-## Accessibility
+Header: Nutzerlogo statt φ; aktives Hauptthema auch auf Unterseiten blau und unterstrichen; Header-Links behalten Hover-Farbe. Breadcrumbs ohne Unterstreichung und mit einheitlicher vertikaler Ausrichtung. Modellüberschriften und Theme-Button erhalten keinen Hover-Farbwechsel.
 
-Semantische Landmarken, Skip-Link, geordnete Überschriften und vollständig beschriftete Formularfelder sind Pflicht. Hinweise und Fehler werden mit `aria-describedby` verbunden; `aria-invalid` kennzeichnet betroffene Felder. Fokus bleibt beim automatischen Rechnen an seiner Position. Ein knappes `aria-live="polite"` meldet abgeschlossene Änderungen ohne bei jedem Tastendruck den gesamten Rechenweg vorzulesen.
+Der Theme-Button steht ohne Hintergrundrechteck. Sonne und Mond verwenden einen gemeinsamen SVG-Kreis mit animierter Aussparung; Übergang etwa 400 ms, bei reduzierter Bewegung ohne Animation. Manuelle Auswahl bleibt auf allen Seiten und nach erneutem Aufruf erhalten; kein auswählbarer Systemmodus.
 
-Alle Aktionen funktionieren mit Tastatur. Fokus ist sichtbar und nicht durch fixierte Navigation verdeckt. Bedienflächen sollen mindestens 44 × 44 CSS-px erreichen. Seiten funktionieren bei 320 CSS-px Breite und vergrösserter Schrift; Formeln erhalten bei Bedarf einen klar begrenzten horizontalen Scrollbereich statt Seitenüberlauf.
+## Übersetzbarkeit und Accessibility
 
-KaTeX gibt HTML und MathML aus. Schwierige Gleichungen erhalten zusätzlich eine sprachliche Erklärung. Diagramme benötigen Titel, Achsen inklusive Einheiten, Legende und eine Textzusammenfassung; eine zugängliche Datentabelle ist bei Kurven verfügbar. SVG erhält eine sinnvolle zugängliche Benennung; rein dekorative Teile werden ausgeblendet. Information darf nicht nur per Hover erreichbar sein. Animationen sind pausierbar, reduzierte Bewegung wird respektiert.
+Englische UI-Texte zentral in `src/lib/i18n/en.ts`, Fachinhalte modellbezogen führen. Längere spätere deutsche Texte müssen umbrechen können. Zahlen englisch mit Dezimalpunkt, Parser akzeptiert zusätzlich Komma; keine Tausendergruppierung. KaTeX liefert HTML und MathML, längere Formeln scrollen im eigenen Bereich statt die Seite zu verbreitern.
 
-## Abnahme
+Semantische Landmarken, geordnete Überschriften, Skip-Link und beschriftete Eingaben erhalten. Der Info-Button verwendet `aria-expanded`/`aria-controls`. Das eigene Einheitenmenü unterstützt Pfeiltasten, Home/End, Buchstabensuche, Enter/Leertaste, Escape, Tab, Klick ausserhalb und Schliessen beim Fokuswechsel. SVG-Titel und Beschreibungen unterscheiden schematische und berechnete Darstellung. Automatiken verschieben den Fokus nicht.
 
-Pro zentralem Ablauf: Tastaturprüfung, beide Themes, mobiles Layout, Zoom, Fehlerzustände und mindestens eine Screenreader-Stichprobe. Automatisierte Accessibility-Prüfung ergänzt diese Kontrolle. Die Diagrammbibliothek wird nicht als automatisch barrierefrei vorausgesetzt.
+Die bestätigte Gestaltung ist kein Nachweis vollständiger WCAG-Konformität. Besonders die ausdrücklich rahmenlose Einheitenauswahl muss bei weiteren Accessibility-Prüfungen berücksichtigt werden; keinen neuen Fokusrahmen ohne Nutzerauftrag einführen. Weitere Verbesserungen möglichst innerhalb der akzeptierten Gestaltung lösen.
+
+## Abnahme gemeinsamer Änderungen
+
+Beide Themes, Laptop/Mobil, leere/ungültige/gültige Werte und Tastaturbedienung prüfen, soweit Browserwerkzeuge vorhanden sind. Fachtests, Typprüfung und Build bei Implementierungsänderungen ausführen. Nicht durchgeführte Browser-/Screenreaderprüfungen benennen. Reine Dokumentänderungen benötigen Konsistenz- und Linkprüfung.

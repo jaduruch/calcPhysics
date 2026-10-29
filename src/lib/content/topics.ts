@@ -17,9 +17,19 @@ export const topics: readonly Topic[] = [
   { id: 'kinematics', parentId: 'mechanics', path: '/mechanics/kinematics', title: 'Kinematics', description: 'Describe how objects move through position, velocity and acceleration.', symbol: '01.1', published: true }
 ];
 export const models = [
-  { id: 'uniform-motion', title: 'Uniform Motion', description: 'Straight-line motion with constant velocity.', formula: String.raw`\Delta x = v\,\Delta t`, assumption: 'Constant velocity · zero acceleration' },
-  { id: 'uniform-acceleration', title: 'Uniformly Accelerated Motion', description: 'Position and velocity under constant acceleration.', formula: String.raw`x = x_0 + v_0t + \tfrac{1}{2}at^2`, assumption: 'Constant acceleration' },
-  { id: 'free-fall', title: 'Free Fall', description: 'Vertical motion under the influence of gravity.', formula: String.raw`y = y_0 + v_0t - \tfrac{1}{2}gt^2`, assumption: 'Upward-positive axis · no air resistance · constant g' },
-  { id: 'projectile-motion', title: 'Projectile Motion', description: 'Horizontal and vertical components of a trajectory.', formula: String.raw`x = x_0 + v_0\cos(\theta)\,t`, assumption: 'No air resistance · constant gravity' }
+  {
+    id: 'uniform-motion', title: 'Uniform Motion',
+    variables: [
+      { name: 'position', symbol: 's', unit: 'm', unitName: 'meter' },
+      { name: 'initial position', symbol: 's₀', unit: 'm', unitName: 'meter' },
+      { name: 'velocity', symbol: 'v', unit: 'm/s', unitName: 'meters per second' },
+      { name: 'time', symbol: 't', unit: 's', unitName: 'seconds' }
+    ],
+    formulas: [
+      { label: 'Position', expression: String.raw`s = s_0 + v \cdot t` },
+      { label: 'Velocity', expression: String.raw`v = \frac{\Delta s}{\Delta t} = \text{constant}` },
+      { label: 'Acceleration', expression: String.raw`a = 0` }
+    ]
+  }
 ] as const;
 export function childrenOf(parentId: string | null) { return topics.filter(topic => topic.parentId === parentId); }

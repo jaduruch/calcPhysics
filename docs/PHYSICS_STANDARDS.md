@@ -14,7 +14,7 @@ Skalenfaktoren und Offsets unterscheiden: Celsius zu Kelvin ist keine reine Mult
 
 Parsing akzeptiert unabhängig von der Seitensprache Dezimalpunkt oder -komma und definierte Exponentenschreibweise. Die Ausgabe verwendet Englisch mit Dezimalpunkt und später Deutsch mit Dezimalkomma, zunächst jeweils ohne Tausendergruppierung. Ein Sprachwechsel formatiert Werte neu, verändert aber weder SI-Wert noch Genauigkeit. Fachfehler und Rechenschritte verwenden sprachneutrale IDs; ihre Erklärungen werden lokalisiert. Keine stillen Teilkonversionen wie `12abc` zu `12`; `NaN`, Unendlich und überlange Eingaben ablehnen. Gruppierungszeichen sind zunächst unzulässig, um Mehrdeutigkeiten zu vermeiden. Betragsschranken müssen pro Modell begründet werden.
 
-IEEE-754-Zahlen sind der Startpunkt. Intern keine Zwischenrundung. Standardausgabe zunächst sechs signifikante Stellen, umschaltbare Präzision später möglich. Dies behauptet keine entsprechende Messgenauigkeit. Signifikante Messstellen und Unsicherheitsfortpflanzung sind eigene spätere Funktionen. Angezeigtes negatives Null bei Rundung als Null normalisieren, ohne den internen Wert zu verändern.
+IEEE-754-Zahlen sind der Startpunkt. Intern keine Zwischenrundung. Standardausgabe für Uniform Motion drei signifikante Stellen, umschaltbare Präzision später möglich. Dies behauptet keine entsprechende Messgenauigkeit. Signifikante Messstellen und Unsicherheitsfortpflanzung sind eigene spätere Funktionen. Angezeigtes negatives Null bei Rundung als Null normalisieren, ohne den internen Wert zu verändern.
 
 Tests vergleichen mit dimensions- und grössenbezogenen absoluten/relativen Toleranzen, etwa `|Ist − Soll| ≤ atol + rtol · |Soll|`. Kein globales Epsilon für alle Grössen oder Nenner. Exakt null, numerisch nahe null und fachlich vernachlässigbar werden unterschieden. Abbruch- und Stabilitätsgrenzen erhalten Einheiten und Begründungen.
 
@@ -70,3 +70,11 @@ Freie Funktionseingaben benötigen eine begrenzte Parser-Grammatik, erlaubte Fun
 Jeder Modus erhält Referenzfälle, Null- und Grenzfälle sowie ungültige Eingaben. Beispiele für den ersten Rechner: `120 m / 10 s = 12 m/s`, `36 km/h = 10 m/s`, negative gerichtete Geschwindigkeit, fehlender Wert, Nulldivision und unterbestimmte Gleichung. Weitere Prüfungen: Einheiten-Rundreise, Hin-/Rückumstellung, dimensionale Konsistenz, Zweige quadratischer Lösungen und Verwerfen abhängiger Werte.
 
 Numerik wird gegen bekannte analytische Integrale/Lösungen und mit engeren Toleranzen geprüft; eine einzelne plausible Kurve genügt nicht. Fachliche Referenzwerte unabhängig von der getesteten Implementierung herleiten. Für Diagramme stimmen markierte Anfangs-/Endpunkte mit Fachresultaten überein. Quellen mit Werk, Ausgabe beziehungsweise Link und Modellbezug je Thema führen; fremde Inhalte nicht ungeprüft übernehmen.
+
+## Globale Einheiten des ersten Rechners
+
+Die gemeinsame Registry definiert m/AE/Lj für Länge, m/s und km/h für Geschwindigkeit sowie s/min/h/d für Zeit. AE wird mit exakt 149 597 870 700 m verwendet; ein Lj mit 299 792 458 m/s × 365,25 × 86 400 s = 9 460 730 472 580 800 m. Ein Tag entspricht hier einer Dauer von exakt 86 400 s, keinem lokalen Kalendertag mit Sommerzeitwechsel. Quellen: [NASA/JPL-Konstanten](https://ssd.jpl.nasa.gov/astro_par.html) und [IAU-Einheitenempfehlungen](https://iauarchive.eso.org/publications/proceedings_rules/units/). Die vom Nutzer gewünschten UI-Kürzel AE und Lj bleiben auch auf der englischen Oberfläche erhalten.
+
+Wird in Uniform Motion die Zeit berechnet, folgt hinter dem Ergebnis mit `=` zusätzlich die Dauer als `Nd, HH:MM:SS.s`; bei null Tagen entfällt `0d,` (beispielsweise `≈ 13.7 ks = 03:48:00.0`). Grundlage ist der ungerundete SI-Zeitwert; nur diese Zusatzanzeige rundet auf Zehntelsekunden mit Übertrag über Minuten, Stunden und Tage. Für andere Zielgrössen erscheint keine Daueranzeige.
+
+Die Zeit-Zusatzanzeige entfällt für t < 60 SI-Sekunden. Ab 60 s erscheint `MM:SS.s`, ab 3600 s `HH:MM:SS.s`, ab einem Tag zusätzlich `Nd,`. Zehntelsekunden werden mit korrektem Übertrag gerundet. Die Schwelle ist unabhängig von der gewählten Ergebniseinheit.

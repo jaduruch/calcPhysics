@@ -1,6 +1,6 @@
 # calcPhysics
 
-English physics reference and calculation platform. Initial scope: Home → Mechanics → Kinematics, with a catalogue of four planned models. Other main subjects are visible as unavailable; model calculators are not implemented yet.
+English physics reference and calculation platform. Initial scope: Home → Mechanics → Kinematics, with one expandable Uniform Motion card with an info button for theory. Other main subjects are visible as unavailable; Uniform Motion now calculates s₀, s, v or t automatically with keyboard-entered SI prefixes (e.g. `1.5k`) and complete KaTeX result equations rounded to three significant figures.
 
 ## Local development
 
@@ -15,6 +15,7 @@ Open the URL printed by Vite (normally http://localhost:5173).
 
 ```sh
 npm run check
+npm test
 npm run build
 npm run preview
 ```
@@ -23,10 +24,11 @@ The production build uses the Netlify adapter. No production deployment is confi
 
 ## Structure
 
+- `src/lib/physics/units.ts`: shared unit catalogue and SI conversion factors for all calculators.
 - `src/lib/content/topics.ts`: shared subject hierarchy, publication status and model metadata.
 - `src/lib/i18n/en.ts`: English UI strings; German is planned.
 - `src/lib/components/`: shared overview, cards, theme selector and KaTeX formula renderer.
 - `src/lib/styles/`: exact reference palette and responsive styles.
 - `src/routes/`: Home and data-driven published overview routes.
 
-See `AGENTS.md` and `docs/` for the architecture and physical standards. No physics calculation logic is implemented in this first navigation slice.
+See [AGENTS.md](AGENTS.md), [source implementation rules](src/AGENTS.md) and the [accepted model page standard](docs/MODEL_PAGE_STANDARD.md) for shared change locations and the reference layout. Uniform Motion is the accepted baseline for future models. The physics solver is UI-independent and covered by automated tests. Run `npm test` (Node’s built-in test runner, without additional test dependencies). Browser interaction and visual checks are separate from these unit tests.

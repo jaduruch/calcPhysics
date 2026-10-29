@@ -2,7 +2,7 @@
   import { childrenOf, models, topics, type Topic } from '#lib/content/topics.ts';
   import { ui } from '#lib/i18n/en.ts';
   import TopicCard from './TopicCard.svelte';
-  import Formula from './Formula.svelte';
+  import ModelCard from './ModelCard.svelte';
   let { topic = null }: { topic?: Topic | null } = $props();
   const children = $derived(childrenOf(topic?.id ?? null));
   const parent = $derived(topics.find(item => item.id === topic?.parentId));
@@ -23,19 +23,11 @@
   {#if !topic}<a class="primary-link" href="/mechanics">Start with Mechanics <span aria-hidden="true">↗</span></a>{/if}
 </section>
 {#if topic?.id === 'kinematics'}
-  <section aria-labelledby="models-title">
-    <div class="section-heading"><h2 id="models-title">{ui.models}</h2><span>04 MODELS</span></div>
-    <p class="section-note">{ui.modelNotice}</p>
-    <div class="model-grid">{#each models as model, index}
-      <article class="model-card">
-        <div class="card-top"><span class="topic-number">0{index + 1}</span><span class="badge">{ui.planned}</span></div>
-        <h3>{model.title}</h3><p>{model.description}</p>
-        <Formula expression={model.formula} />
-        <p class="assumption">{model.assumption}</p>
-        <div class="model-actions"><button type="button" disabled>{ui.theory}</button><button type="button" disabled>{ui.calculate}</button></div>
-      </article>
+  <div>
+    <div class="model-list">{#each models as model, index}
+      <ModelCard {model} {index} />
     {/each}</div>
-  </section>
+  </div>
 {:else}
   <section aria-labelledby="topics-title">
     <div class="section-heading"><h2 id="topics-title">{topic ? ui.subtopics : ui.subjects}</h2><span>{topic ? '01 SUBTOPIC' : '06 SUBJECTS'}</span></div>

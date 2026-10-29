@@ -11,7 +11,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "prepare": "svelte-kit sync",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs"
   },
   "dependencies": {
     "katex": "0.19.1"
