@@ -1,0 +1,6 @@
+# Known production aliases only; deploy-preview hosts remain usable.
+http://calcphysics.com/* https://calcphysics.com/:splat 301!
+http://www.calcphysics.com/* https://calcphysics.com/:splat 301!
+https://www.calcphysics.com/* https://calcphysics.com/:splat 301!
+http://calcphysics.netlify.app/* https://calcphysics.com/:splat 301!
+https://calcphysics.netlify.app/* https://calcphysics.com/:splat 301!

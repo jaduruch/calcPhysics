@@ -7,10 +7,7 @@
   const children = $derived(childrenOf(topic?.id ?? null));
   const parent = $derived(topics.find(item => item.id === topic?.parentId));
 </script>
-<svelte:head>
-  <title>{topic ? `${topic.title} — calcPhysics` : 'calcPhysics — Physics theory & calculations'}</title>
-  <meta name="description" content={topic?.description ?? 'Explore physics theory and calculation models. A clear reference for learning and everyday engineering.'} />
-</svelte:head>
+
 <nav class="breadcrumbs" aria-label="Breadcrumb">
   <ol><li>{#if topic}<a href="/">{ui.home}</a>{:else}<span aria-current="page">{ui.home}</span>{/if}</li>
   {#if parent}<li><a href={parent.path}>{parent.title}</a></li>{/if}

@@ -13,6 +13,10 @@ Diese Regeln ergänzen die [Repository-Vorgaben](../AGENTS.md). Vor Änderungen 
 - Modellabhängig bleiben Eingabegrössen, Definitionsbereiche, Gleichungen, Annahmen, Datenadapter und nötige Diagrammtypen. Die feste Anzahl vier Felder und die zwei Kurven sind keine allgemeine Modellvorgabe.
 - Nur Quelldateien bearbeiten. `build/`, `.svelte-kit/`, `.netlify/` und Dateien mit Hashnamen sind generierte Ausgabe, keine Designvorlage und keine Änderungsstelle.
 
+## SEO zentral halten
+
+`lib/seo.ts` und `components/SeoHead.svelte` erzeugen Metadaten/Canonical-URLs gemeinsam. Themen liefern optionale SEO-Überschreibungen in `lib/content/topics.ts`. Sitemap und robots sind vorgerenderte Endpunkte, keine manuell gepflegten Dateien in `static/`. Neue veröffentlichte Themen automatisch in die Sitemap aufnehmen; Vorschau-Builds nicht indexieren. Domain-/Redirectdetails und letzte mobile Labormessung siehe [SEO.md](../docs/SEO.md).
+
 ## Seiten- und Kartendesign
 
 - Englische Oberfläche; spätere deutsche Übersetzung vorbereiten. Keine Übungen, Quiz oder Lernfortschrittsanzeigen.

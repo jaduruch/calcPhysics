@@ -20,7 +20,7 @@ npm run build
 npm run preview
 ```
 
-The production build uses the Netlify adapter. No production deployment is configured or performed. Do not enable production indexing until the domain, canonical URLs and sitemap are configured.
+The production build uses the Netlify adapter and canonical domain `https://calcphysics.com`. Sitemap and robots.txt are generated automatically from the published topics. Production domain redirects are in `_redirects`; deploy previews are noindex. See [SEO configuration and mobile audit](docs/SEO.md). These repository changes require deployment to take effect on the live site; no deployment was performed in this task.
 
 ## Structure
 

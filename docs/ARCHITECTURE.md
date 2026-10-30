@@ -129,7 +129,7 @@ Ein gemeinsamer lokaler Zeitparameter synchronisiert Skizze, Diagrammcursor und 
 
 ## SEO, Performance und Sicherheit
 
-Theorie, Formeln, Seitentitel und Navigation stehen im vorgerenderten HTML. Pro Seite: eindeutiger Titel, Beschreibung, kanonische URL, genau eine H1, sinnvolle Überschriften und Breadcrumbs. Canonical-Basis erst nach Wahl der Domain setzen. Rechnerparameter erzeugen keine eigenen indexierbaren Varianten. Sitemap enthält nur veröffentlichte kanonische URLs. Strukturierte Daten nur passend zum tatsächlichen Inhalt, keine erfundenen Bewertungen.
+Theorie, Formeln, Seitentitel und Navigation stehen im vorgerenderten HTML. Pro Seite: eindeutiger Titel, Beschreibung, kanonische URL, genau eine H1, sinnvolle Überschriften und Breadcrumbs. Canonical-Basis ist zentral auf `https://calcphysics.com` festgelegt; Umsetzung und mobile Messung siehe [SEO.md](SEO.md). Rechnerparameter erzeugen keine eigenen indexierbaren Varianten. Sitemap enthält nur veröffentlichte kanonische URLs. Strukturierte Daten nur passend zum tatsächlichen Inhalt, keine erfundenen Bewertungen.
 
 Keine vollständige Plotly-/Three-Laufzeit im globalen Layout. Fonts und KaTeX-Assets lokal bereitstellen, Layoutflächen reservieren. Planungsziele: initiales JavaScript ohne optionale Visualisierungen höchstens 150 kB gzip; optionales Diagrammchunk separat messen und vor MVP-Freigabe budgetieren. Kernrechner reagieren auf Zielgeräten innerhalb von 100 ms; teure Aufgaben begrenzen und abbrechen. Feldziele am 75. Perzentil: LCP ≤ 2,5 s, INP ≤ 200 ms, CLS ≤ 0,1. Vor ausreichendem Traffic dienen reproduzierbare mobile Labormessungen als Näherung.
 

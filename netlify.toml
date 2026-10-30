@@ -1,0 +1,6 @@
+# Prevent preview builds from advertising themselves to search engines.
+[context.deploy-preview.environment]
+  VITE_INDEXABLE = "false"
+
+[context.branch-deploy.environment]
+  VITE_INDEXABLE = "false"

@@ -2,12 +2,14 @@
   import '#lib/styles/app.css';
   import 'katex/dist/katex.min.css';
   import { ui } from '#lib/i18n/en.ts';
+  import SeoHead from '#lib/components/SeoHead.svelte';
   import ThemeToggle from '#lib/components/ThemeToggle.svelte';
   import { page } from '$app/state';
   import { childrenOf } from '#lib/content/topics.ts';
   const mainTopics = childrenOf(null).filter(topic => topic.published);
   let { children } = $props();
 </script>
+<SeoHead path={page.url.pathname} />
 <a class="skip-link" href="#main">{ui.skip}</a>
 <header class="site-header"><div class="header-inner">
   <a class="brand" href="/" aria-label="calcPhysics home"><span class="brand-mark" aria-hidden="true"></span>calc<span>Physics</span></a>

@@ -29,7 +29,7 @@ Tests vergleichen mit dimensions- und grössenbezogenen absoluten/relativen Tole
 
 ## Umstellungen und Lösbarkeit
 
-Jede unterstützte Zielgrösse erhält einen expliziten Modus, statt jeden sichtbaren Wert gleichzeitig frei editierbar zu machen. Genügend bekannte Werte und der Rang der konkreten Gleichungen entscheiden über Lösbarkeit; Anzahl der Felder allein reicht nicht.
+Jede unterstützte Zielgrösse erhält eine explizit implementierte Umstellung. Im akzeptierten Uniform-Motion-Rechner bleiben alle vier Eingaben editierbar; die fehlende Grösse bestimmt automatisch die Umstellung. Ein zusätzliches Modus-Dropdown ist dafür nicht vorgesehen. Genügend bekannte Werte und der Rang der konkreten Gleichungen entscheiden über Lösbarkeit; Anzahl der Felder allein reicht nicht.
 
 Für `Δx = v · Δt`: `Δt = 0` und `Δx ≠ 0` ist unlösbar; `Δt = 0` und `Δx = 0` bestimmt `v` nicht eindeutig. Für quadratische Zeitgleichungen werden alle reellen Zweige bestimmt und anhand der Modellbedingungen, etwa `t ≥ 0` und erster Bodenkontakt, eingeordnet. Negative Diskriminanten ergeben keine reelle Lösung; kleine Rundungsreste dürfen nur mit dokumentierter skalierter Toleranz behandelt werden.
 
@@ -43,9 +43,9 @@ Werteübernahmen erhalten volle interne Präzision und die ursprüngliche Einhei
 
 ## Rechenweg und LaTeX
 
-Rechenschritte sind strukturierte Daten: Regel-/Gleichungs-ID, symbolische Umstellung, eingesetzte SI-Werte, Ergebnis, Einheit und Erläuterung. Die UI rendert diese mit KaTeX. Fachfunktionen berechnen Zahlen und keine HTML-Zeichenketten. Der Calculator-Resolver verbindet Resultate mit redaktionell geprüften Schritten; Tests prüfen, dass angezeigte Einsetzungen zum selben Eingabesatz gehören.
+Für spätere umfangreiche Herleitungen sind strukturierte Rechenschritte vorgesehen: Regel-/Gleichungs-ID, symbolische Umstellung, eingesetzte SI-Werte, Ergebnis, Einheit und Erläuterung. Der aktuelle Pilot erzeugt seine KaTeX-Gleichungen im separaten Calculator-Adapter aus validierten Werten. Die UI rendert diese mit KaTeX. Fachfunktionen berechnen Zahlen und keine HTML-Zeichenketten. Der Calculator-Resolver verbindet Resultate mit redaktionell geprüften Schritten; Tests prüfen, dass angezeigte Einsetzungen zum selben Eingabesatz gehören.
 
-Vektoren und Beträge unterscheiden; Einheiten aufrecht setzen, beispielsweise `\mathrm{m\,s^{-1}}`. Variablen erklären und Grössen mit Einheiten angeben. Näherungen mit `\approx` kennzeichnen. Ungültige Formeln beim Build beziehungsweise in Tests erkennen. Es wird keine automatische symbolische Beweisführung versprochen.
+Vektoren und Beträge unterscheiden; Einheiten aufrecht setzen, beispielsweise `\mathrm{m\,s^{-1}}`. Variablen erklären und Grössen mit Einheiten angeben. Gerundete Umrechnungen und Endergebnisse mit `\approx` kennzeichnen; zwischen allgemeiner Formel und Zahleneinsetzung steht gemäss bestätigter UI-Vorgabe stets `=`. Ungültige Formeln beim Build beziehungsweise in Tests erkennen. Es wird keine automatische symbolische Beweisführung versprochen.
 
 ## Differential- und Integralrechnung: kontrollierter Ausbau
 
