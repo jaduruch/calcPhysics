@@ -1,12 +1,14 @@
 <script lang="ts">
-  import { pageMetadata, indexable, site } from '#lib/seo.ts';
+  import { pageMetadata, structuredDataJson, indexable, site } from '#lib/seo.ts';
   let { path }: { path: string } = $props();
   const metadata = $derived(pageMetadata(path));
+  const structuredData = $derived(structuredDataJson(path));
 </script>
 
 <svelte:head>
   {#if metadata}
     <title>{metadata.title}</title>
+    {#if structuredData}{@html `<script type="application/ld+json">${structuredData}</script>`}{/if}
     <meta name="description" content={metadata.description} />
     <link rel="canonical" href={metadata.canonical} />
     {#if !indexable}<meta name="robots" content="noindex, nofollow" />{/if}

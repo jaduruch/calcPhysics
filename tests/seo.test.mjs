@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { site, canonicalUrl, publishedPaths, pageMetadata, sitemapXml, robotsTxt } from '../src/lib/seo.ts';
+import { site, canonicalUrl, publishedPaths, pageMetadata, sitemapXml, robotsTxt, pageStructuredData, structuredDataJson } from '../src/lib/seo.ts';
 
 test('canonicals use the primary HTTPS domain without parameters or trailing slash', () => {
   assert.equal(canonicalUrl('/'), 'https://calcphysics.com/');
@@ -10,7 +10,7 @@ test('canonicals use the primary HTTPS domain without parameters or trailing sla
 });
 test('published pages have unique useful titles and canonical metadata', () => {
   const paths = publishedPaths();
-  assert.deepEqual(paths, ['/', '/mechanics', '/mechanics/kinematics', '/mechanics/dynamics']);
+  assert.deepEqual(paths, ['/', '/si-units-and-constants', '/mechanics', '/mechanics/kinematics', '/mechanics/dynamics']);
   const pages = paths.map(pageMetadata);
   assert.equal(new Set(pages.map(page => page.title)).size, pages.length);
   assert.ok(pages.every(page => page.description.length > 40 && page.canonical.startsWith(site.origin)));
@@ -36,4 +36,23 @@ test('robots advertises the canonical sitemap and blocks preview crawling', () =
   assert.ok(robotsTxt(true).includes('Allow: /'));
   assert.ok(robotsTxt(true).includes('Sitemap: https://calcphysics.com/sitemap.xml'));
   assert.equal(robotsTxt(false), 'User-agent: *\nDisallow: /\n');
+});
+
+test('structured data matches published pages and their visible breadcrumbs', () => {
+  for (const path of publishedPaths()) {
+    const data = JSON.parse(structuredDataJson(path));
+    const page = data['@graph'].find(item => item['@type'] === 'WebPage');
+    assert.equal(page.url, pageMetadata(path).canonical);
+    assert.equal(page.name, pageMetadata(path).title);
+  }
+  const data = pageStructuredData('/mechanics/dynamics?mass=10');
+  const crumbs = data['@graph'].find(item => item['@type'] === 'BreadcrumbList');
+  assert.deepEqual(crumbs.itemListElement.map(item => [item.position, item.name, item.item]), [
+    [1, 'Home', 'https://calcphysics.com/'],
+    [2, 'Mechanics', 'https://calcphysics.com/mechanics'],
+    [3, 'Dynamics', 'https://calcphysics.com/mechanics/dynamics']
+  ]);
+  assert.equal(pageStructuredData('/thermodynamics'), null);
+  assert.equal(structuredDataJson('/unknown'), null);
+  assert.ok(!pageStructuredData('/')['@graph'].some(item => item['@type'] === 'BreadcrumbList'));
 });

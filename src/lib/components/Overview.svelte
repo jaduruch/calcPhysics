@@ -3,6 +3,7 @@
   import { ui } from '#lib/i18n/en.ts';
   import TopicCard from './TopicCard.svelte';
   import ModelHost from './ModelHost.svelte';
+  import SiReference from './SiReference.svelte';
   let { topic = null }: { topic?: Topic | null } = $props();
   const children = $derived(childrenOf(topic?.id ?? null));
   const topicModels = $derived(models.filter(model => model.topicId === topic?.id));
@@ -16,11 +17,13 @@
 </nav>
 <section class="intro" aria-labelledby="page-title">
   <p class="eyebrow">{topic ? ui.subjectLabel : 'THEORY / CALCULATION / UNDERSTANDING'}</p>
-  <h1 id="page-title">{topic?.title ?? 'Physics. From principles to practice.'}</h1>
-  <p class="lead">{topic?.description ?? 'Understand the theory. Find the right model. Calculate with confidence — from the classroom to everyday engineering.'}</p>
-  {#if !topic}<a class="primary-link" href="/mechanics">Start with Mechanics <span aria-hidden="true">↗</span></a>{/if}
+  <h1 id="page-title">{topic?.title ?? ui.homeTitle}</h1>
+  <p class="lead">{topic?.description ?? ui.homeDescription}</p>
+  {#if !topic}<a class="primary-link" href="/si-units-and-constants">{ui.siReferenceLink} <span aria-hidden="true">↗</span></a>{/if}
 </section>
-{#if topicModels.length > 0}
+{#if topic?.id === 'si-reference'}
+  <SiReference />
+{:else if topicModels.length > 0}
   <div>
     <div class="model-list">{#each topicModels as model, index}
       <ModelHost {model} {index} />

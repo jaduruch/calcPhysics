@@ -157,3 +157,7 @@ Aktuell gemeinsam nutzbar sind unter anderem `Formula`, `UnitSelect`, `ThemeTogg
 Uniform Motion löst `s = s₀ + v · t` mit drei bekannten Werten nach dem vierten auf. Bei zwei Eingaben aus s/v/t gilt sichtbar s₀ = 0. Manuelle Rohwerte, validierte SI-Werte und reine Anzeigeformatierung sind getrennt. Nur Ergebnisse werden auf drei signifikante Stellen gerundet dargestellt; auch die Anzeige der Einsetzung und Konversion nutzt drei Stellen, ohne Zwischenrundung im Solver.
 
 Die SVG-Diagramme s(t) und v(t) nutzen ungerundete Solver-Endpunkte. Ihre schematischen Kurven bleiben bei fehlendem Ergebnis sichtbar, die numerische Skala erscheint nur bei gültigen Werten. Es gibt keine Diagrammtabelle. Für diese Geraden genügt SVG; eine umfangreiche Diagrammbibliothek wird erst durch konkrete zusätzliche Anforderungen begründet.
+
+## SI-Referenz
+
+`/si-units-and-constants` ist eine Referenzseite ohne Rechner und der erste Einstieg auf Home. Die Themenregistry liefert Route, Navigation und SEO. `SiReference.svelte` stellt sieben Basiseinheiten, 22 benannte abgeleitete Einheiten, wichtige weitere Einheitenbeziehungen und ausgewählte Konstanten aus `content/si-reference.ts` mit dem gemeinsamen KaTeX-Baustein dar. Diese Anzeigedaten sind keine zweite Umrechnungsregistry; Rechner verwenden weiterhin `physics/units.ts`. Quellen: BIPM SI Brochure v4.01 und NIST CODATA 2022, direkt auf der Seite verlinkt.

@@ -19,7 +19,7 @@
     {#each mainTopics as topic}
       {@const exact = page.url.pathname === topic.path}
       {@const active = exact || page.url.pathname.startsWith(`${topic.path}/`)}
-      <a href={topic.path} aria-current={active ? (exact ? 'page' : 'location') : undefined}>{topic.title}</a>
+      <a href={topic.path} aria-current={active ? (exact ? 'page' : 'location') : undefined}>{topic.navigationTitle ?? topic.title}</a>
     {/each}
   </nav>
   <ThemeToggle />

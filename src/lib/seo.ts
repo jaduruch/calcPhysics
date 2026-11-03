@@ -40,3 +40,34 @@ export function robotsTxt(allowIndexing = indexable): string {
     ? `User-agent: *\nAllow: /\n\nSitemap: ${site.origin}/sitemap.xml\n`
     : 'User-agent: *\nDisallow: /\n';
 }
+
+// Describe only published pages and the breadcrumb hierarchy visible to readers.
+export function pageStructuredData(path: string) {
+  const metadata = pageMetadata(path);
+  if (!metadata) return null;
+  const topic = topics.find(item => item.published && canonicalUrl(item.path) === metadata.canonical);
+  const parent = topics.find(item => item.published && item.id === topic?.parentId);
+  const breadcrumbs = [
+    { name: 'Home', url: canonicalUrl('/') },
+    ...(parent ? [{ name: parent.title, url: canonicalUrl(parent.path) }] : []),
+    ...(topic ? [{ name: topic.title, url: metadata.canonical }] : [])
+  ];
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      { '@type': 'WebSite', '@id': `${site.origin}/#website`, url: canonicalUrl('/'), name: site.name, inLanguage: 'en' },
+      { '@type': 'WebPage', '@id': `${metadata.canonical}#webpage`, url: metadata.canonical,
+        name: metadata.title, description: metadata.description, inLanguage: 'en',
+        isPartOf: { '@id': `${site.origin}/#website` },
+        ...(topic ? { breadcrumb: { '@id': `${metadata.canonical}#breadcrumb` } } : {}) },
+      ...(topic ? [{ '@type': 'BreadcrumbList', '@id': `${metadata.canonical}#breadcrumb`,
+        itemListElement: breadcrumbs.map((item, index) => ({ '@type': 'ListItem', position: index + 1, name: item.name, item: item.url })) }] : [])
+    ]
+  };
+}
+
+export function structuredDataJson(path: string): string | null {
+  const data = pageStructuredData(path);
+  // Prevent HTML script termination if future content contains markup.
+  return data ? JSON.stringify(data).replace(/</g, '\\u003c') : null;
+}

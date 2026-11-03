@@ -4,6 +4,7 @@
 
 - `src/lib/seo.ts`: Hauptdomain `https://calcphysics.com`, Standardmetadaten, kanonische URLs, veröffentlichte Pfade, XML- und robots-Ausgabe.
 - `src/lib/content/topics.ts`: optionales `seo` mit Titel und Beschreibung pro Thema. Ohne Überschreibung greift ein gemeinsamer Fallback; Seiteneinleitung und SEO-Beschreibung sind getrennt.
+- `src/lib/seo.ts` liefert zusätzlich `WebSite`-/`WebPage`-JSON-LD und für Themenseiten eine `BreadcrumbList`, passend zur sichtbaren Navigation. Keine Bewertungs- oder FAQ-Angaben erfinden. JSON-LD wird vor der HTML-Einbettung gegen Script-Abbruch maskiert.
 - `src/lib/components/SeoHead.svelte`: ein gemeinsamer Head-Baustein im Root-Layout. Erzeugt Titel, Beschreibung, Canonical und Open-Graph-Texte für veröffentlichte Seiten. Keine zweite Metadatenkopie im Overview oder in einzelnen Seiten anlegen.
 - `src/routes/sitemap.xml/+server.ts`: beim Build automatisch erzeugte Sitemap aus Home und veröffentlichten Themen. Neue veröffentlichte Themen benötigen keine manuelle XML-Anpassung. Keine erfundenen Änderungsdaten, keine `priority`-Werte.
 - `src/routes/robots.txt/+server.ts`: erlaubt Produktions-Crawling und verweist auf dieselbe kanonische Sitemap.
@@ -50,3 +51,13 @@ Die Google-PageSpeed-API antwortete mit HTTP 429. Deshalb wurde Lighthouse vorü
 Nach Veröffentlichung die Sitemap in der bereits eingerichteten Search Console erneut abrufen lassen und die veröffentlichten Seiten mit der URL-Prüfung kontrollieren. Suchanfragen und Indexierung dort über längere Zeit verfolgen. Noch keine künstlichen Rezensionen, nicht belegte strukturierte Daten oder Keyword-Blöcke hinzufügen. Fachliche Inhalte und Quellen bleiben der weitere Ausbau neben diesen technischen Grundlagen.
 
 Referenzen: [Google zu Canonical-URLs](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls), [Google zu Sitemaps](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap), [Netlify-Weiterleitungen](https://docs.netlify.com/manage/routing/redirects/overview/).
+
+## Ergänzungen am 03.11.2026
+
+Home und veröffentlichte Themen beschreiben die tatsächlich vorhandenen Rechner und deren Grenzen konkreter. Die Startüberschrift benennt Physikrechner und Theorie ausdrücklich. Keine neuen Modelle oder Routen wurden ergänzt. Ein zentraler No-JavaScript-Fallback in `src/app.html` macht die Theorie beim Öffnen einer Modellkarte lesbar; mit JavaScript bleibt die akzeptierte Info-Button-Bedienung erhalten.
+
+Die SEO-Tests wurden um strukturierte Daten, Breadcrumb-Hierarchie und unveröffentlichte Pfade ergänzt. Bei der anschliessenden Ergänzung der SI-Referenz wurde eine vorhandene Node.js-Laufzeit unter /tmp gefunden: 46 Tests, Svelte-Prüfung ohne Fehler/Warnungen und Produktionsbuild sind erfolgreich. Die Prüfungen wurden direkt über Node.js ausgeführt. JSON-LD vor Veröffentlichung zusätzlich im Google Rich Results Test prüfen. Diese Änderungen wurden nicht veröffentlicht.
+
+Grundlage: [Google Search Essentials](https://developers.google.com/search/docs/essentials) und [Google zu Titellinks](https://developers.google.com/search/docs/appearance/title-link). Strukturierte Daten helfen bei der Interpretation; sie garantieren weder eine besondere Suchdarstellung noch ein höheres Ranking.
+
+Die neue veröffentlichbare Referenzroute `/si-units-and-constants` steht als erster Einstieg auf Home und wird über die Themenregistry automatisch in Navigation, Metadaten, Breadcrumbs und Sitemap aufgenommen. Browserprüfung: Home-Verknüpfungen, Tabellenumfang, beide Themes, Mobil-/Laptopbreite ohne Seitenüberlauf und Inhalte ohne JavaScript erfolgreich.

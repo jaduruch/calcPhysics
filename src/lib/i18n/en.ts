@@ -1,4 +1,7 @@
 export const ui = {
+  siReferenceLink: 'Explore SI units and constants',
+  homeTitle: 'Physics calculators and theory',
+  homeDescription: 'Calculate uniform motion and inclined plane forces with unit conversions, step-by-step formulas and diagrams. Explore the assumptions and theory behind each model, from learning physics to everyday engineering.',
   home: 'Home', subjects: 'Explore physics', subjectLabel: 'Subject overview',
   subtopics: 'Subtopics', models: 'Theory & calculation models',
   planned: 'Coming soon', open: 'Explore', theme: 'Appearance',
