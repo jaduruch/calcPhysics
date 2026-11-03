@@ -78,3 +78,19 @@ Die gemeinsame Registry definiert m/AE/Lj für Länge, m/s und km/h für Geschwi
 Wird in Uniform Motion die Zeit berechnet, folgt hinter dem Ergebnis mit `=` zusätzlich die Dauer als `Nd, HH:MM:SS.s`; bei null Tagen entfällt `0d,` (beispielsweise `≈ 13.7 ks = 03:48:00.0`). Grundlage ist der ungerundete SI-Zeitwert; nur diese Zusatzanzeige rundet auf Zehntelsekunden mit Übertrag über Minuten, Stunden und Tage. Für andere Zielgrössen erscheint keine Daueranzeige.
 
 Die Zeit-Zusatzanzeige entfällt für t < 60 SI-Sekunden. Ab 60 s erscheint `MM:SS.s`, ab 3600 s `HH:MM:SS.s`, ab einem Tag zusätzlich `Nd,`. Zehntelsekunden werden mit korrektem Übertrag gerundet. Die Schwelle ist unabhängig von der gewählten Ergebniseinheit.
+
+## Inclined Plane (03.11.2026)
+
+Zweite Modellimplementierung: Kräfte an einem Körper auf einer geraden starren Ebene. Eingaben m > 0, 0 <= α <= π/2 rad, μₖ >= 0 (Standard 0), g > 0 (Standard 9.81 m/s²). Winkel werden bei Gradwahl zuerst in rad umgerechnet. Gewicht Fg = mg, Normalkraft FN = mg cosα, Hangkomponente F∥ = mg sinα, Gleitreibung Ff = μₖ FN, resultierende Kraft Fnet = F∥ − Ff und a = g(sinα − μₖ cosα). Positive Richtung hangabwärts. Winkelgrenzen 0 und π/2 werden mit korrekten trigonometrischen Grenzwerten behandelt.
+
+Mit Reibung gilt das Modell für einen bereits hangabwärts gleitenden Körper. Negative Beschleunigung ist Abbremsen, keine Vorhersage über Losrutschen aus Ruhe oder spätere Bewegung bergauf. Haftreibung, Losbrechbedingungen, Rollbewegung, zusätzliche Kräfte und Luftwiderstand sind nicht enthalten. Diese Annahmen bleiben direkt beim Rechner sichtbar. Die erste Version ist ein Vorwärtsrechner, kein inverser Solver für beliebige Eingabe-/Ausgabekombinationen.
+
+Die Skizze zeigt Gewicht und Normalkraft sowie die Hangkomponente und optional Reibung. Die Hangkomponente ist gestrichelt als Zerlegung des Gewichts gekennzeichnet und darf nicht zusätzlich zur vollständigen Gewichtskraft summiert werden. Kräfte nutzen eine gemeinsame Pfeilskala; bei ungültigen/unvollständigen Eingaben bleibt nur eine schematische Darstellung. Referenz: [OpenStax, University Physics 1, 6.2 Friction](https://openstax.org/books/university-physics-volume-1/pages/6-2-friction).
+
+Die dynamische Skizze übernimmt einen gültigen eingegebenen Winkel bereits ohne vollständiges Ergebnis. In diesem Vorschauzustand liefert derselbe Solver mit Einheitsmasse und Einheitsgravitation die korrekten Kraftverhältnisse; es werden keine tatsächlichen Kraftbeträge behauptet. Alle Pfeile verwenden einen gemeinsamen automatisch angepassten Massstab. Pfeilspitzen enden exakt am Vektorende und schrumpfen bei kleinen Kräften mit. Nullkräfte werden nicht gezeichnet. Senkrechte Ebene: Normalkraft und Reibung exakt null.
+
+### Geometrie und Endgeschwindigkeit
+
+Optional L > 0 und h >= 0, mit h <= L. Beliebige zwei aus α, L und h bestimmen die dritte über h = L sinα. Drei angegebene Werte müssen übereinstimmen (absolute Toleranz 1e-12 im dimensionslosen Verhältnis h/L). Bei α = 0, h = 0 bleibt L unbestimmt. Masse bleibt für den vollständigen Kraftrechner erforderlich. Ergebnisse erscheinen nur im Rechenweg, nicht im leeren Eingabefeld.
+
+Endgeschwindigkeit für Start aus Ruhe: v_end = sqrt(2 a L), konstante Beschleunigung. Mit Gleitreibung wird ein einsetzendes hangabwärtiges Gleiten vorausgesetzt; die Haftreibungsgrenze wird weiterhin nicht bestimmt. Bei a < 0 oder a = 0 mit Reibung wird keine Endgeschwindigkeit ausgegeben, sondern ein Hinweis. Ohne Reibung bei horizontaler Ebene bleibt v_end = 0; dies behauptet kein Erreichen des Endpunkts. Keine Anfangsgeschwindigkeit oder inverse Geschwindigkeitslösung in dieser Erweiterung.

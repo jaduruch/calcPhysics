@@ -16,9 +16,9 @@ Abnahme: nachvollziehbare Architektur, dokumentierte Annahmen und ein vereinbart
 
 ## Aktueller Stand und nächster Erweiterungsschritt
 
-Lokales Grundgerüst Home → Mechanics → Kinematics ist vorhanden. Home führt alle Hauptthemen, nur Mechanics ist aktiv. Mechanics enthält zunächst nur Kinematics. Uniform Motion ist mit Theorie, vier Eingaben, Präfix-/Einheitenunterstützung, automatischen Resultaten, KaTeX-Rechenweg und zwei SVG-Diagrammen implementiert und vom Nutzer vorerst als Referenz akzeptiert. Keine weiteren Modelle oder Veröffentlichung ohne entsprechenden Auftrag.
+Lokales Grundgerüst Home → Mechanics → Kinematics ist vorhanden. Home führt alle Hauptthemen, nur Mechanics ist aktiv. Mechanics enthält Kinematics und Dynamics. Uniform Motion ist mit Theorie, vier Eingaben, Präfix-/Einheitenunterstützung, automatischen Resultaten, KaTeX-Rechenweg und zwei SVG-Diagrammen implementiert und vom Nutzer vorerst als Referenz akzeptiert. Seit 03.11.2026 ist zusätzlich Inclined Plane unter Dynamics beauftragt und implementiert; weitere Modelle oder Veröffentlichung nur mit entsprechendem Auftrag.
 
-Vor dem zweiten Modell: die noch direkte Uniform-Motion-Bindung von `ModelCard` lösen und gemeinsame Feld-/Ergebnisdarstellung samt Styles einmal extrahieren. Den akzeptierten Aufbau erhalten; Details und Änderungsstellen stehen im [Modellseitenstandard](MODEL_PAGE_STANDARD.md). Die folgenden Phasen beschreiben den weiteren Plan, nicht bereits vollständig erledigte Qualitäts-/Veröffentlichungsprüfungen.
+Mit dem zweiten Modell abgeschlossen: Uniform-Motion-Bindung von `ModelCard` gelöst und gemeinsame Feld-/Ergebnisdarstellung samt Styles extrahiert. Den akzeptierten Aufbau erhalten; Details und Änderungsstellen stehen im [Modellseitenstandard](MODEL_PAGE_STANDARD.md). Die folgenden Phasen beschreiben den weiteren Plan, nicht bereits vollständig erledigte Qualitäts-/Veröffentlichungsprüfungen.
 
 ## Phase 1 – Technische und gestalterische Grundlage
 

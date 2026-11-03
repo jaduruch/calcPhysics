@@ -1,5 +1,6 @@
 <script lang="ts">
   import '#lib/styles/app.css';
+  import '#lib/styles/calculator.css';
   import 'katex/dist/katex.min.css';
   import { ui } from '#lib/i18n/en.ts';
   import SeoHead from '#lib/components/SeoHead.svelte';

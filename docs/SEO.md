@@ -45,8 +45,8 @@ Die Google-PageSpeed-API antwortete mit HTTP 429. Deshalb wurde Lighthouse vorü
 
 ## Verifikation und weiteres Vorgehen
 
-`npm test` prüft zentrale Canonical-/Metadatenregeln, Veröffentlichungsauswahl, XML-Escaping und robots-Ausgabe. `npm run check` und `npm run build` prüfen die Integration. Die erzeugten drei HTML-Seiten, Sitemap, robots, Redirectdatei und ein gesonderter Preview-Build werden auf korrekte Indexierbarkeit geprüft.
+`npm test` prüft zentrale Canonical-/Metadatenregeln, Veröffentlichungsauswahl, XML-Escaping und robots-Ausgabe. `npm run check` und `npm run build` prüfen die Integration. Die erzeugten veröffentlichten HTML-Seiten, Sitemap, robots, Redirectdatei und ein gesonderter Preview-Build werden auf korrekte Indexierbarkeit geprüft.
 
-Nach Veröffentlichung die Sitemap in der bereits eingerichteten Search Console erneut abrufen lassen und die drei Seiten mit der URL-Prüfung kontrollieren. Suchanfragen und Indexierung dort über längere Zeit verfolgen. Noch keine künstlichen Rezensionen, nicht belegte strukturierte Daten oder Keyword-Blöcke hinzufügen. Fachliche Inhalte und Quellen bleiben der weitere Ausbau neben diesen technischen Grundlagen.
+Nach Veröffentlichung die Sitemap in der bereits eingerichteten Search Console erneut abrufen lassen und die veröffentlichten Seiten mit der URL-Prüfung kontrollieren. Suchanfragen und Indexierung dort über längere Zeit verfolgen. Noch keine künstlichen Rezensionen, nicht belegte strukturierte Daten oder Keyword-Blöcke hinzufügen. Fachliche Inhalte und Quellen bleiben der weitere Ausbau neben diesen technischen Grundlagen.
 
 Referenzen: [Google zu Canonical-URLs](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls), [Google zu Sitemaps](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap), [Netlify-Weiterleitungen](https://docs.netlify.com/manage/routing/redirects/overview/).

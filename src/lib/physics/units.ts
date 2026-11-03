@@ -4,6 +4,11 @@
  * Reference: https://ssd.jpl.nasa.gov/astro_par.html
  */
 export const unitGroups = {
+  mass: { si: 'kg', units: [{ symbol: 'kg', factor: 1 }, { symbol: 'g', factor: 0.001 }] },
+  angle: { si: 'rad', units: [{ symbol: 'rad', factor: 1 }, { symbol: '°', factor: Math.PI / 180, factorLatex: String.raw`\frac{\pi}{180}` }] },
+  acceleration: { si: 'm/s²', units: [{ symbol: 'm/s²', factor: 1 }] },
+  dimensionless: { si: '1', units: [{ symbol: '1', factor: 1 }] },
+  force: { si: 'N', units: [{ symbol: 'N', factor: 1 }] },
   length: { si: 'm', units: [
     { symbol: 'm', factor: 1 },
     { symbol: 'AE', factor: 149597870700 },

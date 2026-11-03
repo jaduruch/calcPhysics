@@ -33,3 +33,22 @@ export const chartUi = {
   zeroInterval: 'The time interval is zero; only the initial point is shown.',
   empty: 'Schematic curve without a numerical scale. Calculated values appear once a calculation is possible.'
 } as const;
+
+export const inclinedPlaneUi = {
+  length: 'Plane length', height: 'Height difference',
+  geometryInvalid: 'Inconsistent geometry. Use h = L sin α, with L > 0 and 0 ≤ h ≤ L. Clear a value to calculate it.',
+  noStart: 'No end speed from rest: this model does not predict downhill motion with these friction and slope values. Static friction is not modelled.',
+  mass: 'Mass', angle: 'Inclination angle', friction: 'Kinetic friction coefficient', gravity: 'Gravitational acceleration',
+  assumptions: 'Rigid body on a straight plane, no air resistance or applied forces. Positive direction is downhill. With friction, the body is already sliding downhill; kinetic friction acts uphill. Static friction and the onset of motion are not modelled.',
+  braking: 'A negative acceleration means a downhill-moving body slows down. It does not predict motion uphill or determine whether a body starts sliding from rest.',
+  defaults: 'Blank μₖ assumes no friction (0). Blank g uses 9.81 m/s². End speed uses v₀ = 0 and constant acceleration along L; with friction it assumes downhill sliding begins. Two of L, h and α determine the third.',
+  invalid: 'Enter valid numbers. Mass, plane length and g must be positive, height must be non-negative, μₖ must be non-negative, and the angle must be between 0 and π/2 rad (0–90°).',
+  range: 'These values exceed the supported numerical range.',
+  angleHighlight: 'The angle is highlighted because its input field is focused.',
+  lengthHighlight: 'The full slope length L is highlighted because its input field is focused.',
+  heightHighlight: 'The vertical height difference h is highlighted because its input field is focused.',
+  sketch: 'Inclined plane — force diagram', schematic: 'Schematic preview: the entered angle and friction determine the geometry and force ratios. Force magnitudes appear once the calculation is valid.',
+  sketchDescription: 'Weight acts vertically downwards, normal force perpendicular to the surface, downhill weight component along the plane, and kinetic friction uphill. Arrows show the force directions; weight and its downhill component are not additional independent forces.',
+  diagramNote: 'The angle is drawn to scale. Force arrow lengths are proportional on one shared, automatically fitted scale. The downhill component is shown dashed to distinguish it from weight.',
+  source: 'Theory reference: OpenStax, University Physics, Friction and the Inclined Plane.'
+} as const;

@@ -4,7 +4,7 @@ export const site = {
   origin: 'https://calcphysics.com',
   name: 'calcPhysics',
   homeTitle: 'Physics Calculators & Theory | calcPhysics',
-  homeDescription: 'Explore physics theory and calculate position, velocity and time with SI prefixes, unit conversions, step-by-step formulas and motion diagrams.'
+  homeDescription: 'Explore physics theory and calculate motion and forces with SI prefixes, unit conversions, step-by-step formulas and diagrams for uniform motion and inclined planes.'
 } as const;
 // Netlify preview contexts set VITE_INDEXABLE=false; local development is never indexable.
 export const indexable = import.meta.env?.DEV !== true && import.meta.env?.VITE_INDEXABLE !== 'false';

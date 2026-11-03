@@ -1,0 +1,23 @@
+
+  .calculator { max-width: var(--calculator-width); }
+  .status, .assumption, .calculator-tools p { color: var(--color-text-muted); font-size: .8125rem; margin: 0; }
+  .input-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--calculator-row-gap) var(--calculator-column-gap); }
+  .calculator .quantity-field label { display: flex; align-items: baseline; gap: 8px; font-size: .8125rem; margin-bottom: 8px; }
+  .symbol { font-family: Georgia, serif; font-style: italic; font-size: 1.125rem; min-width: 22px; }
+  .field-state { margin-left: auto; font-size: .7rem; color: var(--color-text-muted); }
+  .quantity-controls { display: grid; grid-template-columns: minmax(0, 1fr) var(--unit-control-width); gap: var(--control-gap); }
+  .calculator input { min-height: var(--control-height); border: none; border-radius: var(--control-radius); background: var(--color-control); color: var(--color-text); font: inherit; font-size: .8125rem; padding: 8px 12px; min-width: 0; }
+  .calculator input { width: 100%; font-variant-numeric: tabular-nums; }
+  .calculator input:focus-visible { outline: 1px solid var(--color-text-muted); outline-offset: 0; }
+  .calculator input[aria-invalid="true"] { border: none; outline: 1px dashed var(--color-text-muted); outline-offset: 0; }
+  .calculator-tools { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin: 12px 0 20px; }
+  .calculator-tools button { border: none; border-radius: var(--control-radius); background: var(--color-control); min-height: var(--control-height); padding: 8px 16px; font-size: .8125rem; }
+  .result, .conversions { min-width: 0; }
+  .conversions { margin-bottom: 24px; }
+  :is(.result, .conversions) .formula { background: transparent; padding: 0; margin: 12px 0; }
+  :is(.result, .conversions) .katex-display { text-align: left; }
+  .result > span, .conversions > span { font-size: .8125rem; color: var(--color-text-muted); text-transform: capitalize; }
+  .assumption { margin-top: 8px; }
+  .error { color: var(--color-text); }
+  @media (max-width: 40rem) { .input-grid { grid-template-columns: 1fr; gap: 16px; } }
+

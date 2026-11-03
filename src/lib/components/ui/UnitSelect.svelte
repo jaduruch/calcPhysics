@@ -54,7 +54,7 @@
 <svelte:window onpointerdown={outside} onresize={() => expanded = false} />
 <div class="unit-select" bind:this={container} onfocusout={event => { if (!container.contains(event.relatedTarget as Node | null)) expanded = false; }}>
   <button class="trigger" type="button" role="combobox" aria-label={label} aria-expanded={expanded} aria-haspopup="listbox" aria-controls={`${id}-options`} aria-activedescendant={expanded ? `${id}-option-${active}` : undefined} onkeydown={keydown} onclick={() => { if (expanded) expanded = false; else open(); }}>
-    <span>{value}</span><span class="chevron" class:expanded aria-hidden="true"></span>
+    <span>{value}</span>{#if options.length > 1}<span class="chevron" class:expanded aria-hidden="true"></span>{/if}
   </button>
   {#if expanded}
     <div class="options" class:above id={`${id}-options`} role="listbox" aria-label={label}>
@@ -69,14 +69,14 @@
 
 <style>
   .unit-select { position: relative; min-width: 0; }
-  button { border: none; border-radius: 8px; color: var(--color-text); font: inherit; font-size: .8125rem; cursor: pointer; text-decoration: none; }
-  .trigger { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 44px; padding: 8px 14px 8px 12px; background: var(--color-control); }
+  button { border: none; border-radius: var(--control-radius); color: var(--color-text); font: inherit; font-size: .8125rem; cursor: pointer; text-decoration: none; }
+  .trigger { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: var(--control-height); padding: 8px 14px 8px 12px; background: var(--color-control); }
   .trigger:focus, .trigger:focus-visible { outline: none; box-shadow: none; text-decoration: none; }
   .chevron { width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); flex-shrink: 0; }
   .chevron.expanded { transform: translateY(2px) rotate(225deg); }
   .options { position: absolute; right: 0; top: calc(100% + 6px); z-index: 20; min-width: 100%; padding: 6px; border-radius: 10px; background: var(--color-input); box-shadow: 0 4px 16px rgb(0 0 0 / .12); }
   .options.above { top: auto; bottom: calc(100% + 6px); }
-  .options button { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 44px; padding: 8px 10px; background: transparent; text-align: left; outline: none; white-space: nowrap; }
+  .options button { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: var(--control-height); padding: 8px 10px; background: transparent; text-align: left; outline: none; white-space: nowrap; }
   .options button.active { background: var(--color-control); }
   .check { min-width: 12px; font-size: .75rem; }
   @media (forced-colors: active) { .options { border: 1px solid CanvasText; } .options button.active { background: Highlight; color: HighlightText; } }

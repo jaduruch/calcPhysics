@@ -1,6 +1,6 @@
 # calcPhysics
 
-English physics reference and calculation platform. Initial scope: Home → Mechanics → Kinematics, with one expandable Uniform Motion card with an info button for theory. Other main subjects are visible as unavailable; Uniform Motion now calculates s₀, s, v or t automatically with keyboard-entered SI prefixes (e.g. `1.5k`) and complete KaTeX result equations rounded to three significant figures.
+English physics reference and calculation platform. Available: Home → Mechanics → Kinematics (Uniform Motion) and Dynamics (Inclined Plane), using shared expandable model cards with info buttons for theory. Inclined Plane calculates weight, normal/downhill forces, kinetic friction and acceleration with a force sketch. Other main subjects are visible as unavailable; Uniform Motion now calculates s₀, s, v or t automatically with keyboard-entered SI prefixes (e.g. `1.5k`) and complete KaTeX result equations rounded to three significant figures.
 
 ## Local development
 
@@ -27,7 +27,8 @@ The production build uses the Netlify adapter and canonical domain `https://calc
 - `src/lib/physics/units.ts`: shared unit catalogue and SI conversion factors for all calculators.
 - `src/lib/content/topics.ts`: shared subject hierarchy, publication status and model metadata.
 - `src/lib/i18n/en.ts`: English UI strings; German is planned.
-- `src/lib/components/`: shared overview, cards, theme selector and KaTeX formula renderer.
+- `src/lib/components/`: shared cards, quantity fields, calculator shell/tools, equation blocks, unit menu, theme toggle and KaTeX renderer.
+- `src/lib/styles/calculator.css`: shared calculator styling; common sizes are tokens in `app.css`.
 - `src/lib/styles/`: exact reference palette and responsive styles.
 - `src/routes/`: Home and data-driven published overview routes.
 

@@ -4,7 +4,7 @@
 
 Uniform Motion wurde vom Nutzer vorerst als Referenz für Aufbau, Gestaltung und Bedienung akzeptiert. Dieser Stand ist die Grundlage für neue Modelle, keine Aufforderung, bereits weitere Themen zu implementieren oder zu veröffentlichen. Die Arbeitsregeln für künftige Implementierungen stehen in [src/AGENTS.md](../src/AGENTS.md); die Farbpalette steht im [Designsystem](DESIGN_SYSTEM.md), die fachlichen Regeln in den [Physikstandards](PHYSICS_STANDARDS.md).
 
-Neue Modelle übernehmen die gemeinsame Oberfläche. Ihre Physik, Eingabegrössen und Visualisierungen dürfen fachlich anders sein. Uniform Motion hat vier Eingabegrössen und zwei Diagramme; das ist kein Zwang für jedes künftige Modell. Die nachfolgende Zuordnung unterscheidet bereits gemeinsame Implementierung und noch nötige Wiederverwendung.
+Seit 03.11.2026 verwendet auch Inclined Plane unter Mechanics → Dynamics die gemeinsame Oberfläche. Ihre Physik, Eingabegrössen und Visualisierungen dürfen fachlich anders sein. Uniform Motion hat vier Eingabegrössen und zwei Diagramme; das ist kein Zwang für jedes künftige Modell. Die nachfolgende Zuordnung unterscheidet bereits gemeinsame Implementierung und noch nötige Wiederverwendung.
 
 ## Wo Änderungen für alle Seiten erfolgen sollen
 
@@ -20,6 +20,9 @@ Neue Modelle übernehmen die gemeinsame Oberfläche. Ihre Physik, Eingabegrösse
 | KaTeX-Ausgabe | [Formula.svelte](../src/lib/components/Formula.svelte) |
 | Einheitenoptionen und SI-Konversionsfaktoren | [units.ts](../src/lib/physics/units.ts) |
 | Präfixe, Parsing, drei signifikante Ergebnisstellen | [quantities.ts](../src/lib/calculators/quantities.ts) |
+| Zahlenfelder und gemeinsames Rechnerlayout | [QuantityField.svelte](../src/lib/components/calculator/QuantityField.svelte), [CalculatorShell.svelte](../src/lib/components/calculator/CalculatorShell.svelte), [calculator.css](../src/lib/styles/calculator.css) |
+| Reset und Ergebnisgleichungen | [CalculatorTools.svelte](../src/lib/components/calculator/CalculatorTools.svelte), [EquationBlock.svelte](../src/lib/components/calculator/EquationBlock.svelte) |
+| Rechner-Zuordnung und Modellvertrag | [ModelHost.svelte](../src/lib/components/ModelHost.svelte), [model-types.ts](../src/lib/content/model-types.ts) |
 | Einheitenmenü samt Tastaturbedienung | [UnitSelect.svelte](../src/lib/components/ui/UnitSelect.svelte) |
 | Achsen, Raster, Kurven und Pfeile | [MotionChart.svelte](../src/lib/components/calculator/MotionChart.svelte) |
 | Wissenschaftliche Achsenbeschriftung | [axis-label.ts](../src/lib/visualization/axis-label.ts) |
@@ -28,17 +31,13 @@ Neue Modelle übernehmen die gemeinsame Oberfläche. Ihre Physik, Eingabegrösse
 
 Gemeinsame Komponenten importieren, nicht kopieren. Nur Eigenschaften, die bewusst pro Modell variieren, werden als typisierte Props/Definitionen/Snippets übergeben. Keine themenspezifischen CSS-Überschreibungen für dieselben Felder, Menüs oder Diagrammachsen anlegen.
 
-## Was vor einem zweiten Modell noch zu lösen ist
+## Gemeinsame Basis seit dem zweiten Modell
 
-Der aktuelle Pilot ist nicht bereits vollständig generisch: `ModelCard.svelte` importiert direkt `UniformMotionCalculator`, nutzt dessen Modelldaten und enthält den Text zur konstanten Ableitung. Die Feld-, Ergebnis- und Berechnungsflächen-Styles liegen teilweise noch in `UniformMotionCalculator.svelte`. Diese Bindungen sind beim nächsten Modell zuerst zu lösen:
+Die vorherige direkte Bindung an Uniform Motion ist gelöst. `ModelCard` erhält eine typisierte `ModelDefinition` und einen Rechner-Snippet. `ModelHost` ordnet den Rechner zu. Variablen, Formeln, Erklärung und Quellen stammen aus den jeweiligen Modelldaten. Uniform Motions Ableitungstext wird nicht auf Dynamics angezeigt.
 
-1. Kartenhülle und Theorie-Layout einmal beibehalten. Modelle liefern Daten für Variablen/Formeln, optionale Erklärung und ihren Rechner als Inhalt. Keine Uniform-Motion-Erklärung für fachfremde Modelle rendern.
-2. Zahlenfeld plus Einheitenauswahl als gemeinsamen Baustein extrahieren; Name, Symbol, Grössenart, Rohwert, Einheit, Fehler und Einheitenwechsel-Verhalten übergeben. Die bestehende Einheitenregistry und `UnitSelect` verwenden.
-3. Eingaberaster, Reset, Umrechnungs-/Ergebnisbereich und zugehörige Styles einmal gemeinsam führen. Allgemeine Abstände, Feldhöhen, Radien und Inhaltsbreiten in zentrale semantische CSS-Tokens überführen; Farbwerte bleiben im vorhandenen Token-System. Nicht sämtliche Physik in ein Formularschema pressen.
-4. Diagrammrahmen und Achsenformatierung weiterverwenden; den Datenadapter je Modell separat halten. Plotly oder Three.js erst bei tatsächlich benötigten Funktionen ergänzen.
-5. Uniform Motion vor und nach der Extraktion mit denselben Fach- und UI-Fällen überprüfen. Keine sichtbare Neugestaltung zusammen mit der Extraktion einführen.
+Beide Rechner verwenden `QuantityField`, `CalculatorShell`, `CalculatorTools` und `EquationBlock`. Deren Styles liegen einmal in `styles/calculator.css`; gemeinsame Feldhöhen, Radien, Inhaltsbreiten und Abstände sind semantische CSS-Tokens in `styles/app.css`. Neue Rechner benutzen diese Bausteine und liefern eigene Solver und Ergebnisadapter. Einheitenoptionen bleiben in der globalen Registry. Für weitere Änderungen keine Kopien der Komponenten oder Styles anlegen.
 
-Damit ändern spätere Anpassungen an gemeinsamem Rahmen, Feldern, Formeln oder Achsen alle verwendenden Seiten an derselben Stelle. Aktuell vorhandene lokale Styles werden hier nicht fälschlich als bereits zentralisierte Tokens beschrieben.
+Die Umstellung wurde mit den vorhandenen Fachtests sowie Browserabläufen für beide Modelle geprüft. Kein allgemeines Formularframework oder symbolischer Gleichungslöser wurde eingeführt.
 
 ## Akzeptierter Aufbau
 
@@ -60,7 +59,7 @@ Modellkarte (anfangs geschlossen, kein blauer Überschriften-Hover)
     Diagramme
 ```
 
-Keine zusätzliche Überschrift „Theory & calculation models“, kein „01 MODEL“-Zähler und keine lange Eingabeanleitung über der Karte beziehungsweise den Feldern. Die kleine Nummer innerhalb des Kartenheaders bleibt davon unberührt. Keine Übungen, keine Diagrammtabelle. Theorie und Berechnen liegen derzeit in derselben Modellkarte auf der Kinematics-Seite; keine separaten Modellrouten allein zur Erfüllung eines älteren Architekturentwurfs anlegen.
+Keine zusätzliche Überschrift „Theory & calculation models“, kein „01 MODEL“-Zähler und keine lange Eingabeanleitung über der Karte beziehungsweise den Feldern. Die kleine Nummer innerhalb des Kartenheaders bleibt davon unberührt. Keine Übungen, keine Diagrammtabelle. Theorie und Berechnen liegen in derselben Modellkarte auf der jeweiligen Unterthemenseite; keine separaten Modellrouten allein zur Erfüllung eines älteren Architekturentwurfs anlegen.
 
 ## Konkrete Gestaltungswerte
 
@@ -68,7 +67,7 @@ Die Seitenpalette aus `portal.html` bleibt exakt erhalten; keine neuen Farbsyste
 
 Eingaben, Reset und Einheiten-Auslöser: `--color-control`, 8-px-Radius, mindestens 44-px-Höhe, keine normalen Rahmen. Zahlenfeld: grauer 1-px-Fokusrahmen ohne Abstand; ungültig derselbe Rahmen gestrichelt, kein zusätzlicher heller Rand. Einheitenauslöser: weder Fokusrahmen noch Unterstreichung; Optionsliste mit Theme-Fläche, 10-px-Radius, dezentem Schatten, Häkchen für aktuelle Einheit und neutraler aktiver Fläche. Menü bleibt per Pfeiltasten, Home/End, Buchstabensuche, Enter/Leertaste, Escape und Tab bedienbar. Pfeilabstand rechts 14 px.
 
-Header-Links behalten blauen Hover sowie blaue Unterstreichung des aktiven Hauptthemas einschliesslich Unterseiten. Breadcrumbs bleiben einheitlich hoch, auf einer Grundlinie und ohne Unterstreichung. Der Theme-Schalter hat weder Hintergrundrechteck noch Hover-Farbwechsel: Sonne/Mond morphen über einen gemeinsamen Kreis in etwa 400 ms. Beim ersten Besuch gilt die Systemeinstellung, danach die gespeicherte manuelle Wahl; keine „System“-Auswahl. Reduzierte Bewegung respektieren.
+Header-Links behalten blauen Hover sowie blaue Unterstreichung des aktiven Hauptthemas einschliesslich Unterseiten. Breadcrumbs bleiben einheitlich hoch, auf einer Grundlinie und ohne Unterstreichung. Der Theme-Schalter hat weder Hintergrundrechteck noch Hover-Farbwechsel: Im Dark Mode zeigt der Schalter die Sonne, im Light Mode den Mond als Symbol des Zielmodus. Sonne/Mond morphen über einen gemeinsamen Kreis in etwa 400 ms. Beim ersten Besuch gilt die Systemeinstellung, danach die gespeicherte manuelle Wahl; keine „System“-Auswahl. Reduzierte Bewegung respektieren.
 
 ## Zahlen und Resultate
 
@@ -100,3 +99,17 @@ SVGs haben Titel und Beschreibungen, die schematische Darstellung erkennbar bene
 Bei gemeinsamen Designänderungen die gemeinsame Quelle bearbeiten und mehrere Ansichten prüfen, nicht jede Seite einzeln nachziehen. Akzeptierte neue Entscheidungen hier beziehungsweise im passenden Fach-/Designdokument aktualisieren, alte widersprüchliche Aussagen ersetzen. Arbeitsregeln bleiben über die AGENTS-Dateien auffindbar.
 
 Für neue Modelle: Fachtests für alle Zielgrössen, Einheiten, Präfixe, Grenzfälle, Rundung und Invalidierung; `npm test`, `npm run check`, `npm run build`. Für gemeinsame UI: Laptop/Mobil, beide Themes, leere/ungültige/gültige Zustände, Tastatur und Fokus prüfen, soweit Browserwerkzeuge vorhanden sind. Dokumentationsänderungen allein benötigen Konsistenz- und Linkprüfung.
+
+## Zweites Modell: Inclined Plane
+
+Dynamics liegt unter `/mechanics/dynamics`; die zugehörige Karte enthält die schiefe Ebene. Masse und Winkel sind erforderlich, μₖ und g optional mit sichtbaren Standardannahmen. Ausgegeben werden Gewichtskraft, Normalkraft, Hangabtriebskraft, Gleitreibungskraft, resultierende Kraft und Beschleunigung als vollständige KaTeX-Rechenwege. Bei Nicht-SI-Eingaben werden Masse und Winkel zuerst konvertiert. Eine SVG-Kraftskizze ersetzt fachgerecht die Zeitdiagramme von Uniform Motion. Details und Modellgrenzen stehen in den Physikstandards; die gemeinsame Gestaltung wird davon nicht dupliziert.
+
+Die Inclined-Plane-Skizze wird über `src/lib/visualization/inclined-plane.ts` aufgebaut. Eingegebener Winkel und Reibungskoeffizient wirken bereits vor vollständiger Berechnung auf Geometrie/Kraftverhältnisse; die Vorschau bleibt als schematisch benannt. Alle Pfeile sind proportional mit gemeinsamem, automatisch angepasstem Massstab, einschliesslich bis zum Vektorende passender Pfeilspitzen.
+
+Pfeilschäfte enden an der Basis der Pfeilspitze, damit kein Strich über die Spitze hinausragt. Bei sehr kurzen Pfeilen schrumpft auch die Strichbreite. Die Spitzenposition bleibt das physikalische Vektorende.
+
+Ergebnis- und Umrechnungsgleichungen verwenden den gemeinsamen `Formula`-Baustein mit aktiviertem automatischem Zeilenumbruch (`EquationBlock`). KaTeX rendert dafür Inline-Markup mit Display-Mathematikgrösse; Umbrüche liegen vor = und ≈, damit das Zeichen am Beginn der neuen Zeile steht und bei seinem folgenden Term bleibt. Brüche und geklammerte Terme bleiben zusammen; nur wenn ein unteilbarer Term breiter als die Fläche ist, bleibt horizontales Scrollen als Rückfall. Keine festen Zeilenumbrüche je Modell oder Bildschirmbreite in den Solver einbauen.
+
+Fokusbezug zur Skizze: `QuantityField` meldet den Fokus seines Zahlenfelds über den optionalen Callback `onfocuschange`. Inclined Plane markiert bei fokussiertem α-Feld Winkelbogen, Winkelfläche und Beschriftung mit der gemeinsamen Akzentfarbe. Bei Fokus auf L wird die gesamte geneigte Strecke samt L markiert, bei h die senkrechte Höhendifferenz samt h. Die Markierung endet bei Fokusverlust, funktioniert auch per Tastatur und verändert weder Geometrie noch Rechenwerte. Keine modellspezifische Fokuslogik in `QuantityField` einbauen.
+
+Inclined Plane bietet zusätzlich L und h als Längenfelder mit derselben globalen Einheitenliste. Zwei Werte aus L, h und α bestimmen die dritte Grösse; widersprüchliche Dreifachangaben sind ungültig. v_end wird aus Ruhe über sqrt(2 a L) berechnet, ohne v₀-Feld. Geometrie- und Geschwindigkeitsresultate bleiben unterhalb der Eingaben im gemeinsamen Rechenweg. Fachliche Sonderfälle siehe Physikstandards.

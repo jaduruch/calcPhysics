@@ -67,7 +67,7 @@ Der [Modellseitenstandard](MODEL_PAGE_STANDARD.md) enthält den aktuellen, vom N
 
 Pro Modell eine zunächst eingeklappte Karte. Der links am Theorietext ausgerichtete ⓘ-Button öffnet die Theorie und wird zu ✕. Theorie ohne eigene Fläche oder sichtbaren Titel; Variables und Key Formulas kompakt nebeneinander, mobil untereinander. Die Berechnung liegt in einer dezenten Unterfläche mit Eingaben, Reset, SI-Umrechnung, vollständigen KaTeX-Ergebnisgleichungen und Diagrammen.
 
-Modellkarte und Theorie nicht kopieren. `ModelCard` ist aktuell noch direkt an Uniform Motion gekoppelt; vor dem zweiten Modell fachliche Inhalte und Rechner über typisierte Props/Snippets einsetzen und die gemeinsamen Rechnerfeld-/Ergebnis-Styles einmal extrahieren. Referenzmasse und Änderungsstellen stehen im Modellseitenstandard. Bestehende Farben bleiben zentrale Tokens; weitere gemeinsame Grössen bei der Extraktion in semantische Tokens überführen.
+Modellkarte und Theorie nicht kopieren. `ModelCard` erhält seit Inclined Plane fachliche Inhalte und Rechner über typisierte Props/Snippets; gemeinsame Rechnerfeld-/Ergebnis-Styles liegen einmal in `styles/calculator.css`. Referenzmasse und Änderungsstellen stehen im Modellseitenstandard. Bestehende Farben bleiben zentrale Tokens; gemeinsame Grössen über die semantischen Tokens in `styles/app.css` anpassen.
 
 ## Eingaben, Fokus und Einheiten
 
