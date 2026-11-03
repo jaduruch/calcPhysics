@@ -11,7 +11,7 @@
 </script>
 <figure>
   <figcaption>{text.sketch}</figcaption>
-  <svg viewBox="0 0 420 320" role="img" aria-labelledby={`${id}-title ${id}-description`}>
+  <svg style:width="calc(420px * var(--graphic-scale))" style:max-width="100%" viewBox="0 0 420 320" role="img" aria-labelledby={`${id}-title ${id}-description`}>
     <title id={`${id}-title`}>{text.sketch}</title><desc id={`${id}-description`}>{text.sketchDescription}{!data ? ` ${text.schematic}` : ''}{highlightAngle ? ` ${text.angleHighlight}` : ''}{highlightLength ? ` ${text.lengthHighlight}` : ''}{highlightHeight ? ` ${text.heightHighlight}` : ''}</desc>
 
     <path class="plane-fill" d={`M${base.x} ${base.y} L${end.x} ${end.y} L${end.x} ${base.y} Z`} />

@@ -2,6 +2,7 @@
 @layer tokens {
   :root {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --graphic-scale: 0.7;
     --calculator-width: 52rem; --theory-width: 48rem;
     --control-height: 44px; --control-radius: 8px; --unit-control-width: 88px; --control-gap: 8px;
     --calculator-row-gap: 18px; --calculator-column-gap: 24px;
@@ -10,6 +11,7 @@
     --color-surface-raised: hsl(0,0%,96%); --color-control: hsl(0,0%,100%);
     --color-input: hsl(0,0%,90%); --color-muted-reference: hsl(0,0%,50%);
     --color-text-muted: hsl(0,0%,40%); --color-text: hsl(0,0%,12%);
+    --color-electric-current: hsl(0,80%,40%); --color-electric-resistance: hsl(275,65%,40%); --color-electric-power: hsl(150,75%,27%);
     --color-accent: hsl(224,100%,45%); --color-on-accent: white;
     --color-border: hsl(0,0%,48%); --radius: 10px; color-scheme: light;
   }
@@ -19,6 +21,7 @@
       --color-surface-raised: hsl(240,0%,12%); --color-control: hsl(0,0%,18%);
       --color-input: hsl(240,6%,15%); --color-muted-reference: hsl(0,0%,68%);
       --color-text-muted: hsl(0,0%,68%); --color-text: hsl(0,0%,96%);
+      --color-electric-current: hsl(0,90%,72%); --color-electric-resistance: hsl(275,85%,78%); --color-electric-power: hsl(150,65%,64%);
       --color-accent: hsl(206,100%,70%); --color-on-accent: hsl(0,0%,12%);
       --color-border: hsl(0,0%,55%); color-scheme: dark;
     }
@@ -28,6 +31,7 @@
     --color-surface-raised: hsl(240,0%,12%); --color-control: hsl(0,0%,18%);
     --color-input: hsl(240,6%,15%); --color-muted-reference: hsl(0,0%,68%);
     --color-text-muted: hsl(0,0%,68%); --color-text: hsl(0,0%,96%);
+    --color-electric-current: hsl(0,90%,72%); --color-electric-resistance: hsl(275,85%,78%); --color-electric-power: hsl(150,65%,64%);
     --color-accent: hsl(206,100%,70%); --color-on-accent: hsl(0,0%,12%);
     --color-border: hsl(0,0%,55%); color-scheme: dark;
   }

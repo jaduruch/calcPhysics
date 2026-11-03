@@ -16,7 +16,7 @@ Abnahme: nachvollziehbare Architektur, dokumentierte Annahmen und ein vereinbart
 
 ## Aktueller Stand und nächster Erweiterungsschritt
 
-Lokales Grundgerüst Home → Mechanics → Kinematics ist vorhanden. Home führt alle Hauptthemen, nur Mechanics ist aktiv. Mechanics enthält Kinematics und Dynamics. Uniform Motion ist mit Theorie, vier Eingaben, Präfix-/Einheitenunterstützung, automatischen Resultaten, KaTeX-Rechenweg und zwei SVG-Diagrammen implementiert und vom Nutzer vorerst als Referenz akzeptiert. Seit 03.11.2026 ist zusätzlich Inclined Plane unter Dynamics beauftragt und implementiert; weitere Modelle oder Veröffentlichung nur mit entsprechendem Auftrag.
+Lokales Grundgerüst Home → Mechanics → Kinematics ist vorhanden. Home führt alle Hauptthemen; Mechanics und Electricity & Magnetism sind aktiv. Mechanics enthält Kinematics und Dynamics. Uniform Motion ist mit Theorie, vier Eingaben, Präfix-/Einheitenunterstützung, automatischen Resultaten, KaTeX-Rechenweg und zwei SVG-Diagrammen implementiert und vom Nutzer vorerst als Referenz akzeptiert. Seit 03.11.2026 sind zusätzlich Inclined Plane unter Dynamics sowie zehn Elektrotechnik-Unterthemen mit 44 expliziten Rechenmodellen in 31 Karten beauftragt und implementiert. Umfang und Quellen stehen in [ELECTRICITY.md](ELECTRICITY.md). Weitere Modelle und Veröffentlichung bleiben auftragsgebunden.
 
 Mit dem zweiten Modell abgeschlossen: Uniform-Motion-Bindung von `ModelCard` gelöst und gemeinsame Feld-/Ergebnisdarstellung samt Styles extrahiert. Den akzeptierten Aufbau erhalten; Details und Änderungsstellen stehen im [Modellseitenstandard](MODEL_PAGE_STANDARD.md). Die folgenden Phasen beschreiben den weiteren Plan, nicht bereits vollständig erledigte Qualitäts-/Veröffentlichungsprüfungen.
 

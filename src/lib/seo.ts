@@ -3,6 +3,7 @@ import { topics, type Topic } from './content/topics.ts';
 export const site = {
   origin: 'https://calcphysics.com',
   name: 'calcPhysics',
+  author: 'Jana Ruch',
   homeTitle: 'Physics Calculators & Theory | calcPhysics',
   homeDescription: 'Explore physics theory and calculate motion and forces with SI prefixes, unit conversions, step-by-step formulas and diagrams for uniform motion and inclined planes.'
 } as const;

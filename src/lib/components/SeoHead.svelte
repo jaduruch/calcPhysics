@@ -10,6 +10,7 @@
     <title>{metadata.title}</title>
     {#if structuredData}{@html `<script type="application/ld+json">${structuredData}</script>`}{/if}
     <meta name="description" content={metadata.description} />
+    <meta name="author" content={site.author} />
     <link rel="canonical" href={metadata.canonical} />
     {#if !indexable}<meta name="robots" content="noindex, nofollow" />{/if}
     <meta property="og:type" content="website" />

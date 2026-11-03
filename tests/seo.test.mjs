@@ -10,7 +10,11 @@ test('canonicals use the primary HTTPS domain without parameters or trailing sla
 });
 test('published pages have unique useful titles and canonical metadata', () => {
   const paths = publishedPaths();
-  assert.deepEqual(paths, ['/', '/si-units-and-constants', '/mechanics', '/mechanics/kinematics', '/mechanics/dynamics']);
+  for (const path of ['/', '/si-units-and-constants', '/mechanics', '/mechanics/kinematics', '/mechanics/dynamics', '/electromagnetism', '/electromagnetism/direct-current', '/electromagnetism/three-phase-generator']) assert.ok(paths.includes(path));
+  assert.equal(new Set(paths).size, paths.length);
+  assert.ok(!paths.includes('/electromagnetism/transformers'));
+  assert.ok(paths.includes('/electromagnetism/inductors'));
+  assert.equal(pageMetadata('/electromagnetism/transformers'), null);
   const pages = paths.map(pageMetadata);
   assert.equal(new Set(pages.map(page => page.title)).size, pages.length);
   assert.ok(pages.every(page => page.description.length > 40 && page.canonical.startsWith(site.origin)));

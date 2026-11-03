@@ -1,0 +1,16 @@
+.circuit-diagram { margin: 24px 0 0; max-width: var(--calculator-width); }
+.circuit-diagram svg { display: block; width: 100%; height: auto; }
+.circuit-diagram .wire { fill: none; stroke: var(--color-text); stroke-width: 2; stroke-linejoin: round; }
+.circuit-diagram svg.selection-active .wire { stroke: var(--color-text-muted); }
+.circuit-diagram .quantity { color: var(--quantity-color); }
+.circuit-diagram .voltage { --quantity-color: var(--color-accent); }
+.circuit-diagram .current { --quantity-color: var(--color-electric-current); }
+.circuit-diagram .resistance, .circuit-diagram .power { --quantity-color: var(--color-text); }
+.circuit-diagram .quantity.muted { color: var(--color-text-muted); }
+.circuit-diagram .arrow, .circuit-diagram .guide, .circuit-diagram .resistor { fill: none; stroke: currentColor; stroke-width: 2; }
+.circuit-diagram .guide { stroke-width: 1; }
+.circuit-diagram .resistor { fill: var(--color-surface-raised); }
+.circuit-diagram text { fill: currentColor; font-size: 19px; }
+.circuit-diagram .symbol { font-family: Georgia, serif; font-style: italic; font-size: 24px; }
+.circuit-diagram .unit { font-size: 16px; }
+.circuit-diagram figcaption { font-size: .75rem; color: var(--color-text-muted); }

@@ -1,3 +1,4 @@
+import { electricalModels } from './electricity.ts';
 import type { ModelDefinition } from './model-types.ts';
 import { ui, inclinedPlaneUi } from '../i18n/en.ts';
 
@@ -8,15 +9,26 @@ export interface Topic {
   title: string;
   description: string;
   navigationTitle?: string;
+  references?: readonly { title: string; url: string }[];
   symbol: string;
   published: boolean;
   seo?: { title: string; description: string };
 }
 export const topics: readonly Topic[] = [
+  {"id": "direct-current", "parentId": "electromagnetism", "path": "/electromagnetism/direct-current", "title": "Direct Current", "description": "Ohm’s law, electrical power, loaded and unloaded voltage dividers, resistor networks and star–delta conversion.", "symbol": "03.1", "published": true},
+  {"id": "alternating-current", "parentId": "electromagnetism", "path": "/electromagnetism/alternating-current", "title": "Alternating Current", "description": "Calculate and visualize sine, triangle, rectangle and pulse-width-modulated voltage waveforms.", "symbol": "03.2", "published": true},
+  {"id": "magnetism", "parentId": "electromagnetism", "path": "/electromagnetism/magnetism", "title": "Magnetism", "description": "Linear magnetic circuits, flux, field strength, reluctance and Faraday’s law.", "symbol": "03.3", "published": true},
+  {"id": "capacitors", "parentId": "electromagnetism", "path": "/electromagnetism/capacitors", "title": "Capacitors", "description": "Charge, stored energy, plate geometry, electric fields, AC circuits and RC transients.", "symbol": "03.4", "published": true},
+  {"id": "inductors", "parentId": "electromagnetism", "path": "/electromagnetism/inductors", "title": "Inductors", "description": "Inductance, magnetic energy, transformers, induced EMF, AC circuits and RL transients.", "symbol": "03.5", "published": true},
+  {"id": "resonant-circuits", "parentId": "electromagnetism", "path": "/electromagnetism/resonant-circuits", "title": "Resonant Circuits", "description": "Series and parallel RLC resonance, quality factor, bandwidth and frequency-dependent impedance.", "symbol": "03.6", "published": true},
+  {"id": "gain-and-attenuation", "parentId": "electromagnetism", "path": "/electromagnetism/gain-and-attenuation", "title": "Gain & Attenuation", "description": "Voltage, current and power ratios expressed as gain and attenuation in decibels.", "symbol": "03.7", "published": true},
+  {"id": "filters", "parentId": "electromagnetism", "path": "/electromagnetism/filters", "title": "Filters", "description": "Unloaded RC and RL high-pass and low-pass filters, cutoff frequency, gain and output phase.", "symbol": "03.8", "published": true},
+  {"id": "three-phase", "parentId": "electromagnetism", "path": "/electromagnetism/three-phase", "title": "Three-Phase Systems", "description": "Balanced star and delta connections with line quantities and three-phase power.", "symbol": "03.9", "published": true},
+  {"id": "three-phase-generator", "parentId": "electromagnetism", "path": "/electromagnetism/three-phase-generator", "title": "Three-Phase Generator", "description": "Inspect three sinusoidal phase voltages separated by 120 electrical degrees.", "symbol": "03.10", "published": true},
   { id: 'si-reference', parentId: null, path: '/si-units-and-constants', title: 'SI Units & Physical Constants', navigationTitle: 'SI Reference', description: 'Explore the seven SI base units, all 22 derived units with special names, useful unit relationships and key physical constants.', symbol: 'SI', published: true, seo: { title: 'SI Units, Derived Units & Physical Constants | calcPhysics', description: 'Reference tables for SI base units, all 22 named derived units, unit equations and physical constants, with exact definitions and measurement uncertainties.' } },
   { id: 'mechanics', parentId: null, path: '/mechanics', title: 'Mechanics', seo: { title: 'Mechanics: Motion & Force Calculators | calcPhysics', description: 'Explore kinematics and dynamics with uniform motion and inclined plane calculators. Follow unit conversions, force calculations and clear physics formulas.' }, description: 'Calculate motion and forces with mechanics models for uniform motion and inclined planes. Explore kinematics and dynamics with unit conversions, formulas and diagrams.', symbol: '01', published: true },
   { id: 'thermodynamics', parentId: null, path: '/thermodynamics', title: 'Thermodynamics', description: 'Heat, temperature and the transfer of energy.', symbol: '02', published: false },
-  { id: 'electromagnetism', parentId: null, path: '/electromagnetism', title: 'Electricity & Magnetism', description: 'Charges, circuits, electric and magnetic fields.', symbol: '03', published: false },
+  { id: 'electromagnetism', parentId: null, path: '/electromagnetism', title: 'Electricity & Magnetism', description: 'Explore DC and AC circuits, transformers, magnetic fields, capacitors, inductors, resonance, filters and three-phase systems. Calculate with SI units, formulas and circuit diagrams.', symbol: '03', published: true },
   { id: 'waves', parentId: null, path: '/oscillations-and-waves', title: 'Oscillations & Waves', description: 'Periodic motion, wave propagation and resonance.', symbol: '04', published: false },
   { id: 'optics', parentId: null, path: '/optics', title: 'Optics', description: 'Light, reflection, refraction and optical systems.', symbol: '05', published: false },
   { id: 'modern-physics', parentId: null, path: '/modern-physics', title: 'Modern Physics', description: 'Quantum phenomena, relativity and atomic physics.', symbol: '06', published: false },
@@ -24,6 +36,7 @@ export const topics: readonly Topic[] = [
   { id: 'dynamics', parentId: 'mechanics', path: '/mechanics/dynamics', title: 'Dynamics', description: 'Use the inclined plane calculator to find slope geometry, force components, acceleration and end speed from rest. Include optional kinetic friction for downhill sliding. Static friction and the onset of sliding are not modelled.', symbol: '01.2', published: true, seo: { title: 'Inclined Plane Calculator & Dynamics Theory | calcPhysics', description: 'Calculate weight, normal force, downhill force, kinetic friction and acceleration on an inclined plane. Includes SI conversions, formulas and a force diagram.' } }
 ];
 export const models: readonly ModelDefinition[] = [
+  ...electricalModels,
   {
     id: 'uniform-motion', topicId: 'kinematics', calculator: 'uniform-motion', title: 'Uniform Motion',
     notes: [{ text: ui.velocityDerivative, expression: String.raw`v(t) = \dot{s}(t) = \mathrm{constant}` }],

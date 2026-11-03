@@ -4,6 +4,8 @@
 
 Uniform Motion wurde vom Nutzer vorerst als Referenz für Aufbau, Gestaltung und Bedienung akzeptiert. Dieser Stand ist die Grundlage für neue Modelle, keine Aufforderung, bereits weitere Themen zu implementieren oder zu veröffentlichen. Die Arbeitsregeln für künftige Implementierungen stehen in [src/AGENTS.md](../src/AGENTS.md); die Farbpalette steht im [Designsystem](DESIGN_SYSTEM.md), die fachlichen Regeln in den [Physikstandards](PHYSICS_STANDARDS.md).
 
+Electricity & Magnetism verwendet für zehn Unterthemen und 44 Modelle in 31 Karten ebenfalls dieselben Modellkarten, Felder, Einheitenmenüs und Ergebnisbausteine. Der modellabhängige Elektrotechnik-Rechner steuert explizite SI-Funktionen an; Details siehe [ELECTRICITY.md](ELECTRICITY.md).
+
 Seit 03.11.2026 verwendet auch Inclined Plane unter Mechanics → Dynamics die gemeinsame Oberfläche. Ihre Physik, Eingabegrössen und Visualisierungen dürfen fachlich anders sein. Uniform Motion hat vier Eingabegrössen und zwei Diagramme; das ist kein Zwang für jedes künftige Modell. Die nachfolgende Zuordnung unterscheidet bereits gemeinsame Implementierung und noch nötige Wiederverwendung.
 
 ## Wo Änderungen für alle Seiten erfolgen sollen
@@ -14,12 +16,13 @@ Seit 03.11.2026 verwendet auch Inclined Plane unter Mechanics → Dynamics die g
 | Header, Logo und aktive Hauptnavigation | [+layout.svelte](../src/routes/+layout.svelte), Navigation-CSS in app.css |
 | Theme-Verhalten und Morph-Symbol | [ThemeToggle.svelte](../src/lib/components/ThemeToggle.svelte); frühe Initialisierung in [app.html](../src/app.html) |
 | Favicon und Logo-Geometrie | [favicon.svg](../static/favicon.svg); Header nutzt es als Maske |
-| Hierarchie, verfügbare Themen und aktuelle Modelldaten | [topics.ts](../src/lib/content/topics.ts) |
+| Hierarchie, verfügbare Themen und aktuelle Modelldaten | [topics.ts](../src/lib/content/topics.ts); Elektrotechnik-Inhalte in [electricity.ts](../src/lib/content/electricity.ts) |
 | Übersichten und Breadcrumb-Aufbau | [Overview.svelte](../src/lib/components/Overview.svelte) |
 | Modellkartenrahmen, Theorie-Layout und Info-Button | [ModelCard.svelte](../src/lib/components/ModelCard.svelte) |
 | KaTeX-Ausgabe | [Formula.svelte](../src/lib/components/Formula.svelte) |
 | Einheitenoptionen und SI-Konversionsfaktoren | [units.ts](../src/lib/physics/units.ts) |
 | Präfixe, Parsing, drei signifikante Ergebnisstellen | [quantities.ts](../src/lib/calculators/quantities.ts) |
+| Gemeinsame SVG-Schaltungsstyles | [circuit-diagram.css](../src/lib/styles/circuit-diagram.css), eigene Schaltungen in `OhmsLawDiagram.svelte` und `VoltageDividerDiagram.svelte` |
 | Zahlenfelder und gemeinsames Rechnerlayout | [QuantityField.svelte](../src/lib/components/calculator/QuantityField.svelte), [CalculatorShell.svelte](../src/lib/components/calculator/CalculatorShell.svelte), [calculator.css](../src/lib/styles/calculator.css) |
 | Reset und Ergebnisgleichungen | [CalculatorTools.svelte](../src/lib/components/calculator/CalculatorTools.svelte), [EquationBlock.svelte](../src/lib/components/calculator/EquationBlock.svelte) |
 | Rechner-Zuordnung und Modellvertrag | [ModelHost.svelte](../src/lib/components/ModelHost.svelte), [model-types.ts](../src/lib/content/model-types.ts) |

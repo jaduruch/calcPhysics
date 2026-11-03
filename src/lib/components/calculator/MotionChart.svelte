@@ -1,10 +1,10 @@
 <script lang="ts">
   import { formatAxisLabel } from '#lib/visualization/axis-label.ts';
   import { chartUi as text } from '#lib/i18n/en.ts';
-  let { title, yLabel, times, values, description, shape }: {
-    title: string; yLabel: string; times: number[]; values: number[]; description: string; shape: 'position' | 'velocity';
+  let { title, yLabel, times, values, description, shape, xLabel = 't [s]', schematic = false, color = 'default', marker }: {
+    title: string; yLabel: string; times: number[]; values: number[]; description: string; shape: 'position' | 'velocity'; xLabel?: string; schematic?: boolean; color?: 'default' | 'current'; marker?: { time: number; value: number };
   } = $props();
-  const hasData = $derived(times.length > 0 && values.length === times.length);
+  const hasData = $derived(!schematic && times.length > 0 && values.length === times.length);
   const id = $props.id();
   const plot = { left: 62, top: 24, width: 298, height: 196 };
   const maximumTime = $derived(times.at(-1) || 1);
@@ -31,7 +31,7 @@
 
 <figure>
   <figcaption><strong>{title}</strong></figcaption>
-  <svg viewBox="0 0 390 270" role="img" aria-labelledby={`${id}-title ${id}-description`}>
+  <svg style:width="calc(390px * var(--graphic-scale))" style:max-width="100%" viewBox="0 0 390 270" role="img" aria-labelledby={`${id}-title ${id}-description`}>
     <title id={`${id}-title`}>{title} — {yLabel}</title>
     <desc id={`${id}-description`}>{description}{!hasData ? ` ${text.empty}` : ''}</desc>
     <defs>
@@ -48,15 +48,21 @@
       {#if Math.abs(py - y(0)) >= 12}<text x={plot.left - 9} y={py + 4} text-anchor="end">{@render tickLabel((high - fraction * (high - low)) * scale)}</text>{/if}{/if}
     {/each}
     <line class="axis" x1={plot.left} y1={plot.top + plot.height} x2={plot.left} y2={plot.top - 8} marker-end={`url(#${id}-arrow)`} />
-    {#if hasData}
+    {#if hasData || (schematic && times.length > 0)}
       <line class="zero" x1={plot.left} y1={y(0)} x2={plot.left + plot.width + 10} y2={y(0)} marker-end={`url(#${id}-arrow)`} />
-      <text x={plot.left - 9} y={y(0) + 4} text-anchor="end">0</text>
+      {#if hasData}<text x={plot.left - 9} y={y(0) + 4} text-anchor="end">0</text>{/if}
     {:else}
       <line class="zero" x1={plot.left} y1={plot.top + plot.height} x2={plot.left + plot.width + 10} y2={plot.top + plot.height} marker-end={`url(#${id}-arrow)`} />
     {/if}
     <text class="axis-label" x={plot.left - 9} y={plot.top - 12} text-anchor="end">{yLabel}</text>
-    <text class="axis-label" x={plot.left + plot.width} y="260" text-anchor="end">t [s]</text>
-    {#if times.length > 1}<polyline class="curve" {points} />{:else if !hasData}<polyline class="curve" points={schematicPoints} />{/if}
+    <text class="axis-label" x={plot.left + plot.width} y="260" text-anchor="end">{xLabel}</text>
+    {#if times.length > 1}<polyline class="curve" class:current={color === 'current'} {points} />{:else if !hasData}<polyline class="curve" class:current={color === 'current'} points={schematicPoints} />{/if}
+    {#if hasData && marker}
+      <line class="marker-guide" x1={x(marker.time)} y1={y(marker.value)} x2={x(marker.time)} y2={y(0)} />
+      <line class="marker-guide" x1={plot.left} y1={y(marker.value)} x2={x(marker.time)} y2={y(marker.value)} />
+      <circle class="marker" class:current={color === 'current'} cx={x(marker.time)} cy={y(marker.value)} r="4" />
+      <text class="marker-label" x={x(marker.time) + 7} y={y(marker.value) - 8}>t = {@render tickLabel(marker.time)}</text>
+    {/if}
   </svg>
   <p>{description}{#if times.length === 1} {text.zeroInterval}{/if}</p>
 </figure>
@@ -71,5 +77,10 @@
   .axis { stroke: var(--color-text-muted); stroke-width: 1; }
   .zero { stroke: var(--color-text-muted); stroke-width: 2; }
   .curve { fill: none; stroke: var(--color-accent); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .curve.current { stroke: var(--color-electric-current); }
+  .marker-guide { stroke: var(--color-text-muted); stroke-width: 1; stroke-dasharray: 4 3; }
+  .marker { fill: var(--color-accent); stroke: var(--color-control); stroke-width: 2; }
+  .marker.current { fill: var(--color-electric-current); }
+  .marker-label { font-size: 10px; }
   p { margin: 8px 0 0; font-size: .75rem; color: var(--color-text-muted); }
 </style>

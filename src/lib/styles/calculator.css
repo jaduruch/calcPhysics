@@ -2,6 +2,7 @@
   .calculator { max-width: var(--calculator-width); }
   .status, .assumption, .calculator-tools p { color: var(--color-text-muted); font-size: .8125rem; margin: 0; }
   .input-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--calculator-row-gap) var(--calculator-column-gap); }
+  .input-grid--single { grid-template-columns: minmax(0, 1fr); max-width: calc((var(--calculator-width) - var(--calculator-column-gap)) / 2); }
   .calculator .quantity-field label { display: flex; align-items: baseline; gap: 8px; font-size: .8125rem; margin-bottom: 8px; }
   .symbol { font-family: Georgia, serif; font-style: italic; font-size: 1.125rem; min-width: 22px; }
   .field-state { margin-left: auto; font-size: .7rem; color: var(--color-text-muted); }
@@ -21,3 +22,6 @@
   .error { color: var(--color-text); }
   @media (max-width: 40rem) { .input-grid { grid-template-columns: 1fr; gap: 16px; } }
 
+
+  .quantity-field.pending { opacity: .5; }
+  .quantity-field.pending:focus-within { opacity: 1; }

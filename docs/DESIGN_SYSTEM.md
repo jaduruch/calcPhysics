@@ -98,3 +98,9 @@ Die bestätigte Gestaltung ist kein Nachweis vollständiger WCAG-Konformität. B
 ## Abnahme gemeinsamer Änderungen
 
 Beide Themes, Laptop/Mobil, leere/ungültige/gültige Werte und Tastaturbedienung prüfen, soweit Browserwerkzeuge vorhanden sind. Fachtests, Typprüfung und Build bei Implementierungsänderungen ausführen. Nicht durchgeführte Browser-/Screenreaderprüfungen benennen. Reine Dokumentänderungen benötigen Konsistenz- und Linkprüfung.
+
+Die eigene Ohm-Schaltung verwendet U in `--color-accent` sowie die semantischen Diagramm-Tokens `--color-electric-current`, `--color-electric-resistance` und `--color-electric-power`. Diese liegen gemeinsam für beide Themes in `app.css`. Nicht ausgewählte Grössen verwenden `--color-text-muted`; Draht und Quelle bleiben neutral.
+
+Grafiken verwenden den gemeinsamen Skalierungsfaktor `--graphic-scale: 0.7` in `app.css` bezogen auf ihre SVG-ViewBox-Breite; Referenzbilder verwenden eine Bezugsbreite von 400 px. Seitenverhältnisse bleiben erhalten, die verfügbare Breite begrenzt die Darstellung. Breite Widerstandsnetzwerke bleiben innerhalb ihrer Fläche horizontal scrollbar.
+
+Binäre Rechner-Auswahl in `ToggleSwitch.svelte`: zwei gleich breite Segmente in einer abgerundeten Leiste, aktive Auswahl als verschiebbare Fläche in der zentralen Akzentfarbe, Hintergrund `--color-control`. Auf ausdrücklichen Nutzerwunsch kompakt: maximal 12 rem breit, mobil auf die verfügbare Breite begrenzt; Segmente mindestens 30 px hoch, mit 2 px Aussenabstand insgesamt 34 px. Native Radiobuttons ermöglichen direkte Auswahl, Pfeiltasten und Leertaste; sichtbarer Tastaturfokus und reduzierte Bewegung sind berücksichtigt. Gilt gemeinsam für Serie/Parallel und Unloaded/Loaded.

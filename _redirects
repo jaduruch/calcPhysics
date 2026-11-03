@@ -4,3 +4,7 @@ http://www.calcphysics.com/* https://calcphysics.com/:splat 301!
 https://www.calcphysics.com/* https://calcphysics.com/:splat 301!
 http://calcphysics.netlify.app/* https://calcphysics.com/:splat 301!
 https://calcphysics.netlify.app/* https://calcphysics.com/:splat 301!
+
+# Transformer is now a model card under Inductors.
+/electromagnetism/transformers /electromagnetism/inductors 301!
+/electromagnetism/transformers/ /electromagnetism/inductors 301!

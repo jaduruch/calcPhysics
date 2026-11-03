@@ -9,7 +9,7 @@
 
 <details class="motion-card">
   <summary>
-    <span class="topic-number">0{index + 1}</span>
+    <span class="topic-number">{String(index + 1).padStart(2, '0')}</span>
     <h3>{model.title}</h3>
     <span class="chevron" aria-hidden="true"></span>
   </summary>
