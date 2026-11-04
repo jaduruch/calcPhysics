@@ -84,7 +84,7 @@ Die Diagramme erscheinen unter den Resultaten und bleiben innerhalb der geöffne
 
 ## Navigation und Theme
 
-Header: Nutzerlogo statt φ; aktives Hauptthema auch auf Unterseiten blau und unterstrichen; Header-Links behalten Hover-Farbe. Breadcrumbs ohne Unterstreichung und mit einheitlicher vertikaler Ausrichtung. Modellüberschriften und Theme-Button erhalten keinen Hover-Farbwechsel.
+Header: Unter 80 rem stehen Logo, Theme-Schalter und ein 44-px-Menüauslöser in einer kompakten Zeile. Die Themen öffnen in einer vertikalen, bei geringer Bildschirmhöhe scrollbar begrenzten Navigation. Ein natives details/summary erhält die Bedienung ohne JavaScript; mit JavaScript schliessen Linkwahl, Escape, Fokuswechsel nach aussen und Klick ausserhalb das Menü. Ab 80 rem stehen die Themenlinks wieder direkt im Header. Beide Ansichten verwenden dieselbe Linkquelle. Nutzerlogo statt φ; aktives Hauptthema auch auf Unterseiten blau und unterstrichen; Header-Links behalten Hover-Farbe. Breadcrumbs ohne Unterstreichung und mit einheitlicher vertikaler Ausrichtung. Modellüberschriften und Theme-Button erhalten keinen Hover-Farbwechsel.
 
 Der Theme-Button steht ohne Hintergrundrechteck. Sonne und Mond verwenden einen gemeinsamen SVG-Kreis mit animierter Aussparung; Übergang etwa 400 ms, bei reduzierter Bewegung ohne Animation. Manuelle Auswahl bleibt auf allen Seiten und nach erneutem Aufruf erhalten; kein auswählbarer Systemmodus.
 

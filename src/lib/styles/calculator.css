@@ -25,3 +25,7 @@
 
   .quantity-field.pending { opacity: .5; }
   .quantity-field.pending:focus-within { opacity: 1; }
+
+  .qubit-button { border: none; border-radius: var(--control-radius); background: var(--color-control); color: var(--color-text); min-height: var(--control-height); padding: 8px 16px; font-size: .8125rem; }
+  .qubit-button:hover:not(:disabled) { color: var(--color-accent); }
+  .qubit-button:disabled { opacity: .45; }

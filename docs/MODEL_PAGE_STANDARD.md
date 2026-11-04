@@ -18,7 +18,8 @@ Seit 03.11.2026 verwendet auch Inclined Plane unter Mechanics → Dynamics die g
 | Favicon und Logo-Geometrie | [favicon.svg](../static/favicon.svg); Header nutzt es als Maske |
 | Hierarchie, verfügbare Themen und aktuelle Modelldaten | [topics.ts](../src/lib/content/topics.ts); Elektrotechnik-Inhalte in [electricity.ts](../src/lib/content/electricity.ts) |
 | Übersichten und Breadcrumb-Aufbau | [Overview.svelte](../src/lib/components/Overview.svelte) |
-| Modellkartenrahmen, Theorie-Layout und Info-Button | [ModelCard.svelte](../src/lib/components/ModelCard.svelte) |
+| Modellkartenrahmen und Theorie-Layout | [ModelCard.svelte](../src/lib/components/ModelCard.svelte) |
+| Gemeinsamer Info-Button (ⓘ/✕) | [InfoButton.svelte](../src/lib/components/ui/InfoButton.svelte) |
 | KaTeX-Ausgabe | [Formula.svelte](../src/lib/components/Formula.svelte) |
 | Einheitenoptionen und SI-Konversionsfaktoren | [units.ts](../src/lib/physics/units.ts) |
 | Präfixe, Parsing, drei signifikante Ergebnisstellen | [quantities.ts](../src/lib/calculators/quantities.ts) |
@@ -72,7 +73,7 @@ Die Seitenpalette aus `portal.html` bleibt exakt erhalten; keine neuen Farbsyste
 
 Eingaben, Reset und Einheiten-Auslöser: `--color-control`, 8-px-Radius, mindestens 44-px-Höhe, keine normalen Rahmen. Zahlenfeld: grauer 1-px-Fokusrahmen ohne Abstand; ungültig derselbe Rahmen gestrichelt, kein zusätzlicher heller Rand. Einheitenauslöser: weder Fokusrahmen noch Unterstreichung; Optionsliste mit Theme-Fläche, 10-px-Radius, dezentem Schatten, Häkchen für aktuelle Einheit und neutraler aktiver Fläche. Menü bleibt per Pfeiltasten, Home/End, Buchstabensuche, Enter/Leertaste, Escape und Tab bedienbar. Pfeilabstand rechts 14 px.
 
-Header-Links behalten blauen Hover sowie blaue Unterstreichung des aktiven Hauptthemas einschliesslich Unterseiten. Breadcrumbs bleiben einheitlich hoch, auf einer Grundlinie und ohne Unterstreichung. Der Theme-Schalter hat weder Hintergrundrechteck noch Hover-Farbwechsel: Im Dark Mode zeigt der Schalter die Sonne, im Light Mode den Mond als Symbol des Zielmodus. Sonne/Mond morphen über einen gemeinsamen Kreis in etwa 400 ms. Beim ersten Besuch gilt die Systemeinstellung, danach die gespeicherte manuelle Wahl; keine „System“-Auswahl. Reduzierte Bewegung respektieren.
+Unter 80 rem bündelt ein natives aufklappbares Menü die Hauptnavigation; Logo und Theme-Schalter bleiben direkt erreichbar. Ab 80 rem werden die Links direkt angezeigt. Die Navigation funktioniert auch ohne JavaScript und verwendet für beide Ansichten dieselbe Linkquelle. Header-Links behalten blauen Hover sowie blaue Unterstreichung des aktiven Hauptthemas einschliesslich Unterseiten. Breadcrumbs bleiben einheitlich hoch, auf einer Grundlinie und ohne Unterstreichung. Der Theme-Schalter hat weder Hintergrundrechteck noch Hover-Farbwechsel: Im Dark Mode zeigt der Schalter die Sonne, im Light Mode den Mond als Symbol des Zielmodus. Sonne/Mond morphen über einen gemeinsamen Kreis in etwa 400 ms. Beim ersten Besuch gilt die Systemeinstellung, danach die gespeicherte manuelle Wahl; keine „System“-Auswahl. Reduzierte Bewegung respektieren.
 
 ## Zahlen und Resultate
 
@@ -122,3 +123,15 @@ Ergebnis- und Umrechnungsgleichungen verwenden den gemeinsamen `Formula`-Baustei
 Fokusbezug zur Skizze: `QuantityField` meldet den Fokus seines Zahlenfelds über den optionalen Callback `onfocuschange`. Inclined Plane markiert bei fokussiertem α-Feld Winkelbogen, Winkelfläche und Beschriftung mit der gemeinsamen Akzentfarbe. Bei Fokus auf L wird die gesamte geneigte Strecke samt L markiert, bei h die senkrechte Höhendifferenz samt h. Die Markierung endet bei Fokusverlust, funktioniert auch per Tastatur und verändert weder Geometrie noch Rechenwerte. Keine modellspezifische Fokuslogik in `QuantityField` einbauen.
 
 Inclined Plane bietet zusätzlich L und h als Längenfelder mit derselben globalen Einheitenliste. Zwei Werte aus L, h und α bestimmen die dritte Grösse; widersprüchliche Dreifachangaben sind ungültig. v_end wird aus Ruhe über sqrt(2 a L) berechnet, ohne v₀-Feld. Geometrie- und Geschwindigkeitsresultate bleiben unterhalb der Eingaben im gemeinsamen Rechenweg. Fachliche Sonderfälle siehe Physikstandards.
+
+## Quantum: Qubit
+
+Modern Physics → Quantum verwendet dieselbe standardmässig geschlossene Modellkarte für Qubit. Fachlich abweichend enthält der Rechner Gatteraktionen statt eines klassischen fehlenden Messwerts. Winkel verwenden `QuantityField`, Resultate `EquationBlock` und Theorie KaTeX. Gatterauswahl wie in `Qubit_Demo/main/portal.html`: X/Y/Z, √X/√Z, H, Rx/Ry/Rz und U. Jede der fünf Gattergruppen besitzt einen Info-Button mit den zugehörigen KaTeX-Matrizen aus derselben Inhaltsquelle. Die Gruppeninformationen starten geschlossen und werden beim Schliessen der Qubit-Karte zurückgesetzt. Eine eigene perspektivische 3D-Blochkugel zeigt den aktuellen, auch während der Animation konsistent berechneten Zustand. Die Kamera bleibt per Drag oder Tastatur drehbar und kann mit Reset view zurückgesetzt werden. Gatterverlauf, letzte Gattermatrix, Statusmeldungen sowie Reset qubit, Undo und Animationsschalter entfallen; Gatter werden animiert angewendet, sofern keine reduzierte Bewegung eingestellt ist. Die Darstellung verwendet gemeinsame Theme-Tokens und wird separat im Browser geladen. Reduzierte Bewegung unterdrückt die Gatteranimation. Fachvertrag und Quellen stehen in den Physikstandards.
+
+## Waves: Doppler Effect
+
+Oscillations & Waves ist eine Übersicht; Doppler Effect liegt unter `/oscillations-and-waves/doppler-effect`. Die Modellkarte Acoustic Doppler Effect verwendet gemeinsame Felder, Einheitenmenüs, Reset und Ergebnisgleichungen. Drei Angaben aus fₛ, fₒ, vₛ und vₒ bestimmen die vierte; ein leeres c verwendet die sichtbare Annahme 343 m/s. Manuelle Felder bleiben unverändert. Die SVG-Wellenfronten stehen unter den Ergebnissen, bei unvollständigen oder ungültigen Eingaben als klar schematische statische Vorschau. Play/Pause steuert eine zeitlich skalierte Animation; reduzierte Bewegung unterbindet die Wiedergabe. Vorzeichenkonvention und Modellgrenzen stehen direkt am Rechner. Der physikalische Vertrag steht in den Physikstandards.
+
+## Optics: Total Internal Reflection
+
+Optics ist eine Übersicht mit der Unterseite `/optics/total-internal-reflection`. Die Modellkarte verwendet gemeinsame Felder für n₁, n₂ und θ₁, Einheitenmenüs, Reset, Theorie und Ergebnisgleichungen. Zwei Indizes reichen für den Grenzwinkel beziehungsweise die Aussage, dass Totalreflexion in dieser Richtung nicht möglich ist. θ₁ ergänzt Brechungs-/Reflexionswinkel und die Einordnung. Winkel starten in rad, optional °; Ergebnisse zeigen beide Darstellungen ohne SI-Präfix. Die SVG-Skizze steht unter den Resultaten, unterscheidet schematische und berechnete Geometrie und zeigt bei Totalreflexion keinen propagierenden gebrochenen Strahl. Gleiche Indizes erzeugen keinen reflektierten Strahl. Kein zusätzliches Farbsystem, keine neue Bibliothek.

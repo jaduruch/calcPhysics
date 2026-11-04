@@ -20,7 +20,7 @@ test('published pages have unique useful titles and canonical metadata', () => {
   assert.equal(new Set(pages.map(page => page.title)).size, pages.length);
   assert.ok(pages.every(page => page.description.length > 40 && page.canonical.startsWith(site.origin)));
   assert.match(pageMetadata('/mechanics/kinematics').title, /Uniform Motion Calculator/);
-  assert.equal(pageMetadata('/thermodynamics'), null);
+  assert.ok(pageMetadata('/optics'));
   assert.equal(pageMetadata('/unknown'), null);
 });
 test('sitemap follows the publication registry automatically and escapes XML', () => {
@@ -57,7 +57,7 @@ test('structured data matches published pages and their visible breadcrumbs', ()
     [2, 'Mechanics', 'https://calcphysics.com/mechanics'],
     [3, 'Dynamics', 'https://calcphysics.com/mechanics/dynamics']
   ]);
-  assert.equal(pageStructuredData('/thermodynamics'), null);
+  assert.ok(pageStructuredData('/optics'));
   assert.equal(structuredDataJson('/unknown'), null);
   assert.ok(!pageStructuredData('/')['@graph'].some(item => item['@type'] === 'BreadcrumbList'));
 });

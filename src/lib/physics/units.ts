@@ -4,6 +4,10 @@
  * Reference: https://ssd.jpl.nasa.gov/astro_par.html
  */
 export const unitGroups = {
+  pressure: { si: 'Pa', units: [{ symbol: 'Pa', factor: 1 }, { symbol: 'bar', factor: 100000 }, { symbol: 'atm', factor: 101325 }] },
+  volume: { si: 'm³', units: [{ symbol: 'm³', factor: 1 }, { symbol: 'L', factor: 0.001 }] },
+  amount: { si: 'mol', units: [{ symbol: 'mol', factor: 1 }] },
+  temperature: { si: 'K', units: [{ symbol: 'K', factor: 1 }] },
   voltage: { si: 'V', units: [{ symbol: 'V', factor: 1 }] },
   current: { si: 'A', units: [{ symbol: 'A', factor: 1 }] },
   resistance: { si: 'Ω', units: [{ symbol: 'Ω', factor: 1 }] },

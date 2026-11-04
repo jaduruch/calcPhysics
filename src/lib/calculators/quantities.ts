@@ -55,3 +55,11 @@ export function changeQuantityUnit(raw: string, kind: QuantityKind, from: string
   if (parsed.status !== 'valid' || from === to) return raw;
   return `${Number(parsed.number) * (oldUnit.factor / newUnit.factor)}${parsed.prefix}`;
 }
+
+/** Shared three-significant-digit LaTeX measurement, with optional engineering prefixes. */
+export function quantityLatex(value: number, unit: string, engineering = true): string {
+  const formatted = engineering ? formatQuantity(value) : { number: value.toPrecision(3), prefix: '' };
+  const number = formatted.number.replace(/e\+?(-?\d+)/i, String.raw`\times 10^{$1}`);
+  const prefix = formatted.prefix === 'u' ? String.raw`\mu ` : formatted.prefix;
+  return `${number}${unit ? `\\,\\mathrm{${prefix}${unit.replace('²', '^{2}').replace('³', '^{3}')}}` : ''}`;
+}

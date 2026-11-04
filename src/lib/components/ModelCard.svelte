@@ -3,6 +3,7 @@
   import type { ModelDefinition } from '#lib/content/model-types.ts';
   import { ui } from '#lib/i18n/en.ts';
   import Formula from './Formula.svelte';
+  import InfoButton from './ui/InfoButton.svelte';
   let { model, index, calculator }: { model: ModelDefinition; index: number; calculator: Snippet } = $props();
   let showTheory = $state(false);
   function resetTheoryOnClose(event: Event) {
@@ -18,7 +19,7 @@
   </summary>
   <div class="motion-content">
     <div class="theory-heading">
-      <button class="info-toggle" type="button" aria-label={`${showTheory ? ui.hideTheory : ui.showTheory}: ${model.title}`} aria-expanded={showTheory} aria-controls={`${model.id}-theory`} title={showTheory ? ui.hideTheory : ui.showTheory} onclick={() => showTheory = !showTheory}><span aria-hidden="true">{showTheory ? '✕' : 'ⓘ'}</span></button>
+      <InfoButton expanded={showTheory} controls={`${model.id}-theory`} label={`${showTheory ? ui.hideTheory : ui.showTheory}: ${model.title}`} title={showTheory ? ui.hideTheory : ui.showTheory} onclick={() => showTheory = !showTheory} />
     </div>
     <section class="theory-panel" id={`${model.id}-theory`} hidden={!showTheory} aria-label={ui.theory}>
       <div class="theory-layout">
@@ -61,8 +62,6 @@
   details[open] .chevron { transform: rotate(225deg); margin-bottom: -4px; }
   .motion-content { padding: 0 var(--model-padding) var(--model-padding); }
   .theory-heading { display: flex; align-items: center; justify-content: flex-start; gap: 8px; }
-  .info-toggle { display: inline-flex; align-items: center; justify-content: flex-start; background: none; border: none; color: var(--color-text-muted); font-size: 16px; padding: 0; line-height: 1; min-width: 44px; min-height: 44px; flex-shrink: 0; cursor: pointer; }
-  .info-toggle:hover, .info-toggle[aria-expanded="true"] { color: var(--color-text); }
   .theory-panel { padding: 8px 0 28px; }
   .derivative-note { max-width: var(--theory-width); margin-top: 20px; }
   .theory-source { margin-top: 16px; font-size: .75rem; color: var(--color-text-muted); }

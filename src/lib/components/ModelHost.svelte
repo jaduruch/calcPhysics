@@ -5,7 +5,11 @@
   import ModelCard from './ModelCard.svelte';
   import UniformMotionCalculator from './calculator/UniformMotionCalculator.svelte';
   import InclinedPlaneCalculator from './calculator/InclinedPlaneCalculator.svelte';
-  const calculators = { 'uniform-motion': UniformMotionCalculator, 'inclined-plane': InclinedPlaneCalculator };
+  import IdealGasCalculator from './calculator/IdealGasCalculator.svelte';
+  import QubitSimulator from './calculator/QubitSimulator.svelte';
+  import DopplerCalculator from './calculator/DopplerCalculator.svelte';
+  import TotalReflectionCalculator from './calculator/TotalReflectionCalculator.svelte';
+  const calculators = { 'total-reflection': TotalReflectionCalculator, doppler: DopplerCalculator, qubit: QubitSimulator, 'ideal-gas': IdealGasCalculator, 'uniform-motion': UniformMotionCalculator, 'inclined-plane': InclinedPlaneCalculator };
   let { model, index }: { model: ModelDefinition; index: number } = $props();
   const Calculator = $derived(model.calculator === 'electrical' ? null : calculators[model.calculator]);
 </script>

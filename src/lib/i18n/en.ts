@@ -1,6 +1,7 @@
 export const ui = {
   homeTitle: 'Physics calculators and theory',
   homeDescription: 'Calculate uniform motion and inclined plane forces with unit conversions, step-by-step formulas and diagrams. Explore the assumptions and theory behind each model, from learning physics to everyday engineering.',
+  mainNavigation: 'Main navigation', menu: 'Main menu',
   home: 'Home', subjects: 'Explore physics', subjectLabel: 'Subject overview',
   subtopics: 'Subtopics', models: 'Theory & calculation models',
   planned: 'Coming soon', open: 'Explore', theme: 'Appearance',
@@ -108,3 +109,79 @@ export const electricalUi = {
   zero: 'Zero is a valid input where the model permits it.'
   ,highPassCircuit:'High-pass circuit',lowPassCircuit:'Low-pass circuit',filterCircuitDescription:'Automatically generated ideal first-order passive filter circuit.',bodeMagnitudeDiagram:'Bode magnitude',bodePhaseDiagram:'Bode phase shift',seriesResonator:'Series RLC resonator',parallelResonator:'Parallel RLC resonator',resonatorCircuitDescription:'Automatically generated ideal RLC resonant circuit.'
 };
+
+export const idealGasUi = {
+  p: 'absolute pressure', V: 'volume', n: 'amount of substance', T: 'absolute temperature',
+  assumptions: 'Ideal gas in equilibrium; all quantities must be positive. Use absolute pressure and temperature in kelvin. Real-gas effects and phase changes are excluded.',
+  invalid: 'Enter finite positive values within the numerical range.',
+  conflict: 'The four values are inconsistent with the ideal gas law.',
+  consistent: 'The four values satisfy the ideal gas law.',
+  incomplete: 'Enter three quantities to calculate the remaining one.'
+} as const;
+
+export const qubitUi = {
+  sphere: 'Bloch sphere',
+  sphereDescription: 'Perspective 3D view of the pure qubit. The blue arrow is the Bloch vector; the dotted blue curve is the last gate path. The +z pole is |0⟩ and the −z pole is |1⟩. Dashed guides project the vector onto the xy plane; θ is measured from +z and φ from +x toward +y. At |1⟩, a semicircle in the xz plane shows θ = 180°. The azimuth is undefined at both poles.',
+  orbitLabel: 'Rotate the 3D Bloch sphere',
+  orbitHelp: 'Drag to orbit. With the view focused, use arrow keys to rotate and Home to reset the camera.',
+  resetView: 'Reset view',
+  loading: 'Loading interactive 3D view…',
+  viewError: 'The interactive view could not be loaded. State amplitudes and probabilities remain available.',
+  showMatrices: 'Show matrices', hideMatrices: 'Hide matrices',
+  pauli: 'Pauli gates', squareRoot: 'Square-root gates', hadamard: 'Hadamard', rotations: 'Rotation gates', general: 'General gate',
+  rotationAngle: 'rotation angle', theta: 'polar rotation', phi: 'output phase', lambda: 'input phase',
+  defaults: 'Blank angle fields use γ = π/2, θ = π/2 and φ = λ = 0. U uses the IBM convention: θ ∈ [0, π], φ, λ ∈ [0, 2π).',
+  invalidAngle: 'Enter finite angles. For U, use θ ∈ [0, π] and φ, λ ∈ [0, 2π). Rotation angles γ must be between −2π and 2π.',
+  currentState: 'Current state', probabilities: 'Z-basis probabilities', coordinates: 'Bloch coordinates',
+  assumptions: 'One pure, isolated qubit; ideal gates, no noise, entanglement or measurement collapse. Probabilities are predictions in the Z basis. Global phase is invisible on the Bloch sphere. Animation timing is illustrative.',
+  start: 'Initial state', undefinedPhase: 'undefined at the poles',
+  defaultHalfPi: 'default π/2', defaultZero: 'default 0',
+  rotationHint: 'Positive rotations follow the right-hand rule.',
+  reducedMotion: 'Reduced motion: gates are applied without animation.'
+} as const;
+
+export const dopplerUi = {
+  fs: 'emitted frequency', fo: 'observed frequency', vs: 'source velocity', vo: 'observer velocity', c: 'sound speed',
+  incomplete: 'Enter three of fₛ, fₒ, vₛ and vₒ; use 0 for a stationary source or observer.',
+  conflict: 'The four inputs are inconsistent with the Doppler equation.',
+  'no-solution': 'No solution exists within this subsonic model.',
+  domain: 'Frequencies and sound speed must be positive; both velocity magnitudes must be below the sound speed.',
+  numerical: 'The result is outside the finite numerical range.',
+  parseError: 'Enter a valid finite number in each completed field.',
+  consistent: 'The four inputs satisfy the Doppler equation.',
+  defaultSpeed: 'default 343 m/s',
+  assumedSpeed: 'Using c = 343 m/s (air near 20 °C).',
+  signConvention: 'Positive vₛ means the source moves toward the observer; positive vₒ means the observer moves toward the source. Negative values mean moving away. Both velocities are relative to the medium.',
+  assumptions: 'Uniform stationary medium, constant sound speed and collinear motion with |vₛ| < c and |vₒ| < c, before source and observer pass. No wind, sonic booms, reflection or relativistic light Doppler effect.',
+  wavelength: 'wavelength toward observer', shift: 'frequency shift',
+  source: 'Source', observer: 'Observer',
+  diagramTitle: 'Doppler wavefronts',
+  diagramDescription: 'Cross-section of spherical sound wavefronts. Each circle expands from its fixed emission point in the stationary medium. Source and observer move along the horizontal line.',
+  schematic: 'Schematic preview; enter valid inputs to show your model.',
+  scaled: 'Wavefronts are one source period apart. Space and time are scaled for display; the loop restarts before source and observer pass.',
+  play: 'Play animation', pause: 'Pause animation',
+  reducedMotion: 'Reduced motion: a static wavefront view is shown.'
+} as const;
+
+export const reflectionUi = {
+  n1: 'incident-medium refractive index', n2: 'second-medium refractive index', angle: 'angle of incidence',
+  criticalAngle: 'critical angle', reflectedAngle: 'angle of reflection', transmittedAngle: 'angle of refraction',
+  incomplete: 'Enter both refractive indices to find whether total internal reflection is possible.',
+  addAngle: 'Enter an incidence angle to determine the ray paths.',
+  noCritical: 'No critical angle exists for total internal reflection in this direction because n₁ ≤ n₂.',
+  'total-reflection': 'Total internal reflection: θ₁ > θc. No propagating refracted ray enters medium 2.',
+  critical: 'At the critical angle: θ₂ = 90°. The limiting refracted ray runs along the boundary.',
+  refraction: 'Refraction: a transmitted ray is allowed by Snell’s law.',
+  matched: 'Equal refractive indices: the ray continues straight with no interface reflection in this ideal model.',
+  domain: 'Refractive indices must be finite and positive. The incidence angle must satisfy 0 ≤ θ₁ < 90° (π/2 rad).',
+  numerical: 'The result is outside the finite numerical range.',
+  parseError: 'Enter a valid finite number in each completed field.',
+  convention: 'Light travels from medium 1 into medium 2. All angles are measured from the normal, not from the surface.',
+  assumptions: 'Flat interface between homogeneous, isotropic, non-magnetic, transparent media with positive real refractive indices at the same wavelength. Ray paths only: polarization, reflected/transmitted intensities and the evanescent field are not calculated.',
+  medium1: 'Medium 1', medium2: 'Medium 2', normal: 'Normal',
+  incident: 'Incident', reflected: 'Reflected', transmitted: 'Refracted',
+  diagramTitle: 'Refraction and total internal reflection',
+  schematic: 'Schematic ray preview; enter both indices and an incidence angle for your ray paths.',
+  calculated: 'Ray geometry from the calculated angles; line brightness does not represent optical intensity.',
+  diagramDescription: 'Medium 1 is below the horizontal interface and medium 2 is above. The incident ray travels toward the interface; the reflected ray remains below it. A refracted ray is drawn only when propagation into medium 2 is allowed.'
+} as const;
