@@ -5,9 +5,12 @@
   import Formula from './Formula.svelte';
   let { model, index, calculator }: { model: ModelDefinition; index: number; calculator: Snippet } = $props();
   let showTheory = $state(false);
+  function resetTheoryOnClose(event: Event) {
+    if (!(event.currentTarget as HTMLDetailsElement).open) showTheory = false;
+  }
 </script>
 
-<details class="motion-card">
+<details class="motion-card" ontoggle={resetTheoryOnClose}>
   <summary>
     <span class="topic-number">{String(index + 1).padStart(2, '0')}</span>
     <h3>{model.title}</h3>

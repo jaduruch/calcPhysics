@@ -19,6 +19,7 @@ const symbols: Record<string, string> = {
 };
 export function electricalSymbol(id: string): string { return symbols[id] ?? (/^[RCL][1-9]\d*$/.test(id) ? `${id[0]}_{${id.slice(1)}}` : id); }
 const numeric = (value: string) => value.replace(/e\+?(-?\d+)/i, String.raw`\times10^{$1}`);
+const usesEngineeringPrefix = (kind: ElectricalField['kind']) => !['ratio', 'angle', 'decibel', 'dimensionless'].includes(kind);
 export function electricalQuantity(value: number, unit: string, engineering = true): string {
   const formatted = engineering ? formatQuantity(value) : { number: value.toPrecision(3), prefix: '' };
   const symbol = unit === '1' ? '' : unit.replace('Ω', String.raw`\Omega`).replace('²', '^2').replace('%', String.raw`\%`);
@@ -26,14 +27,27 @@ export function electricalQuantity(value: number, unit: string, engineering = tr
   return `${numeric(formatted.number)}${symbol ? `\\,\\mathrm{${prefix}${symbol}}` : ''}`;
 }
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const needsMultiplicationBefore = (formula: string, offset: number) => {
+  const prefix = formula.slice(0, offset).trimEnd();
+  if (!prefix) return false;
+  if (/\\(?:cdot|times|sin|cos|tan|exp)$/.test(prefix)) return false;
+  return !String.raw`+-*/=,([{^_`.includes(prefix.at(-1)!);
+};
+const needsMultiplicationAfter = (formula: string, offset: number) => /^\\(?:sqrt|sin|cos|tan|exp)\b/.test(formula.slice(offset).trimStart());
+const substitutedQuantity = (formula: string, offset: number, token: string, quantity: string) => {
+  const signed = quantity.startsWith('-') ? `\\left(${quantity}\\right)` : quantity;
+  const before = needsMultiplicationBefore(formula, offset) ? String.raw`\cdot ` : '';
+  const after = needsMultiplicationAfter(formula, offset + token.length) ? String.raw`\cdot ` : '';
+  return `${before}${signed}${after}`;
+};
 /** All substitutions come from the same validated SI result as the diagrams. */
 export function electricalEquations(definition: ElectricalDefinition, result: ElectricalResult, units: Record<string, string>): string[] {
   if (result.status !== 'success') return [];
   const values = { ...result.values, ...result.outputs };
   const fields: readonly ElectricalField[] = [...definition.inputs, ...definition.outputs];
-  const substitutions = new Map(fields.filter(field => values[field.id] !== undefined).map(field => [electricalSymbol(field.id), `\\left(${electricalQuantity(values[field.id], unitGroups[field.kind].si, false)}\\right)`]));
-  substitutions.set(String.raw`\mu_0`, `\\left(${electricalQuantity(MU0, 'H/m', false)}\\right)`);
-  substitutions.set(String.raw`\epsilon_0`, `\\left(${electricalQuantity(EPS0, 'F/m', false)}\\right)`);
+  const substitutions = new Map(fields.filter(field => values[field.id] !== undefined).map(field => [electricalSymbol(field.id), electricalQuantity(values[field.id], unitGroups[field.kind].si, usesEngineeringPrefix(field.kind))]));
+  substitutions.set(String.raw`\mu_0`, electricalQuantity(MU0, 'H/m'));
+  substitutions.set(String.raw`\epsilon_0`, electricalQuantity(EPS0, 'F/m'));
   const tokens = [...substitutions.keys()].sort((a,b) => b.length-a.length);
   const pattern = new RegExp(`(?:${tokens.map(escapeRegExp).join('|')}|\\\\[a-zA-Z]+)`, 'g');
   return definition.outputs.filter(output => result.outputs[output.id] !== undefined).map(output => {
@@ -42,7 +56,11 @@ export function electricalEquations(definition: ElectricalDefinition, result: El
     const ids = [...fields.map(field => field.id)].sort((a,b)=>b.length-a.length);
     const idPattern = new RegExp(`(?:${ids.map(escapeRegExp).join('|')}|\\\\[a-zA-Z]+)`, 'g');
     const formula = step ? step.formula.replace(idPattern, token => ids.includes(token) ? `${electricalSymbol(token)} ` : token) : output.formula;
-    const substitution = formula.replace(pattern, token => substitutions.get(token) ?? token);
-    return `${electricalSymbol(output.id)} = ${formula} = ${substitution} \\approx ${electricalQuantity(result.outputs[output.id] / getUnit(output.kind, unit).factor, unit, output.kind !== 'ratio' && output.kind !== 'angle' && output.kind !== 'decibel' && output.kind !== 'dimensionless')}`;
+    const substitution = formula.replace(pattern, (token, offset: number) => {
+      const quantity = substitutions.get(token);
+      return quantity === undefined ? token : substitutedQuantity(formula, offset, token, quantity);
+    });
+    const outputUsesEngineeringPrefix = usesEngineeringPrefix(output.kind) && unit === unitGroups[output.kind].si;
+    return `${electricalSymbol(output.id)} = ${formula} = ${substitution} \\approx ${electricalQuantity(result.outputs[output.id] / getUnit(output.kind, unit).factor, unit, outputUsesEngineeringPrefix)}`;
   });
 }

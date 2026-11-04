@@ -129,12 +129,6 @@
   {#if isRlAc}<RcCircuitDiagram {parallel} inductive active={activeQuantity} />{/if}
   {#if isRcTransient}<RcTransientDiagram {discharging} />{/if}
   {#if isRlTransient}<RcTransientDiagram {discharging} inductive />{/if}
-  {#if definition.image && !isRcAc && !isRcTransient}
-    <figure class="electrical-diagram">
-      <img src={`/diagrams/electricity/${definition.image}`} alt={`${definition.title}. ${text.diagram}`} loading="lazy" />
-      <figcaption>{text.diagramNote}</figcaption>
-    </figure>
-  {/if}
   {#if modelId === 'three-phase-generator'}<GeneratorDiagram {result} />{/if}
   {#if calculationId.endsWith('-ac')}<ElectricalPhasor {result} />{/if}
   {#if curves.length}
@@ -148,9 +142,6 @@
 <style>
   .calculator-mode { margin-bottom: 16px; }
   .status { margin-top: 12px; }
-  .electrical-diagram { margin: 24px 0 0; max-width: var(--calculator-width); }
-  .electrical-diagram img { display: block; max-width: 100%; width: calc(400px * var(--graphic-scale)); height: auto; object-fit: contain; background: black; border-radius: var(--control-radius); }
-  figcaption { font-size: .75rem; color: var(--color-text-muted); margin-top: 8px; }
   .electrical-curves { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 24px; }
   .electrical-curves > :global(:only-child) { grid-column: 1 / -1; }
   .output-unit { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 28rem; margin-top: 16px; font-size: .8125rem; color: var(--color-text-muted); }

@@ -23,7 +23,7 @@ Ohm’s Law verwendet eine eigene SVG-Schaltung (`OhmsLawDiagram.svelte`) mit Qu
 
 Der Spannungsteiler nutzt ebenfalls eine eigene SVG-Grafik und dieselben Schaltungsstyles in `styles/circuit-diagram.css`. Eine gemeinsame Karte schaltet zwischen unbelastetem und belastetem Modell um. R_L und die beiden Zweigströme erscheinen nur im belasteten Modus. Vorwärts- und Rückwärtsrechnungen nutzen dieselben expliziten Beziehungen; gemeinsame manuelle Eingaben bleiben beim Umschalten erhalten, ausgeblendete Lastangaben sind im unbelasteten Modus nicht wirksam. Fokusverlust setzt die Hervorhebung zurück. Die Theorie der Karte enthält beide Varianten.
 
-Unter `static/diagrams/electricity/` verbleiben nur die drei tatsächlich eingebundenen RC-Referenzgrafiken für Serien-, Parallel- und Transientenschaltung. Alle übrigen Schaltungen und Wellenformen werden aus validierten Rechenergebnissen dynamisch erzeugt. Die externen Quellenlinks wurden auf Wunsch aus allen Modelltheorien entfernt; fremder React-/DOM-/Controller-Code wird nicht ausgeführt oder eingebettet.
+Alle Schaltungen und Wellenformen werden aus validierten Rechenergebnissen mit eigenen Svelte-/SVG-Komponenten dynamisch erzeugt; statische Electricity-Diagramme werden nicht mehr benötigt. Die externen Quellenlinks wurden auf Wunsch aus allen Modelltheorien entfernt; fremder React-/DOM-/Controller-Code wird nicht ausgeführt oder eingebettet.
 
 ## Umsetzung und fachliche Grenzen
 

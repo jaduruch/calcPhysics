@@ -10,8 +10,7 @@ import { parseQuantityInUnit } from '../src/lib/calculators/quantities.ts';
 const near = (a,b) => assert.ok(Math.abs(a-b) <= 1e-12 * Math.max(1,Math.abs(b)), `${a} != ${b}`);
 const solve = (id, input) => { const r = solveElectrical(id,input); assert.equal(r.status,'success',JSON.stringify(r)); return r.outputs; };
 const typical = { R: 100, R1: 1000, R2: 2000, RL: 1000, U: 12, U1: 230, Uin: 12, Up: 10, I: .1, I2: 1, Ip: 2, N: 100, N1: 100, N2: 10, eta: .9, n: 10, C1: 1e-6, C2: 1e-6, C: 1e-6, L: .01, L1: .01, L2: .02, f: 1000, t: .001, phi: .3, a: 2, b: 3, c: 4, A: .001, l: .1, mu: 100, er: 2, d: .002, dt: .01, dPhi: .002, dI: .2, P: 3, Q: .001, E: 500, B: .2, v: 4 };
-test('all ten subtopics have real models, valid formulas and available source diagrams', async () => {
-  const { access } = await import('node:fs/promises');
+test('all ten subtopics have real models and valid formulas', () => {
   const children = topics.filter(t => t.parentId === 'electromagnetism');
   assert.equal(children.length,10);
   assert.ok(!children.some(topic => topic.id === 'transformers'));
@@ -50,7 +49,6 @@ test('all ten subtopics have real models, valid formulas and available source di
     for(const eq of card?.formulas ?? []) assert.doesNotThrow(()=>katex.renderToString(eq.expression,{throwOnError:true}),d.id);
     for(const note of card?.notes ?? []) if(note.expression) assert.doesNotThrow(()=>katex.renderToString(note.expression,{throwOnError:true}),d.id);
     assert.equal(JSON.stringify(r),before);
-    if(d.image) await access(new URL('../static/diagrams/electricity/'+d.image, import.meta.url));
   }
 });
 test('DC, loaded divider, component combinations and star-delta reference values',()=>{
@@ -223,6 +221,25 @@ test('unit conversions and every curve use unrounded SI results; invalid state l
       for(const i of [0,120,240])near(c.values[i],solve(d.id,{...given,[d.chart==='filter'?'f':'t']:c.times[i]})[field]);
     }
   }
+});
+
+test('electrical formulas use engineering prefixes and three significant figures without rounding solver values',()=>{
+  assert.equal(electricalQuantity(12345.678,'Ω'),String.raw`12.3\,\mathrm{k\Omega}`);
+  assert.equal(electricalQuantity(4.56789e-6,'F'),String.raw`4.57\,\mathrm{\mu F}`);
+  const definition=electricalDefinitions.find(d=>d.id==='ohms-law');
+  const result=solveElectrical('ohms-law',{U:12.3456,R:12345.678});
+  assert.equal(result.status,'success');
+  near(result.outputs.I,12.3456/12345.678);
+  const currentEquation=electricalEquations(definition,result,{}).find(equation=>equation.startsWith('I ='));
+  assert.ok(currentEquation.includes(String.raw`12.3\,\mathrm{V}`),currentEquation);
+  assert.ok(currentEquation.includes(String.raw`12.3\,\mathrm{k\Omega}`),currentEquation);
+  assert.ok(currentEquation.includes(String.raw`1.00\,\mathrm{mA}`),currentEquation);
+  assert.ok(!currentEquation.includes(String.raw`\left(12.3\,\mathrm{V}\right)`),currentEquation);
+  const powerEquation=electricalEquations(definition,solveElectrical('ohms-law',{U:12,R:3000}),{}).find(equation=>equation.startsWith('P ='));
+  assert.ok(powerEquation.includes(String.raw`12.0\,\mathrm{V} \cdot 4.00\,\mathrm{mA}`),powerEquation);
+  const acPower=electricalDefinitions.find(d=>d.id==='ac-power');
+  const signedEquation=electricalEquations(acPower,solveElectrical('ac-power',{U:230,I:2,phi:-.5}),{}).find(equation=>equation.startsWith('P ='));
+  assert.ok(signedEquation.includes(String.raw`\cos\left(-0.500\,\mathrm{rad}\right)`),signedEquation);
 });
 
 test('PWM curves use the physical pulse function and generator vectors have equal scales',()=>{

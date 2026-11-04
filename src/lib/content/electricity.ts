@@ -1258,26 +1258,22 @@ const rawElectricalDefinitions: readonly ElectricalDefinition[] = [
   {
     id: 'rc-series-ac', topic: 'capacitors', title: 'Series RC at AC',
     inputs: rcAcFields, outputs: rcAcFields.map(field => ({ ...field, formula: '' })),
-    assumption: 'Ideal sinusoidal steady state. U and I are RMS values. The phase angle, reactive factor and capacitive reactive power are negative. R, X_C, Z, C and f are positive.',
-    image: 'Serie_RC.PNG'
+    assumption: 'Ideal sinusoidal steady state. U and I are RMS values. The phase angle, reactive factor and capacitive reactive power are negative. R, X_C, Z, C and f are positive.'
   },
   {
     id: 'rc-parallel-ac', topic: 'capacitors', title: 'Parallel RC at AC',
     inputs: rcParallelFields, outputs: rcParallelFields.map(field => ({ ...field, formula: '' })),
-    assumption: 'Ideal sinusoidal steady state. The resistive and capacitive branch currents I_R and I_C form the total RMS current I. The phase angle, reactive factor and capacitive reactive power are negative.',
-    image: 'Parallel_RC.png'
+    assumption: 'Ideal sinusoidal steady state. The resistive and capacitive branch currents I_R and I_C form the total RMS current I. The phase angle, reactive factor and capacitive reactive power are negative.'
   },
   {
     id: 'rc-charge', topic: 'capacitors', title: 'RC: Step Response',
     inputs: rcTransientFields, outputs: rcTransientFields.map(field => ({ ...field, formula: '' })),
-    assumption: 'Ideal DC step U at t = 0, zero initial stored energy. I = U/R is the initial supply current. R, C and τ > 0; t ≥ 0.',
-    image: 'RC_Charge.png', chart: 'transient'
+    assumption: 'Ideal DC step U at t = 0, zero initial stored energy. I = U/R is the initial supply current. R, C and τ > 0; t ≥ 0.', chart: 'transient'
   },
   {
     id: 'rc-discharge', topic: 'capacitors', title: 'RC: Discharging',
     inputs: rcTransientFields, outputs: rcTransientFields.map(field => ({ ...field, formula: '' })),
-    assumption: 'Initially charged capacitor at U, disconnected from the source and discharged through R. I = U/R is the initial current magnitude; i(t) is negative in the chosen reference direction.',
-    image: 'RC_Charge.png', chart: 'transient'
+    assumption: 'Initially charged capacitor at U, disconnected from the source and discharged through R. I = U/R is the initial current magnitude; i(t) is negative in the chosen reference direction.', chart: 'transient'
   },
   {
     "id": "rl-series-ac",
