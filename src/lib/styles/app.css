@@ -10,7 +10,7 @@
     --color-background: hsl(0,0%,88%); --color-surface: hsl(0,0%,92%);
     --color-surface-raised: hsl(0,0%,96%); --color-control: hsl(0,0%,100%);
     --color-input: hsl(0,0%,90%); --color-muted-reference: hsl(0,0%,50%);
-    --color-text-muted: hsl(0,0%,40%); --color-text: hsl(0,0%,12%);
+    --color-text-muted: hsl(0,0%,40%); --color-diagram-muted: hsl(0,0%,72%); --color-text: hsl(0,0%,12%);
     --color-electric-current: hsl(0,80%,40%); --color-electric-resistance: hsl(275,65%,40%); --color-electric-power: hsl(150,75%,27%);
     --color-accent: hsl(224,100%,45%); --color-on-accent: white;
     --color-border: hsl(0,0%,48%); --radius: 10px; color-scheme: light;
@@ -20,7 +20,7 @@
       --color-background: hsl(240,0%,0%); --color-surface: hsl(240,0%,7%);
       --color-surface-raised: hsl(240,0%,12%); --color-control: hsl(0,0%,18%);
       --color-input: hsl(240,6%,15%); --color-muted-reference: hsl(0,0%,68%);
-      --color-text-muted: hsl(0,0%,68%); --color-text: hsl(0,0%,96%);
+      --color-text-muted: hsl(0,0%,68%); --color-diagram-muted: hsl(0,0%,34%); --color-text: hsl(0,0%,96%);
       --color-electric-current: hsl(0,90%,72%); --color-electric-resistance: hsl(275,85%,78%); --color-electric-power: hsl(150,65%,64%);
       --color-accent: hsl(206,100%,70%); --color-on-accent: hsl(0,0%,12%);
       --color-border: hsl(0,0%,55%); color-scheme: dark;
@@ -30,13 +30,14 @@
     --color-background: hsl(240,0%,0%); --color-surface: hsl(240,0%,7%);
     --color-surface-raised: hsl(240,0%,12%); --color-control: hsl(0,0%,18%);
     --color-input: hsl(240,6%,15%); --color-muted-reference: hsl(0,0%,68%);
-    --color-text-muted: hsl(0,0%,68%); --color-text: hsl(0,0%,96%);
+    --color-text-muted: hsl(0,0%,68%); --color-diagram-muted: hsl(0,0%,34%); --color-text: hsl(0,0%,96%);
     --color-electric-current: hsl(0,90%,72%); --color-electric-resistance: hsl(275,85%,78%); --color-electric-power: hsl(150,65%,64%);
     --color-accent: hsl(206,100%,70%); --color-on-accent: hsl(0,0%,12%);
     --color-border: hsl(0,0%,55%); color-scheme: dark;
   }
 }
 @layer base {
+  html { -webkit-tap-highlight-color: transparent; }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--color-background); color: var(--color-text); font-size: 1rem; line-height: 1.6; }
   a { color: inherit; text-underline-offset: .2em; }

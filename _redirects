@@ -8,3 +8,7 @@ https://calcphysics.netlify.app/* https://calcphysics.com/:splat 301!
 # Transformer is now a model card under Inductors.
 /electromagnetism/transformers /electromagnetism/inductors 301!
 /electromagnetism/transformers/ /electromagnetism/inductors 301!
+
+# Three-phase calculations and the generator now share one subtopic.
+/electromagnetism/three-phase-generator /electromagnetism/three-phase 301!
+/electromagnetism/three-phase-generator/ /electromagnetism/three-phase 301!

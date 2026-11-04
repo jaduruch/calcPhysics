@@ -155,6 +155,40 @@ const rlTransientFields: readonly ElectricalField[] = [
 const sineFields:readonly ElectricalField[]=[{id:'u',name:'instantaneous voltage',kind:'voltage'},{id:'Up',name:'peak voltage',kind:'voltage'},{id:'Upp',name:'peak-to-peak voltage',kind:'voltage'},{id:'Urms',name:'RMS voltage',kind:'voltage'},{id:'f',name:'frequency',kind:'frequency'},{id:'t',name:'current time',kind:'time'},{id:'T',name:'period',kind:'time'},{id:'phi',name:'phase shift',kind:'angle'}];
 const amplitudeFields:readonly ElectricalField[]=[{id:'Up',name:'peak voltage',kind:'voltage'},{id:'Upp',name:'peak-to-peak voltage',kind:'voltage'},{id:'Urms',name:'RMS voltage',kind:'voltage'}];
 const pwmFields:readonly ElectricalField[]=[{id:'Up',name:'peak voltage',kind:'voltage'},{id:'Urms',name:'RMS voltage',kind:'voltage'},{id:'f',name:'frequency',kind:'frequency'},{id:'ton',name:'pulse duration',kind:'time'},{id:'T',name:'period',kind:'time'},{id:'d',name:'duty cycle',kind:'ratio'}];
+const filterFields=(rc:boolean,highPass:boolean):readonly ElectricalField[]=>[
+  {id:'phi',name:'phase angle',kind:'angle'},{id:'R',name:'resistance',kind:'resistance'},
+  {id:rc?'Xc':'Xl',name:rc?'capacitive reactance':'inductive reactance',kind:'resistance'},
+  {id:'attenuation',name:'attenuation',kind:'decibel'},{id:rc?'C':'L',name:rc?'capacitance':'inductance',kind:rc?'capacitance':'inductance'},
+  {id:'Uin',name:'input RMS voltage',kind:'voltage'},
+  ...(rc&&highPass?[{id:'Uc',name:'capacitor RMS voltage',kind:'voltage' as const}]:[]),
+  {id:'Uout',name:'output RMS voltage',kind:'voltage'},{id:'fc',name:'cutoff frequency',kind:'frequency'},{id:'f',name:'frequency',kind:'frequency'}
+];
+const seriesResonatorFields:readonly ElectricalField[]=[
+  {id:'R',name:'resistance',kind:'resistance'},{id:'Xl',name:'inductive reactance',kind:'resistance'},{id:'Xc',name:'capacitive reactance',kind:'resistance'},
+  {id:'L',name:'inductance',kind:'inductance'},{id:'Qfactor',name:'quality factor',kind:'dimensionless'},{id:'C',name:'capacitance',kind:'capacitance'},
+  {id:'U',name:'total RMS voltage',kind:'voltage'},{id:'UR',name:'resistive voltage',kind:'voltage'},{id:'UL',name:'inductive voltage',kind:'voltage'},
+  {id:'UC',name:'capacitive voltage',kind:'voltage'},{id:'f',name:'frequency',kind:'frequency'},{id:'bw',name:'bandwidth',kind:'frequency'}
+];
+const parallelResonatorFields:readonly ElectricalField[]=[
+  {id:'I',name:'total RMS current',kind:'current'},{id:'IR',name:'resistive branch current',kind:'current'},{id:'IL',name:'inductive branch current',kind:'current'},
+  {id:'IC',name:'capacitive branch current',kind:'current'},{id:'R',name:'resistance',kind:'resistance'},{id:'Xl',name:'inductive reactance',kind:'resistance'},
+  {id:'Xc',name:'capacitive reactance',kind:'resistance'},{id:'L',name:'inductance',kind:'inductance'},{id:'Qfactor',name:'quality factor',kind:'dimensionless'},
+  {id:'C',name:'capacitance',kind:'capacitance'},{id:'f',name:'frequency',kind:'frequency'},{id:'bw',name:'bandwidth',kind:'frequency'}
+];
+const resonatorOutputs=(fields:readonly ElectricalField[]):readonly ElectricalOutput[]=>[
+  ...fields.map(field=>({...field,formula:''})),
+  ...(!fields.some(field=>field.id==='I')?[{id:'I',name:'total RMS current',kind:'current' as const,formula:''}]:[]),
+  ...(!fields.some(field=>field.id==='U')?[{id:'U',name:'total RMS voltage',kind:'voltage' as const,formula:''}]:[]),
+  {id:'f0',name:'resonance frequency',kind:'frequency',formula:''},
+  {id:'Z',name:'impedance magnitude',kind:'resistance',formula:''},{id:'phi',name:'impedance phase',kind:'angle',formula:''}
+];
+const gainFields:readonly ElectricalField[]=[
+  {id:'I1',name:'input current',kind:'current'},{id:'I2',name:'output current',kind:'current'},
+  {id:'g',name:'gain',kind:'decibel'},{id:'a',name:'attenuation',kind:'decibel'},
+  {id:'P1',name:'input power',kind:'power'},{id:'P2',name:'output power',kind:'power'},
+  {id:'U1',name:'input voltage',kind:'voltage'},{id:'U2',name:'output voltage',kind:'voltage'},
+  {id:'V',name:'voltage / current factor',kind:'dimensionless'},{id:'D',name:'voltage / current attenuation factor',kind:'dimensionless'}
+];
 
 const inductorFormulas: ModelDefinition['formulas'] = [
   { label: 'Inductance', expression: String.raw`L = A_L N^2` },
@@ -2067,7 +2101,7 @@ const rawElectricalDefinitions: readonly ElectricalDefinition[] = [
   },
   {
     "id": "three-phase-generator",
-    "topic": "three-phase-generator",
+    "topic": "three-phase",
     "title": "Three-Phase Generator",
     "inputs": [
       {
@@ -2122,6 +2156,14 @@ export const electricalDefinitions: readonly ElectricalDefinition[] = rawElectri
           ? {...definition,title:definition.id==='square-rms'?'Rectangle':'Triangle',inputs:amplitudeFields,outputs:amplitudeFields.map(field=>({...field,formula:''})),chart:'sine'}
           : definition.id === 'pwm'
             ? {...definition,title:'PWM',inputs:pwmFields,outputs:pwmFields.map(field=>({...field,formula:''}))}
+            : ['rc-high-pass','rc-low-pass','rl-high-pass','rl-low-pass'].includes(definition.id)
+              ? {...definition,inputs:filterFields(definition.id.startsWith('rc-'),definition.id.endsWith('high-pass')),outputs:[...filterFields(definition.id.startsWith('rc-'),definition.id.endsWith('high-pass')).map(field=>({...field,formula:''})),{id:'gain',name:'voltage gain',kind:'dimensionless',formula:''}]}
+              : definition.id==='series-rlc'
+                ? {...definition,inputs:seriesResonatorFields,outputs:resonatorOutputs(seriesResonatorFields)}
+                : definition.id==='parallel-rlc'
+                  ? {...definition,inputs:parallelResonatorFields,outputs:resonatorOutputs(parallelResonatorFields)}
+                  : definition.id==='voltage-gain'
+                    ? {...definition,title:'Gain & Attenuation',inputs:gainFields,outputs:gainFields.map(field=>({...field,formula:''})),assumption:'Positive RMS current, voltage, power and factors. Equal real reference impedances are assumed, so P₂/P₁ = V². Gain g and attenuation a are signed decibel values with a = −g.'}
     : definition);
 
 import { unitGroups, unitNames } from '../physics/units.ts';
@@ -2171,16 +2213,45 @@ const rlTransientFormulas = [
   {label:'step response',expression:String.raw`u_L(t)=Ue^{-t/\tau},\qquad i(t)=I(1-e^{-t/\tau})`},
   {label:'discharging',expression:String.raw`u_L(t)=-Ue^{-t/\tau},\qquad i(t)=Ie^{-t/\tau}`}
 ];
+const seriesResonatorFormulas:ModelDefinition['formulas']=[
+  {label:'reactances',expression:String.raw`X_L=2\pi fL,\qquad X_C=\frac{1}{2\pi fC}`},
+  {label:'resonance frequency',expression:String.raw`f_0=\frac{1}{2\pi\sqrt{LC}},\qquad X_L=X_C`},
+  {label:'series impedance',expression:String.raw`Z=\sqrt{R^2+(X_L-X_C)^2}`},
+  {label:'impedance phase',expression:String.raw`\phi_Z=\operatorname{atan2}(X_L-X_C,R)`},
+  {label:'voltage and current',expression:String.raw`U=IZ=\sqrt{U_R^2+(U_L-U_C)^2}`},
+  {label:'quality factor and bandwidth',expression:String.raw`Q=\frac{1}{R}\sqrt{\frac{L}{C}}=\frac{f_0}{b},\qquad b=\frac{R}{2\pi L}`}
+];
+const parallelResonatorFormulas:ModelDefinition['formulas']=[
+  {label:'reactances',expression:String.raw`X_L=2\pi fL,\qquad X_C=\frac{1}{2\pi fC}`},
+  {label:'resonance frequency',expression:String.raw`f_0=\frac{1}{2\pi\sqrt{LC}},\qquad X_L=X_C`},
+  {label:'parallel admittance and impedance',expression:String.raw`Y=\sqrt{\frac{1}{R^2}+\left(\frac{1}{X_C}-\frac{1}{X_L}\right)^2},\qquad Z=\frac{1}{Y}`},
+  {label:'impedance phase',expression:String.raw`\phi_Z=-\operatorname{atan2}\!\left(\frac{1}{X_C}-\frac{1}{X_L},\frac{1}{R}\right)`},
+  {label:'voltage and current',expression:String.raw`I=UY=\sqrt{I_R^2+(I_L-I_C)^2}`},
+  {label:'quality factor and bandwidth',expression:String.raw`Q=R\sqrt{\frac{C}{L}}=\frac{f_0}{b},\qquad b=\frac{1}{2\pi RC}`}
+];
+const gainFormulas:ModelDefinition['formulas']=[
+  {label:'voltage and current factor',expression:String.raw`V=\frac{U_2}{U_1}=\frac{I_2}{I_1}`},
+  {label:'attenuation factor',expression:String.raw`D=\frac{1}{V}=\frac{U_1}{U_2}=\frac{I_1}{I_2}`},
+  {label:'gain and attenuation',expression:String.raw`g=20\log_{10}(V),\qquad a=-g`},
+  {label:'power ratio',expression:String.raw`\frac{P_2}{P_1}=V^2,\qquad V=\sqrt{\frac{P_2}{P_1}}`},
+  {label:'input and output power',expression:String.raw`P_1=U_1I_1,\qquad P_2=U_2I_2`}
+];
 const waveformFormulas:Record<string,{label:string;expression:string}[]>={
   'sine-signal':[{label:'sine voltage',expression:String.raw`u(t)=\hat U\sin(2\pi ft+\phi)`},{label:'voltage values',expression:String.raw`U_{pp}=2\hat U,\qquad U_{rms}=\frac{\hat U}{\sqrt2}`}],
   'triangle-rms':[{label:'triangle voltage',expression:String.raw`U_{pp}=2\hat U,\qquad U_{rms}=\frac{\hat U}{\sqrt3}`}],
   'square-rms':[{label:'rectangle voltage',expression:String.raw`U_{pp}=2\hat U,\qquad U_{rms}=\hat U`}],
   pwm:[{label:'PWM voltage',expression:String.raw`U_{rms}=\hat U\sqrt d,\qquad t_{on}=Td,\qquad T=\frac1f`}]
 };
-const unorderedElectricalCardDefinitions = electricalDefinitions.filter(definition => !['loaded-divider', 'resistance-parallel', 'capacitance-parallel', 'inductance-parallel', 'sine-rms', 'ac-power', 'rc-parallel-ac', 'rl-parallel-ac', 'rc-discharge', 'rl-discharge', 'plate-capacitor', 'charge-flow', 'circular-plate'].includes(definition.id)).map(definition => definition.id === 'voltage-divider'
+const starDeltaFormulas = [
+  {label:'delta → star',expression:String.raw`R_1=\frac{ab}{a+b+c},\quad R_2=\frac{bc}{a+b+c},\quad R_3=\frac{ca}{a+b+c}`},
+  {label:'star → delta',expression:String.raw`R_{12}=a+b+\frac{ab}{c},\quad R_{23}=b+c+\frac{bc}{a},\quad R_{31}=c+a+\frac{ca}{b}`}
+];
+const unorderedElectricalCardDefinitions = electricalDefinitions.filter(definition => !['loaded-divider', 'resistance-parallel', 'capacitance-parallel', 'inductance-parallel', 'star-delta', 'sine-rms', 'ac-power', 'power-gain', 'rc-parallel-ac', 'rl-parallel-ac', 'rc-discharge', 'rl-discharge', 'plate-capacitor', 'charge-flow', 'circular-plate'].includes(definition.id)).map(definition => definition.id === 'voltage-divider'
   ? { ...definition, inputs: dividerLoaded.inputs, outputs: [...new Map([...definition.outputs, ...dividerLoaded.outputs].map(output => [`${output.id}:${output.formula}`, output])).values()], assumption: 'Switch between unloaded and loaded operation. With a load, the load resistance is parallel to R₂. Enter independent known quantities; only uniquely determined missing values are calculated.' }
   : definition.id === 'resistance-series'
     ? { ...definition, title: 'Resistors: Series & Parallel', inputs: [...definition.inputs, { id: 'n', name: 'number of resistors', kind: 'dimensionless' as const }], outputs: [...definition.outputs.map(output => ({ ...output, name: 'series equivalent resistance', formula: String.raw`\sum_{i=1}^{n}R_i` })), ...resistorParallel.outputs.map(output => ({ ...output, name: 'parallel equivalent resistance', formula: String.raw`\frac{1}{\displaystyle\sum_{i=1}^{n}\frac{1}{R_i}}` }))], assumption: 'Positive ideal resistances R₁ … Rₙ. Switch between series and parallel connection. The next optional field appears automatically; the empty final field is not included.' }
+    : definition.id === 'delta-star'
+      ? { ...definition, title: 'Delta–Star Resistance Conversion', assumption: 'Switch between delta-to-star and star-to-delta conversion. All three resistances must be positive. The selected direction determines whether a, b and c denote delta branch resistances or star arm resistances.' }
     : definition.id === 'capacitance-series'
       ? { ...definition, title: 'Capacitors: Series & Parallel', inputs: [...definition.inputs, { id: 'n', name: 'number of capacitors', kind: 'dimensionless' as const }], outputs: [{ ...definition.outputs[0], name: 'series equivalent capacitance', formula: String.raw`\frac{1}{\displaystyle\sum_{i=1}^{n}\frac{1}{C_i}}` }, { ...definition.outputs[0], name: 'parallel equivalent capacitance', formula: String.raw`\sum_{i=1}^{n}C_i` }] }
       : definition.id === 'inductance-series'
@@ -2206,7 +2277,7 @@ const electricalCardDefinitions = [
 export const electricalModels: readonly ModelDefinition[] = electricalCardDefinitions.map(definition => ({
   id: definition.id, topicId: definition.topic, title: definition.title, calculator: 'electrical',
   variables: [...new Map([...definition.inputs, ...definition.outputs].map(field => [field.id, field])).values()].map(field => ({ name: field.name, symbol: electricalDisplaySymbol(field.id), unit: unitGroups[field.kind].si, unitName: unitNames[field.kind] ?? unitGroups[field.kind].si })),
-  formulas: definition.id === 'inductor' ? inductorFormulas : definition.id === 'capacitor' ? capacitorCalculationFormulas : definition.id === 'rc-series-ac' ? rcAcFormulas : definition.id === 'rl-series-ac' ? rlAcFormulas : definition.id === 'rc-charge' ? rcTransientFormulas : definition.id === 'rl-charge' ? rlTransientFormulas : waveformFormulas[definition.id] ?? definition.outputs.map(output => ({ label: output.name, expression: `${electricalSymbol(output.id)} = ${output.formula}` })),
+  formulas: definition.id === 'inductor' ? inductorFormulas : definition.id === 'capacitor' ? capacitorCalculationFormulas : definition.id === 'delta-star' ? starDeltaFormulas : definition.id === 'rc-series-ac' ? rcAcFormulas : definition.id === 'rl-series-ac' ? rlAcFormulas : definition.id === 'rc-charge' ? rcTransientFormulas : definition.id === 'rl-charge' ? rlTransientFormulas : definition.id === 'series-rlc' ? seriesResonatorFormulas : definition.id === 'parallel-rlc' ? parallelResonatorFormulas : definition.id === 'voltage-gain' ? gainFormulas : waveformFormulas[definition.id] ?? definition.outputs.map(output => ({ label: output.name, expression: `${electricalSymbol(output.id)} = ${output.formula}` })),
   notes: [topicTheory[definition.id] ?? topicTheory[definition.topic], { text: definition.assumption }]
 }));
 

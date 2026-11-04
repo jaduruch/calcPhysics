@@ -47,14 +47,24 @@ export function electricalCurves(definition: ElectricalDefinition, result: Elect
       return { title: output.name, yLabel: specification.yLabel, xLabel: 't [s]', schematic: !determined, times, values, color: specification.color, marker };
     });
   }
+  if(definition.chart==='filter') {
+    const determined=result.status==='success'&&source.fc>0;
+    const fc=determined?source.fc:1;
+    const times=Array.from({length:241},(_,index)=>fc*(.01+4.99*index/240));
+    const samples=times.map(f=>solveElectrical(definition.id,{fc,f,Uin:1}));
+    return ['gain','attenuation'].map(key=>({
+      title:definition.outputs.find(output=>output.id===key)!.name,
+      yLabel:key==='gain'?'|H| [1]':'a [dB]',xLabel:'f [Hz]',schematic:!determined,times,
+      values:samples.map(sample=>sample.status==='success'?sample.values[key]:0)
+    }));
+  }
   const resolved = solveElectrical(definition.id, definition.chart === 'transient' && definition.id.startsWith('rc-')
     ? { R: source.R, C: source.C, U: source.U, t: source.t }
     : source);
   if (resolved.status !== 'success') return [];
-  const filter = definition.chart === 'filter';
-  const duration = filter ? 5 * resolved.outputs.fc : definition.chart === 'transient' ? 5 * resolved.outputs.tau : 2 / source.f;
+  const duration = definition.chart === 'transient' ? 5 * resolved.outputs.tau : 2 / source.f;
   if (!Number.isFinite(duration) || duration <= 0) return [];
-  const keys = filter ? ['gain'] : definition.chart === 'transient' ? ['ut', 'it'] : definition.chart === 'three-phase' ? ['u1','u2','u3'] : ['u'];
+  const keys = definition.chart === 'transient' ? ['ut', 'it'] : definition.chart === 'three-phase' ? ['u1','u2','u3'] : ['u'];
   if (definition.chart === 'pwm') {
     const times = [0, source.d / source.f, 1 / source.f, (1 + source.d) / source.f, 2 / source.f];
     const coordinates = times.flatMap(time => [Math.max(0, time - duration * 1e-12), time]);
@@ -62,18 +72,18 @@ export function electricalCurves(definition: ElectricalDefinition, result: Elect
   }
   const samples = Array.from({ length: 241 }, (_, index) => {
     const coordinate = duration * (index / 240);
-    const sampleInputs = definition.chart === 'transient' && definition.id.startsWith('rc-')
+    const sampleInputs:Record<string,number> = definition.chart === 'transient' && definition.id.startsWith('rc-')
       ? { R: source.R, C: source.C, U: source.U, t: coordinate }
-      : { ...source, [filter ? 'f' : 't']: filter && coordinate === 0 ? duration / 2400 : coordinate };
+      : { ...source, t: coordinate };
     const sample = solveElectrical(definition.id, sampleInputs);
-    return { coordinate: filter && coordinate === 0 ? duration / 2400 : coordinate, sample };
+    return { coordinate, sample };
   });
   if (samples.some(({ sample }) => sample.status !== 'success')) return [];
   return keys.map(key => {
     const output = definition.outputs.find(output => output.id === key)!;
     return {
-      title: output.name, yLabel: filter ? '|H| [1]' : `${key === 'it' ? 'i' : 'u'} [${key === 'it' ? 'A' : 'V'}]`,
-      xLabel: filter ? 'f [Hz]' : 't [s]', schematic,
+      title: output.name, yLabel: `${key === 'it' ? 'i' : 'u'} [${key === 'it' ? 'A' : 'V'}]`,
+      xLabel: 't [s]', schematic,
       color: key === 'it' ? 'current' : undefined,
       times: samples.map(sample => sample.coordinate),
       values: samples.map(({ sample }) => sample.status === 'success' ? sample.outputs[key] : 0)

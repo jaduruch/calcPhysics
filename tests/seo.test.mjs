@@ -10,7 +10,8 @@ test('canonicals use the primary HTTPS domain without parameters or trailing sla
 });
 test('published pages have unique useful titles and canonical metadata', () => {
   const paths = publishedPaths();
-  for (const path of ['/', '/si-units-and-constants', '/mechanics', '/mechanics/kinematics', '/mechanics/dynamics', '/electromagnetism', '/electromagnetism/direct-current', '/electromagnetism/three-phase-generator']) assert.ok(paths.includes(path));
+  for (const path of ['/', '/si-units-and-constants', '/mechanics', '/mechanics/kinematics', '/mechanics/dynamics', '/electromagnetism', '/electromagnetism/direct-current', '/electromagnetism/three-phase']) assert.ok(paths.includes(path));
+  assert.ok(!paths.includes('/electromagnetism/three-phase-generator'));
   assert.equal(new Set(paths).size, paths.length);
   assert.ok(!paths.includes('/electromagnetism/transformers'));
   assert.ok(paths.includes('/electromagnetism/inductors'));

@@ -11,7 +11,7 @@
     <defs>
       {#each [{ key: 'I', color: 'var(--color-electric-current)' }, { key: 'U', color: 'var(--color-accent)' }, { key: 'P', color: 'var(--color-text)' }] as arrow}
         <marker id={`${id}-${arrow.key}-arrow`} viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
-          <path d="M0 0L8 4L0 8Z" fill={active !== null && active !== arrow.key ? 'var(--color-text-muted)' : arrow.color} />
+          <path d="M0 0L8 4L0 8Z" fill={active !== null && active !== arrow.key ? 'var(--color-diagram-muted)' : arrow.color} />
         </marker>
       {/each}
     </defs>

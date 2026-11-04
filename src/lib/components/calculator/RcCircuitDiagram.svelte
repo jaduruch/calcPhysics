@@ -16,7 +16,7 @@
     <desc id={`${id}-description`}>{inductive ? text.rlDiagramDescription : (parallel ? text.parallelRcDescription : text.seriesRcDescription)}</desc>
     <defs>
       <marker id={`${id}-current`} viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
-        <path d="M0 0L8 4L0 8Z" fill={highlight !== null && highlight !== 'I' ? 'var(--color-text-muted)' : 'var(--color-electric-current)'} />
+        <path d="M0 0L8 4L0 8Z" fill={highlight !== null && highlight !== 'I' ? 'var(--color-diagram-muted)' : 'var(--color-electric-current)'} />
       </marker>
     </defs>
 

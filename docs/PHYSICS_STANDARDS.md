@@ -47,6 +47,8 @@ Für spätere umfangreiche Herleitungen sind strukturierte Rechenschritte vorges
 
 Vektoren und Beträge unterscheiden; Einheiten aufrecht setzen, beispielsweise `\mathrm{m\,s^{-1}}`. Variablen erklären und Grössen mit Einheiten angeben. Gerundete Umrechnungen und Endergebnisse mit `\approx` kennzeichnen; zwischen allgemeiner Formel und Zahleneinsetzung steht gemäss bestätigter UI-Vorgabe stets `=`. Ungültige Formeln beim Build beziehungsweise in Tests erkennen. Es wird keine automatische symbolische Beweisführung versprochen.
 
+Messwerte werden in Zahleneinsetzung und Resultat mit drei signifikanten Stellen und einem passenden Engineering-Präfix dargestellt; diese Darstellung verändert niemals den ungerundeten SI-Wert der Berechnung. Dimensionslose Grössen bleiben präfixfrei, gewählte Nicht-SI-Einheiten erhalten keinen zusätzlichen Präfix. Positive Einzelwerte stehen ohne dekorative Klammern. Klammern werden nur für Vorzeichen, Potenzen, Funktionsargumente oder zur Vermeidung echter Mehrdeutigkeit gesetzt. Implizite Produkte in numerischen Einsetzungen werden mit `\cdot` explizit gemacht.
+
 ## Differential- und Integralrechnung: kontrollierter Ausbau
 
 ### Stufe 1 – analytische Modelle

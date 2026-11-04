@@ -20,7 +20,6 @@
   <h1 id="page-title">{topic?.title ?? ui.homeTitle}</h1>
   <p class="lead">{topic?.description ?? ui.homeDescription}</p>
   {#each topic?.references ?? [] as reference}<p><a href={reference.url}>{reference.title}</a></p>{/each}
-  {#if !topic}<a class="primary-link" href="/si-units-and-constants">{ui.siReferenceLink} <span aria-hidden="true">↗</span></a>{/if}
 </section>
 {#if topic?.id === 'si-reference'}
   <SiReference />

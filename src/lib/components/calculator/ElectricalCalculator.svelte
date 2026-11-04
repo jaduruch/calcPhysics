@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { electricalDefinitions, electricalDisplaySymbol, resistorNetworkDefinition, capacitorNetworkDefinition, inductorNetworkDefinition, rlAcDefinition } from '#lib/content/electricity.ts';
+  import { electricalDefinitions, electricalDisplaySymbol, resistorNetworkDefinition, capacitorNetworkDefinition, inductorNetworkDefinition, rlAcDefinition, type ElectricalDefinition } from '#lib/content/electricity.ts';
   import { solveElectrical, electricalPhysics, inDomain, type ElectricalModelId, type ElectricalPhysics } from '#lib/physics/electricity.ts';
   import { unitGroups, getUnit, type QuantityKind } from '#lib/physics/units.ts';
   import { parseQuantityInUnit, changeQuantityUnit } from '#lib/calculators/quantities.ts';
@@ -18,6 +18,11 @@
   import ElectricalPhasor from './ElectricalPhasor.svelte';
   import RcCircuitDiagram from './RcCircuitDiagram.svelte';
   import RcTransientDiagram from './RcTransientDiagram.svelte';
+  import StarDeltaDiagram from './StarDeltaDiagram.svelte';
+  import FilterCircuitDiagram from './FilterCircuitDiagram.svelte';
+  import FilterResponseDiagrams from './FilterResponseDiagrams.svelte';
+  import ResonatorCircuitDiagram from './ResonatorCircuitDiagram.svelte';
+  import ResonatorResponseDiagrams from './ResonatorResponseDiagrams.svelte';
   import MotionChart from './MotionChart.svelte';
   import UnitSelect from '../ui/UnitSelect.svelte';
   let { modelId }: { modelId: ElectricalModelId } = $props();
@@ -29,6 +34,9 @@
   const isRlAc = $derived(modelId === 'rl-series-ac');
   const isRcTransient = $derived(modelId === 'rc-charge');
   const isRlTransient = $derived(modelId === 'rl-charge');
+  const isStarDelta = $derived(modelId === 'delta-star');
+  const isFilter = $derived(['rc-high-pass','rc-low-pass','rl-high-pass','rl-low-pass'].includes(modelId));
+  const isResonator = $derived(modelId === 'series-rlc' || modelId === 'parallel-rlc');
   const isNetwork = $derived(isResistorNetwork || isCapacitorNetwork || isInductorNetwork);
   const networkKind = $derived(isCapacitorNetwork ? 'capacitance' : isInductorNetwork ? 'inductance' : 'resistance');
   const networkPrefix = $derived(isCapacitorNetwork ? 'C' : isInductorNetwork ? 'L' : 'R');
@@ -36,7 +44,8 @@
   let parallel = $state(false);
   let loaded = $state(false);
   let discharging = $state(false);
-  const calculationId = $derived(isDivider && loaded ? 'loaded-divider' : isResistorNetwork && parallel ? 'resistance-parallel' : isCapacitorNetwork && parallel ? 'capacitance-parallel' : isInductorNetwork && parallel ? 'inductance-parallel' : isRcAc && parallel ? 'rc-parallel-ac' : isRlAc && parallel ? 'rl-parallel-ac' : isRcTransient && discharging ? 'rc-discharge' : isRlTransient && discharging ? 'rl-discharge' : modelId);
+  let starToDelta = $state(false);
+  const calculationId = $derived(isDivider && loaded ? 'loaded-divider' : isResistorNetwork && parallel ? 'resistance-parallel' : isCapacitorNetwork && parallel ? 'capacitance-parallel' : isInductorNetwork && parallel ? 'inductance-parallel' : isRcAc && parallel ? 'rc-parallel-ac' : isRlAc && parallel ? 'rl-parallel-ac' : isRcTransient && discharging ? 'rc-discharge' : isRlTransient && discharging ? 'rl-discharge' : isStarDelta && starToDelta ? 'star-delta' : modelId);
   const definition = $derived(isResistorNetwork ? resistorNetworkDefinition(parallel ? 'resistance-parallel' : 'resistance-series', componentCount) : isCapacitorNetwork ? capacitorNetworkDefinition(parallel ? 'capacitance-parallel' : 'capacitance-series', componentCount) : isInductorNetwork ? inductorNetworkDefinition(parallel ? 'inductance-parallel' : 'inductance-series', componentCount) : isRlAc ? rlAcDefinition(parallel?'rl-parallel-ac':'rl-series-ac') : electricalDefinitions.find(model => model.id === calculationId)!);
   let raw = $state<Record<string, string>>({});
   let activeQuantity = $state<string | null>(null);
@@ -61,6 +70,16 @@
     return value.status === 'valid' ? [`${electricalSymbol(field.id)} = ${electricalQuantity(value.value / getUnit(field.kind, from).factor, from, false)} \\approx ${electricalQuantity(value.value, si, false)}`] : [];
   }) : []);
   const curves = $derived(electricalCurves(definition, result));
+  const enteredValues = $derived(Object.fromEntries(Object.entries(parsed).flatMap(([id, value]) => value.status === 'valid' ? [[id, value.value]] : [])));
+  const starDeltaIndex = (id: string) => ({ a: 0, b: 1, c: 2 })[id as 'a' | 'b' | 'c'];
+  const inputSymbol = (id: string) => {
+    if (!isStarDelta || starDeltaIndex(id) === undefined) return electricalDisplaySymbol(id);
+    return starToDelta ? ['R₁', 'R₂', 'R₃'][starDeltaIndex(id)] : ['R₁₂', 'R₂₃', 'R₃₁'][starDeltaIndex(id)];
+  };
+  const inputName = (field: ElectricalDefinition['inputs'][number]) => {
+    if (!isStarDelta || starDeltaIndex(field.id) === undefined) return field.name;
+    return `${starToDelta ? 'star' : 'delta'} resistance ${inputSymbol(field.id)}`;
+  };
   function setValue(id: string, value: string) {
     raw[id] = value;
     if (isNetwork && definition.inputs.every(field => {
@@ -97,9 +116,12 @@
   {#if isRlTransient}
     <div class="calculator-mode"><ToggleSwitch checked={discharging} label={text.rlProcess} offLabel={text.stepResponse} onLabel={text.discharging} onchange={value => { discharging = value; activeQuantity = null; }} /></div>
   {/if}
+  {#if isStarDelta}
+    <div class="calculator-mode"><ToggleSwitch checked={starToDelta} label={text.starDeltaConversion} offLabel={text.deltaToStar} onLabel={text.starToDelta} onchange={value => { starToDelta = value; activeQuantity = null; }} /></div>
+  {/if}
   <div class="input-grid" class:input-grid--single={isNetwork}>
     {#each definition.inputs as field}
-      <QuantityField id={`${modelId}-${field.id}`} symbol={electricalDisplaySymbol(field.id)} name={field.name} kind={field.kind} raw={raw[field.id] ?? ''} unit={unit(field.id, field.kind)} invalid={invalid.includes(field.id) || (result.status === 'no-solution' && result.fields.includes(field.id))} describedby={`${modelId}-assumptions`} pending={isNetwork && field.id !== `${networkPrefix}1` && !(raw[field.id] ?? '').trim()} onvalue={value => setValue(field.id, value)} onunit={next => changeUnit(field.id, field.kind, next)} onfocuschange={focused => { if (modelId === 'ohms-law' || isDivider || isNetwork || isRcAc || isRlAc) activeQuantity = focused ? field.id : null; }} />
+      <QuantityField id={`${modelId}-${field.id}`} symbol={inputSymbol(field.id)} name={inputName(field)} kind={field.kind} raw={raw[field.id] ?? ''} unit={unit(field.id, field.kind)} invalid={invalid.includes(field.id) || (result.status === 'no-solution' && result.fields.includes(field.id))} describedby={`${modelId}-assumptions`} pending={isNetwork && field.id !== `${networkPrefix}1` && !(raw[field.id] ?? '').trim()} onvalue={value => setValue(field.id, value)} onunit={next => changeUnit(field.id, field.kind, next)} onfocuschange={focused => { if (modelId === 'ohms-law' || isDivider || isNetwork || isRcAc || isRlAc || isStarDelta) activeQuantity = focused ? field.id : null; }} />
     {/each}
   </div>
   <CalculatorTools onreset={() => { raw = {}; selectedUnits = {}; activeQuantity = null; componentCount = 2; }} />
@@ -129,9 +151,18 @@
   {#if isRlAc}<RcCircuitDiagram {parallel} inductive active={activeQuantity} />{/if}
   {#if isRcTransient}<RcTransientDiagram {discharging} />{/if}
   {#if isRlTransient}<RcTransientDiagram {discharging} inductive />{/if}
+  {#if isStarDelta}<StarDeltaDiagram {starToDelta} inputs={enteredValues} outputs={result.status === 'success' ? result.outputs : {}} active={activeQuantity} />{/if}
+  {#if isFilter}
+    <FilterCircuitDiagram rc={modelId.startsWith('rc-')} highPass={modelId.endsWith('high-pass')} />
+    <FilterResponseDiagrams {modelId} {result} />
+  {/if}
+  {#if isResonator}
+    <ResonatorCircuitDiagram parallel={modelId === 'parallel-rlc'} />
+    <ResonatorResponseDiagrams parallel={modelId === 'parallel-rlc'} {result} />
+  {/if}
   {#if modelId === 'three-phase-generator'}<GeneratorDiagram {result} />{/if}
   {#if calculationId.endsWith('-ac')}<ElectricalPhasor {result} />{/if}
-  {#if curves.length}
+  {#if !isFilter && !isResonator && curves.length}
     <div class="electrical-curves">
       {#each curves as curve}
         <MotionChart title={curve.title} yLabel={curve.yLabel} times={curve.times} values={curve.values} xLabel={curve.xLabel} schematic={curve.schematic} color={curve.color} marker={curve.marker} description={curve.schematic ? text.schematic : text.calculated} shape="position" />

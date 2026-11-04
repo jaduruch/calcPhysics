@@ -4,7 +4,7 @@
 
 Uniform Motion wurde vom Nutzer vorerst als Referenz für Aufbau, Gestaltung und Bedienung akzeptiert. Dieser Stand ist die Grundlage für neue Modelle, keine Aufforderung, bereits weitere Themen zu implementieren oder zu veröffentlichen. Die Arbeitsregeln für künftige Implementierungen stehen in [src/AGENTS.md](../src/AGENTS.md); die Farbpalette steht im [Designsystem](DESIGN_SYSTEM.md), die fachlichen Regeln in den [Physikstandards](PHYSICS_STANDARDS.md).
 
-Electricity & Magnetism verwendet für zehn Unterthemen und 44 Modelle in 31 Karten ebenfalls dieselben Modellkarten, Felder, Einheitenmenüs und Ergebnisbausteine. Der modellabhängige Elektrotechnik-Rechner steuert explizite SI-Funktionen an; Details siehe [ELECTRICITY.md](ELECTRICITY.md).
+Electricity & Magnetism verwendet für neun Unterthemen und 44 Modelle in 30 Karten ebenfalls dieselben Modellkarten, Felder, Einheitenmenüs und Ergebnisbausteine. Der modellabhängige Elektrotechnik-Rechner steuert explizite SI-Funktionen an; Details siehe [ELECTRICITY.md](ELECTRICITY.md).
 
 Seit 03.11.2026 verwendet auch Inclined Plane unter Mechanics → Dynamics die gemeinsame Oberfläche. Ihre Physik, Eingabegrössen und Visualisierungen dürfen fachlich anders sein. Uniform Motion hat vier Eingabegrössen und zwei Diagramme; das ist kein Zwang für jedes künftige Modell. Die nachfolgende Zuordnung unterscheidet bereits gemeinsame Implementierung und noch nötige Wiederverwendung.
 
@@ -64,6 +64,8 @@ Modellkarte (anfangs geschlossen, kein blauer Überschriften-Hover)
 
 Keine zusätzliche Überschrift „Theory & calculation models“, kein „01 MODEL“-Zähler und keine lange Eingabeanleitung über der Karte beziehungsweise den Feldern. Die kleine Nummer innerhalb des Kartenheaders bleibt davon unberührt. Keine Übungen, keine Diagrammtabelle. Theorie und Berechnen liegen in derselben Modellkarte auf der jeweiligen Unterthemenseite; keine separaten Modellrouten allein zur Erfüllung eines älteren Architekturentwurfs anlegen.
 
+Das Schliessen der gesamten Modellkarte setzt einen geöffneten Theorie-Bereich zurück. Beim erneuten Öffnen der Karte ist die Theorie wieder geschlossen; ihr Zustand wird nicht unsichtbar über den Kartenwechsel hinweg beibehalten.
+
 ## Konkrete Gestaltungswerte
 
 Die Seitenpalette aus `portal.html` bleibt exakt erhalten; keine neuen Farbsysteme je Thema. Modellkarte: 10-px-Radius, 20-px-Innenabstand, mobil 16 px. Theorie ohne zusätzliche Hintergrundfläche. Theorie-Inhalt maximal 48 rem, zwei Spalten mit 24 px Abstand; unter 56 rem eine Spalte. Rechner maximal 52 rem; zwei Eingabespalten, unter 40 rem eine. Einheitenmenü 88 px breit, 8 px Abstand zum Zahlenfeld. Diagramme unter 44 rem untereinander. Diese Werte beschreiben den akzeptierten Stand; spätere gemeinsame Änderungen an den zentralen Bausteinen sind ausdrücklich erwünscht.
@@ -77,6 +79,8 @@ Header-Links behalten blauen Hover sowie blaue Unterstreichung des aktiven Haupt
 Zahl samt Präfix direkt tippen, etwa `1.5k` oder `250m`. Einheiten im separaten gemeinsamen Menü wählen; SI ist Standard. `m` und `M` unterscheiden sich. Rechnen intern mit ungerundeten SI-Werten. Eingabefelder zeigen ausschliesslich manuelle Rohwerte, Resultate nur unten.
 
 Nicht-SI-Eingaben zuerst sichtbar umrechnen, dann in SI einsetzen. Messwerte in Umrechnung, Einsetzung und Resultat auf drei signifikante Stellen runden; Definitionsfaktoren bleiben exakt. Allgemeine umgestellte Formel und numerische Einsetzung werden immer mit `=` verbunden. Wo Rundung erfolgt, kann bei Konversion beziehungsweise Endergebnis `≈` erscheinen. Ergebnispräfixe kommen aus dem gemeinsamen Formatter, der Tausenderschritte bevorzugt. Durch die Anzeige gerundete Werte niemals als nächste Berechnungsquelle verwenden.
+
+Auch die numerische Einsetzung verwendet passende Engineering-Präfixe, etwa `12.3 kΩ`, `4.57 µF` oder `1.00 mA`. Einzelwerte werden nicht pauschal geklammert: Klammern bleiben Vorzeichen, Potenzen, Funktionsargumenten und anderen mathematisch notwendigen Fällen vorbehalten. Multiplikationen zwischen eingesetzten Werten beziehungsweise Faktoren werden mit `\cdot` sichtbar gemacht. Dimensionslose Grössen erhalten keinen Präfix, ausgewählte Nicht-SI-Einheiten keinen doppelten Präfix.
 
 ## Uniform-Motion-Verhalten, das nicht versehentlich verloren gehen darf
 
@@ -96,6 +100,8 @@ Raster dezent, auch die unterste Linie. Nullachse 2 px dick und durchgezogen, mi
 Achsenlabel „Grösse [Einheit]“, Y-Label direkt über der obersten Skalenangabe, keine doppelte Beschriftung oben rechts. Tickwerte mit drei signifikanten Stellen; für Betrag >= 1000 oder 0 < Betrag <= 0.001: Koeffizient × 10 mit echtem hochgestellten Exponenten. Null als 0. Kollisionen mit der Nullbeschriftung vermeiden.
 
 SVGs haben Titel und Beschreibungen, die schematische Darstellung erkennbar benennen. Keine Datentabelle neu einführen. Eine visuell akzeptierte Referenz ersetzt keinen Nachweis vollständiger Accessibility oder Browserkompatibilität.
+
+Elektrotechnische Schaltungen werden als eigene dynamische SVG-Komponenten aus demselben validierten Zustand wie Formeln und Resultate erzeugt; statische Referenzbilder sind keine Laufzeitabhängigkeit. Rechteckige Widerstände haben zentral eine dünne, leicht gerundete Kontur; Anschlussleitungen verwenden dieselbe Strichstärke. Bei Auswahlzuständen nutzt nicht Gewähltes `--color-diagram-muted` (Light Mode hellgrau, Dark Mode dunkelgrau), die gewählte Grösse bleibt neutral kontrastreich. Stern–Dreieck dimmt dabei die gesamte nicht gewählte Darstellung einschliesslich Leitungen, Knoten, Widerständen und Text. Bei Richtungswechsel steht die Ausgangsschaltung zuerst, Feldsymbole, Werte und Zeichnungsreihenfolge wechseln gemeinsam, manuelle Eingaben bleiben erhalten.
 
 ## Änderungen und Prüfung
 

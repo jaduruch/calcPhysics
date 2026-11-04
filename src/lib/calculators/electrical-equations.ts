@@ -13,7 +13,7 @@ const symbols: Record<string, string> = {
   dI: String.raw`\Delta I`, mu: String.raw`\mu_r`, er: String.raw`\epsilon_r`,
   phi: String.raw`\phi`, eta: String.raw`\eta`, tau: String.raw`\tau`, ut: 'u(t)', it: 'i(t)',
   AL: 'A_L', Rm: 'R_m', f0: 'f_0', fc: 'f_c', Qfactor: 'Q', bw: 'b',
-  gain: 'g', attenuation: 'a', ratio: 'V', ton: 't_{on}', UL: 'U_L',
+  gain: 'g', attenuation: 'a', ratio: 'V', g: 'g', a: 'a', V: 'V', D: 'D', ton: 't_{on}', UL: 'U_L',
   Ip: 'I_p', u1: 'u_1', u2: 'u_2', u3: 'u_3', Xc: 'X_C', Qc: 'Q_C',
   Xl: 'X_L', Ql: 'Q_L', UR: 'U_R', UC: 'U_C', IR: 'I_R', IC: 'I_C', cosPhi: String.raw`\cos(\phi)`, sinPhi: String.raw`\sin(\phi)`
 };

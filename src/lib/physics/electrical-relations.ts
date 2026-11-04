@@ -424,3 +424,93 @@ export function solvePwm(given:Values):ElectricalResult{return resolve(given,pwm
   relation('Urms',['Up','d'],String.raw`Up\sqrt{d}`,v=>v.Up*Math.sqrt(v.d)),relation('Up',['Urms','d'],String.raw`\frac{Urms}{\sqrt{d}}`,v=>v.Urms/Math.sqrt(v.d)),
   relation('d',['Urms','Up'],String.raw`(Urms/Up)^2`,v=>(v.Urms/v.Up)**2)
 ]);}
+
+export const filterDomains:Record<string,Domain>={phi:'signed',R:'positive',Xc:'positive',Xl:'positive',attenuation:'nonnegative',C:'positive',L:'positive',Uin:'nonnegative',Uc:'nonnegative',Uout:'nonnegative',fc:'positive',f:'positive',gain:'unitInterval',x:'positive'};
+export function solveFilter(given:Values, highPass:boolean, rc:boolean):ElectricalResult {
+  if(given.phi!==undefined && (highPass ? given.phi<=0||given.phi>=Math.PI/2 : given.phi>=0||given.phi<=-Math.PI/2))return {status:'invalid',fields:['phi']};
+  if(given.Uin!==undefined&&given.Uout!==undefined&&given.Uout>given.Uin)return {status:'invalid',fields:['Uout']};
+  if(given.Uin!==undefined&&given.Uc!==undefined&&given.Uc>given.Uin)return {status:'invalid',fields:['Uc']};
+  const relations:Relation[]=[...product('f','x','fc'),
+    relation('gain',['x'],highPass?String.raw`\frac{x}{\sqrt{1+x^2}}`:String.raw`\frac{1}{\sqrt{1+x^2}}`,v=>highPass?v.x/Math.hypot(1,v.x):1/Math.hypot(1,v.x)),
+    relation('x',['gain'],highPass?String.raw`\frac{gain}{\sqrt{1-gain^2}}`:String.raw`\sqrt{\frac{1}{gain^2}-1}`,v=>highPass?v.gain/Math.sqrt(1-v.gain*v.gain):Math.sqrt(1/(v.gain*v.gain)-1)),
+    relation('phi',['x'],highPass?String.raw`\arctan(1/x)`:String.raw`-\arctan(x)`,v=>highPass?Math.atan(1/v.x):-Math.atan(v.x)),
+    relation('x',['phi'],highPass?String.raw`\frac{1}{\tan(phi)}`:String.raw`\tan(-phi)`,v=>highPass?1/Math.tan(v.phi):Math.tan(-v.phi)),
+    relation('attenuation',['gain'],String.raw`-20\log_{10}(gain)`,v=>-20*Math.log10(v.gain)),
+    relation('gain',['attenuation'],String.raw`10^{-attenuation/20}`,v=>10**(-v.attenuation/20)),...product('Uout','gain','Uin')];
+  if(rc)relations.push(
+    relation('fc',['R','C'],String.raw`\frac{1}{2\pi RC}`,v=>1/(2*Math.PI*v.R*v.C)),relation('R',['fc','C'],String.raw`\frac{1}{2\pi fcC}`,v=>1/(2*Math.PI*v.fc*v.C)),relation('C',['fc','R'],String.raw`\frac{1}{2\pi fcR}`,v=>1/(2*Math.PI*v.fc*v.R)),
+    relation('Xc',['f','C'],String.raw`\frac{1}{2\pi fC}`,v=>1/(2*Math.PI*v.f*v.C)),relation('f',['Xc','C'],String.raw`\frac{1}{2\pi XcC}`,v=>1/(2*Math.PI*v.Xc*v.C)),relation('C',['Xc','f'],String.raw`\frac{1}{2\pi fXc}`,v=>1/(2*Math.PI*v.f*v.Xc)),...product('R','x','Xc'));
+  else relations.push(
+    relation('fc',['R','L'],String.raw`\frac{R}{2\pi L}`,v=>v.R/(2*Math.PI*v.L)),relation('R',['fc','L'],String.raw`2\pi fcL`,v=>2*Math.PI*v.fc*v.L),relation('L',['fc','R'],String.raw`\frac{R}{2\pi fc}`,v=>v.R/(2*Math.PI*v.fc)),
+    relation('Xl',['f','L'],String.raw`2\pi fL`,v=>2*Math.PI*v.f*v.L),relation('f',['Xl','L'],String.raw`\frac{Xl}{2\pi L}`,v=>v.Xl/(2*Math.PI*v.L)),relation('L',['Xl','f'],String.raw`\frac{Xl}{2\pi f}`,v=>v.Xl/(2*Math.PI*v.f)),...product('Xl','x','R'));
+  if(highPass&&rc)relations.push(
+    relation('Uc',['Uin','x'],String.raw`\frac{Uin}{\sqrt{1+x^2}}`,v=>v.Uin/Math.hypot(1,v.x)),relation('Uin',['Uc','x'],String.raw`Uc\sqrt{1+x^2}`,v=>v.Uc*Math.hypot(1,v.x)),relation('x',['Uin','Uc'],String.raw`\sqrt{(Uin/Uc)^2-1}`,v=>Math.sqrt((v.Uin/v.Uc)**2-1)),
+    relation('Uin',['Uc','Uout'],String.raw`\sqrt{Uc^2+Uout^2}`,v=>Math.hypot(v.Uc,v.Uout)),relation('Uc',['Uin','Uout'],String.raw`\sqrt{Uin^2-Uout^2}`,v=>Math.sqrt(v.Uin*v.Uin-v.Uout*v.Uout)),relation('Uout',['Uin','Uc'],String.raw`\sqrt{Uin^2-Uc^2}`,v=>Math.sqrt(v.Uin*v.Uin-v.Uc*v.Uc)));
+  const result=resolve(given,filterDomains,relations);
+  if(result.status!=='success')return result;
+  const {x:ignored,...outputs}=result.outputs;
+  const steps=result.steps?.filter(step=>step.target!=='x');
+  return {...result,outputs,steps};
+}
+
+export const resonatorDomains:Record<string,Domain>={
+  R:'positive',L:'positive',C:'positive',f:'positive',f0:'positive',Xl:'positive',Xc:'positive',
+  Qfactor:'positive',bw:'positive',Z:'positive',Y:'positive',phi:'powerAngle',
+  U:'nonnegative',UR:'nonnegative',UL:'nonnegative',UC:'nonnegative',
+  I:'nonnegative',IR:'nonnegative',IL:'nonnegative',IC:'nonnegative'
+};
+/** Ideal RLC resonator. When f is omitted, no off-resonance phasor relation is assumed. */
+export function solveResonator(given:Values,parallel=false):ElectricalResult {
+  const common:Relation[]=[
+    relation('f0',['L','C'],String.raw`\frac{1}{2\pi\sqrt{LC}}`,v=>1/(2*Math.PI*Math.sqrt(v.L*v.C))),
+    relation('L',['f0','C'],String.raw`\frac{1}{(2\pi f_0)^2C}`,v=>1/(2*Math.PI*v.f0)**2/v.C),
+    relation('C',['f0','L'],String.raw`\frac{1}{(2\pi f_0)^2L}`,v=>1/(2*Math.PI*v.f0)**2/v.L),
+    relation('Xl',['f','L'],String.raw`2\pi fL`,v=>2*Math.PI*v.f*v.L),
+    relation('f',['Xl','L'],String.raw`\frac{X_L}{2\pi L}`,v=>v.Xl/(2*Math.PI*v.L)),
+    relation('L',['Xl','f'],String.raw`\frac{X_L}{2\pi f}`,v=>v.Xl/(2*Math.PI*v.f)),
+    relation('Xc',['f','C'],String.raw`\frac{1}{2\pi fC}`,v=>1/(2*Math.PI*v.f*v.C)),
+    relation('f',['Xc','C'],String.raw`\frac{1}{2\pi X_CC}`,v=>1/(2*Math.PI*v.Xc*v.C)),
+    relation('C',['Xc','f'],String.raw`\frac{1}{2\pi fX_C}`,v=>1/(2*Math.PI*v.f*v.Xc)),
+    ...product('f0','Qfactor','bw')
+  ];
+  const specific:Relation[]=parallel?[
+    relation('Qfactor',['R','L','C'],String.raw`R\sqrt{\frac{C}{L}}`,v=>v.R*Math.sqrt(v.C/v.L)),
+    relation('R',['Qfactor','L','C'],String.raw`Q\sqrt{\frac{L}{C}}`,v=>v.Qfactor*Math.sqrt(v.L/v.C)),
+    relation('bw',['R','C'],String.raw`\frac{1}{2\pi RC}`,v=>1/(2*Math.PI*v.R*v.C)),
+    relation('Y',['R','Xl','Xc'],String.raw`\sqrt{R^{-2}+(X_C^{-1}-X_L^{-1})^2}`,v=>Math.hypot(1/v.R,1/v.Xc-1/v.Xl)),
+    relation('Z',['Y'],String.raw`\frac{1}{Y}`,v=>1/v.Y),relation('Y',['Z'],String.raw`\frac{1}{Z}`,v=>1/v.Z),
+    relation('phi',['R','Xl','Xc'],String.raw`-\operatorname{atan2}(X_C^{-1}-X_L^{-1},R^{-1})`,v=>-Math.atan2(1/v.Xc-1/v.Xl,1/v.R)),
+    ...product('I','U','Y'),...product('U','IR','R'),...product('U','IL','Xl'),...product('U','IC','Xc'),
+    relation('I',['IR','IL','IC'],String.raw`\sqrt{I_R^2+(I_L-I_C)^2}`,v=>Math.hypot(v.IR,v.IL-v.IC))
+  ]:[
+    relation('Qfactor',['R','L','C'],String.raw`\frac{1}{R}\sqrt{\frac{L}{C}}`,v=>Math.sqrt(v.L/v.C)/v.R),
+    relation('R',['Qfactor','L','C'],String.raw`\frac{1}{Q}\sqrt{\frac{L}{C}}`,v=>Math.sqrt(v.L/v.C)/v.Qfactor),
+    relation('bw',['R','L'],String.raw`\frac{R}{2\pi L}`,v=>v.R/(2*Math.PI*v.L)),
+    relation('Z',['R','Xl','Xc'],String.raw`\sqrt{R^2+(X_L-X_C)^2}`,v=>Math.hypot(v.R,v.Xl-v.Xc)),
+    relation('phi',['R','Xl','Xc'],String.raw`\operatorname{atan2}(X_L-X_C,R)`,v=>Math.atan2(v.Xl-v.Xc,v.R)),
+    ...product('U','I','Z'),...product('UR','I','R'),...product('UL','I','Xl'),...product('UC','I','Xc'),
+    relation('U',['UR','UL','UC'],String.raw`\sqrt{U_R^2+(U_L-U_C)^2}`,v=>Math.hypot(v.UR,v.UL-v.UC))
+  ];
+  const result=resolve(given,resonatorDomains,[...common,...specific]);
+  if(result.status!=='success')return result;
+  const {Y:ignored,...outputs}=result.outputs;
+  return {...result,outputs,steps:result.steps?.filter(step=>step.target!=='Y')};
+}
+
+export const gainDomains:Record<string,Domain>={I1:'positive',I2:'positive',g:'signed',a:'signed',P1:'positive',P2:'positive',U1:'positive',U2:'positive',V:'positive',D:'positive'};
+/** Voltage/current gain model with equal real reference impedances. */
+export function solveGain(given:Values):ElectricalResult {
+  const relations:Relation[]=[
+    ...product('U2','U1','V'),...product('I2','I1','V'),...product('P1','U1','I1'),...product('P2','U2','I2'),
+    relation('D',['V'],String.raw`\frac{1}{V}`,v=>1/v.V),relation('V',['D'],String.raw`\frac{1}{D}`,v=>1/v.D),
+    relation('g',['V'],String.raw`20\log_{10}(V)`,v=>20*Math.log10(v.V)),
+    relation('V',['g'],String.raw`10^{g/20}`,v=>10**(v.g/20)),
+    relation('a',['g'],String.raw`-g`,v=>-v.g),relation('g',['a'],String.raw`-a`,v=>-v.a),
+    relation('P2',['P1','V'],String.raw`P_1V^2`,v=>v.P1*v.V*v.V),
+    relation('P1',['P2','V'],String.raw`\frac{P_2}{V^2}`,v=>v.P2/v.V/v.V),
+    relation('V',['P1','P2'],String.raw`\sqrt{\frac{P_2}{P_1}}`,v=>Math.sqrt(v.P2/v.P1))
+  ];
+  const result=resolve(given,gainDomains,relations);
+  if(result.status!=='success')return result;
+  return result;
+}

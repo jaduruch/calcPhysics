@@ -46,6 +46,7 @@ Status- und Diagrammfarben ergänzen die Vorlage bei fachlichem Bedarf. Deren Gr
 | Flächen | `--color-background`, `--color-surface`, `--color-surface-raised` |
 | Inhalt | `--color-text`, `--color-text-muted`, `--color-border` |
 | Zustände | `--color-accent`, `--color-focus`, `--color-error`, `--color-warning`, `--color-success` und zugehörige Text-/Flächenfarben |
+| Diagramm-Dämpfung | `--color-diagram-muted`; im Hellmodus ein helles, im Dunkelmodus ein dunkles Grau |
 | Diagramme | `--color-position`, `--color-velocity`, `--color-acceleration`; zusätzlich Linienmuster |
 | Abstände | `--space-1` bis `--space-8`: 4, 8, 12, 16, 24, 32, 48, 64 px |
 | Schrift | `'Segoe UI', system-ui, -apple-system, sans-serif` wie in der Referenz; lokale KaTeX-Schriften für Mathematik; Basisschrift 1 rem, Textzeilenhöhe 1,6 |
@@ -65,7 +66,7 @@ Diagramme und SVG nutzen dieselben semantischen Farben. Theme-Wechsel verändert
 
 Der [Modellseitenstandard](MODEL_PAGE_STANDARD.md) enthält den aktuellen, vom Nutzer vorerst akzeptierten Uniform-Motion-Stand sowie die Übersicht der gemeinsamen Änderungsstellen. Die [Implementierungsregeln](../src/AGENTS.md) machen dessen Wiederverwendung für neue Modelle verbindlich. Diese Regeln ersetzen frühere Entwürfe mit sichtbarem Theory-Titel, zusätzlicher Theorie-Karte, Modellzähler/Hinweisblock oder Diagrammtabelle.
 
-Pro Modell eine zunächst eingeklappte Karte. Der links am Theorietext ausgerichtete ⓘ-Button öffnet die Theorie und wird zu ✕. Theorie ohne eigene Fläche oder sichtbaren Titel; Variables und Key Formulas kompakt nebeneinander, mobil untereinander. Die Berechnung liegt in einer dezenten Unterfläche mit Eingaben, Reset, SI-Umrechnung, vollständigen KaTeX-Ergebnisgleichungen und Diagrammen.
+Pro Modell eine zunächst eingeklappte Karte. Der links am Theorietext ausgerichtete ⓘ-Button öffnet die Theorie und wird zu ✕. Das Schliessen der Modellkarte schliesst auch die Theorie; beim erneuten Öffnen startet sie geschlossen. Theorie ohne eigene Fläche oder sichtbaren Titel; Variables und Key Formulas kompakt nebeneinander, mobil untereinander. Die Berechnung liegt in einer dezenten Unterfläche mit Eingaben, Reset, SI-Umrechnung, vollständigen KaTeX-Ergebnisgleichungen und Diagrammen.
 
 Modellkarte und Theorie nicht kopieren. `ModelCard` erhält seit Inclined Plane fachliche Inhalte und Rechner über typisierte Props/Snippets; gemeinsame Rechnerfeld-/Ergebnis-Styles liegen einmal in `styles/calculator.css`. Referenzmasse und Änderungsstellen stehen im Modellseitenstandard. Bestehende Farben bleiben zentrale Tokens; gemeinsame Grössen über die semantischen Tokens in `styles/app.css` anpassen.
 
@@ -99,7 +100,7 @@ Die bestätigte Gestaltung ist kein Nachweis vollständiger WCAG-Konformität. B
 
 Beide Themes, Laptop/Mobil, leere/ungültige/gültige Werte und Tastaturbedienung prüfen, soweit Browserwerkzeuge vorhanden sind. Fachtests, Typprüfung und Build bei Implementierungsänderungen ausführen. Nicht durchgeführte Browser-/Screenreaderprüfungen benennen. Reine Dokumentänderungen benötigen Konsistenz- und Linkprüfung.
 
-Die eigene Ohm-Schaltung verwendet U in `--color-accent` sowie die semantischen Diagramm-Tokens `--color-electric-current`, `--color-electric-resistance` und `--color-electric-power`. Diese liegen gemeinsam für beide Themes in `app.css`. Nicht ausgewählte Grössen verwenden `--color-text-muted`; Draht und Quelle bleiben neutral.
+Die eigene Ohm-Schaltung verwendet U in `--color-accent` sowie die semantischen Diagramm-Tokens `--color-electric-current`, `--color-electric-resistance` und `--color-electric-power`. Diese liegen gemeinsam für beide Themes in `app.css`. Auswahlzustände verwenden für nicht gewählte Diagrammelemente ausschliesslich `--color-diagram-muted`: hellgrau im Light Mode, dunkelgrau im Dark Mode; die gewählte Grösse bleibt in der neutralen Textfarbe. Widerstandsrechtecke haben eine gemeinsame dünne Kontur, leicht gerundete Ecken und gleich dünne Anschlussleitungen. Modellspezifisch kann wie bei Stern–Dreieck die gesamte Schaltung statt nur einer Grösse gedimmt werden.
 
 Grafiken verwenden den gemeinsamen Skalierungsfaktor `--graphic-scale: 0.7` in `app.css` bezogen auf ihre SVG-ViewBox-Breite; Referenzbilder verwenden eine Bezugsbreite von 400 px. Seitenverhältnisse bleiben erhalten, die verfügbare Breite begrenzt die Darstellung. Breite Widerstandsnetzwerke bleiben innerhalb ihrer Fläche horizontal scrollbar.
 

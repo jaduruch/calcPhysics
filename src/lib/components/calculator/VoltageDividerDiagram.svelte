@@ -31,7 +31,7 @@
     <defs>
       {#each [...voltageArrows, ...currentArrows] as arrow}
         <marker id={`${id}-${arrow.key}`} viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
-          <path d="M0 0L8 4L0 8Z" fill={active !== null && active !== arrow.key ? 'var(--color-text-muted)' : arrow.key.startsWith('U') ? 'var(--color-accent)' : 'var(--color-electric-current)'} />
+          <path d="M0 0L8 4L0 8Z" fill={active !== null && active !== arrow.key ? 'var(--color-diagram-muted)' : arrow.key.startsWith('U') ? 'var(--color-accent)' : 'var(--color-electric-current)'} />
         </marker>
       {/each}
     </defs>

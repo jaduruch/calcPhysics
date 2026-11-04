@@ -10,9 +10,9 @@ import { parseQuantityInUnit } from '../src/lib/calculators/quantities.ts';
 const near = (a,b) => assert.ok(Math.abs(a-b) <= 1e-12 * Math.max(1,Math.abs(b)), `${a} != ${b}`);
 const solve = (id, input) => { const r = solveElectrical(id,input); assert.equal(r.status,'success',JSON.stringify(r)); return r.outputs; };
 const typical = { R: 100, R1: 1000, R2: 2000, RL: 1000, U: 12, U1: 230, Uin: 12, Up: 10, I: .1, I2: 1, Ip: 2, N: 100, N1: 100, N2: 10, eta: .9, n: 10, C1: 1e-6, C2: 1e-6, C: 1e-6, L: .01, L1: .01, L2: .02, f: 1000, t: .001, phi: .3, a: 2, b: 3, c: 4, A: .001, l: .1, mu: 100, er: 2, d: .002, dt: .01, dPhi: .002, dI: .2, P: 3, Q: .001, E: 500, B: .2, v: 4 };
-test('all ten subtopics have real models and valid formulas', () => {
+test('all nine subtopics have real models and valid formulas', () => {
   const children = topics.filter(t => t.parentId === 'electromagnetism');
-  assert.equal(children.length,10);
+  assert.equal(children.length,9);
   assert.ok(!children.some(topic => topic.id === 'transformers'));
   const transformerModel = models.find(model => model.id === 'transformer');
   assert.equal(transformerModel.topicId, 'inductors');
@@ -31,6 +31,10 @@ test('all ten subtopics have real models and valid formulas', () => {
     if(d.id==='capacitor') values={C:1e-6,U:10};
     if(d.id==='rl-series-ac' || d.id==='rl-parallel-ac') values={R:100,L:100/(2*Math.PI),f:1,U:10};
     if(d.id==='rl-charge' || d.id==='rl-discharge') values={R:10,L:10,U:10,t:.5};
+    if(d.id.startsWith('rc-')&&d.id.endsWith('-pass')) values={R:1000,C:1e-6,f:1000,Uin:10};
+    if(d.id.startsWith('rl-')&&d.id.endsWith('-pass')) values={R:100,L:.1,f:1000,Uin:10};
+    if(d.id==='series-rlc' || d.id==='parallel-rlc') values={R:100,L:.01,C:1e-6,f:1000,U:10};
+    if(d.id==='voltage-gain') values={U1:10,U2:20};
     if(['sine-rms','square-rms','triangle-rms'].includes(d.id)) values={Up:10};
     if(d.id==='sine-signal') values={Up:10,f:50,t:.001,phi:0};
     if(d.id==='pwm') values={Up:10,f:1000,d:.4};
@@ -43,9 +47,9 @@ test('all ten subtopics have real models and valid formulas', () => {
       assert.doesNotThrow(()=>katex.renderToString(eq,{throwOnError:true,strict:'error'}), d.id+': '+eq);
       assert.ok(!eq.includes('undefined') && !eq.includes('NaN'),eq);
     }
-    const cardId=d.id==='loaded-divider'?'voltage-divider':d.id==='resistance-parallel'?'resistance-series':d.id==='capacitance-parallel'?'capacitance-series':d.id==='inductance-parallel'?'inductance-series':d.id==='sine-rms'?'sine-signal':d.id==='rc-parallel-ac'?'rc-series-ac':d.id==='rl-parallel-ac'?'rl-series-ac':d.id==='rc-discharge'?'rc-charge':d.id==='rl-discharge'?'rl-charge':['plate-capacitor','charge-flow','circular-plate'].includes(d.id)?'capacitor':d.id;
+    const cardId=d.id==='loaded-divider'?'voltage-divider':d.id==='resistance-parallel'?'resistance-series':d.id==='capacitance-parallel'?'capacitance-series':d.id==='inductance-parallel'?'inductance-series':d.id==='star-delta'?'delta-star':d.id==='sine-rms'?'sine-signal':d.id==='rc-parallel-ac'?'rc-series-ac':d.id==='rl-parallel-ac'?'rl-series-ac':d.id==='rc-discharge'?'rc-charge':d.id==='rl-discharge'?'rl-charge':['plate-capacitor','charge-flow','circular-plate'].includes(d.id)?'capacitor':d.id;
     const card=models.find(m=>m.id===cardId);
-    assert.equal(Boolean(card),d.id!=='ac-power',d.id);
+    assert.equal(Boolean(card),!['ac-power','power-gain'].includes(d.id),d.id);
     for(const eq of card?.formulas ?? []) assert.doesNotThrow(()=>katex.renderToString(eq.expression,{throwOnError:true}),d.id);
     for(const note of card?.notes ?? []) if(note.expression) assert.doesNotThrow(()=>katex.renderToString(note.expression,{throwOnError:true}),d.id);
     assert.equal(JSON.stringify(r),before);
@@ -58,6 +62,10 @@ test('DC, loaded divider, component combinations and star-delta reference values
   near(solve('resistance-parallel',{R1:100,R2:100}).R,50);
   const star=solve('delta-star',{a:30,b:30,c:30}); assert.deepEqual(star,{R1:10,R2:10,R3:10});
   assert.deepEqual(solve('star-delta',{a:10,b:10,c:10}),{R1:30,R2:30,R3:30});
+  const conversionCards=models.filter(model=>['delta-star','star-delta'].includes(model.id));
+  assert.equal(conversionCards.length,1);assert.equal(conversionCards[0].title,'Delta–Star Resistance Conversion');
+  assert.ok(conversionCards[0].formulas.some(formula=>formula.label==='delta → star'));
+  assert.ok(conversionCards[0].formulas.some(formula=>formula.label==='star → delta'));
 });
 test('capacitor calculations combine charge, field, geometry and energy with the reference inputs',()=>{
   const cards=models.filter(model=>['capacitor','plate-capacitor','charge-flow','circular-plate'].includes(model.id));
@@ -180,10 +188,27 @@ test('series and parallel RC calculations share one card while retaining both ph
   assert.deepEqual(values,{R:100,C:1/(200*Math.PI),f:1,U:10});
 });
 test('all four filters are −3.0103 dB and ±45 degrees at cutoff',()=>{
+  const fields={
+    'rc-high-pass':['phi','R','Xc','attenuation','C','Uin','Uc','Uout','fc','f'],
+    'rc-low-pass':['phi','R','Xc','attenuation','C','Uin','Uout','fc','f'],
+    'rl-high-pass':['phi','R','Xl','attenuation','L','Uin','Uout','fc','f'],
+    'rl-low-pass':['phi','R','Xl','attenuation','L','Uin','Uout','fc','f']
+  };
   for(const kind of ['rc','rl'])for(const pass of ['high','low']) {
+    const id=`${kind}-${pass}-pass`;
+    assert.deepEqual(electricalDefinitions.find(definition=>definition.id===id).inputs.map(field=>field.id),fields[id]);
     const values=kind==='rc'?{R:1000,C:1e-6,f:1/(2*Math.PI*.001),Uin:10}:{R:100,L:.1,f:100/(2*Math.PI*.1),Uin:10};
-    const r=solve(`${kind}-${pass}-pass`,values);near(r.gain,1/Math.SQRT2);near(r.phi,(pass==='high'?1:-1)*Math.PI/4);near(r.attenuation,10*Math.log10(2));
+    const r=solve(id,values);near(r.gain,1/Math.SQRT2);near(r.phi,(pass==='high'?1:-1)*Math.PI/4);near(r.attenuation,10*Math.log10(2));
+    near(solve(id,{fc:r.fc,f:r.fc,Uin:10}).Uout,10/Math.SQRT2);
   }
+});
+test('gain and attenuation use one card with all reference input quantities',()=>{
+  const cards=models.filter(model=>model.topicId==='gain-and-attenuation');
+  assert.equal(cards.length,1);
+  const definition=electricalDefinitions.find(model=>model.id==='voltage-gain');
+  assert.deepEqual(definition.inputs.map(field=>field.id),['I1','I2','g','a','P1','P2','U1','U2','V','D']);
+  const result=solve('voltage-gain',{U1:10,U2:20});
+  near(result.V,2);near(result.D,.5);near(result.g,20*Math.log10(2));near(result.a,-20*Math.log10(2));
 });
 test('RLC resonance, transformer power balance and three-phase identities',()=>{
   const values={R:100,L:.01,C:1e-6,f:1/(2*Math.PI*Math.sqrt(1e-8)),U:10};
@@ -194,7 +219,7 @@ test('RLC resonance, transformer power balance and three-phase identities',()=>{
   for(const t of [0,.001,.003]) {const r=solve('three-phase-generator',{Up:325,f:50,t});near(r.u1+r.u2+r.u3,0);}
 });
 test('domain, missing inputs, non-finite values and overflow never yield valid results',()=>{
-  for(const [id,model] of Object.entries(electricalPhysics).filter(([id])=>!['ohms-law','transformer','voltage-divider','loaded-divider','inductor','capacitor','sine-rms','square-rms','triangle-rms','sine-signal','pwm','rc-series-ac','rc-parallel-ac','rl-series-ac','rl-parallel-ac','rc-charge','rc-discharge','rl-charge','rl-discharge'].includes(id))) {
+  for(const [id,model] of Object.entries(electricalPhysics).filter(([id])=>!['ohms-law','transformer','voltage-divider','loaded-divider','inductor','capacitor','sine-rms','square-rms','triangle-rms','sine-signal','pwm','rc-series-ac','rc-parallel-ac','rl-series-ac','rl-parallel-ac','rc-charge','rc-discharge','rl-charge','rl-discharge','rc-high-pass','rc-low-pass','rl-high-pass','rl-low-pass','series-rlc','parallel-rlc','voltage-gain'].includes(id))) {
     const given=Object.fromEntries(Object.keys(model.inputs).map(k=>[k,typical[k]]));if(id==='pwm')given.d=.4;
     for(const [key,domain] of Object.entries(model.inputs)) {
       assert.equal(solveElectrical(id,{...given,[key]:Infinity}).status,'invalid',id);
@@ -211,7 +236,7 @@ test('unit conversions and every curve use unrounded SI results; invalid state l
   near(parseQuantityInUnit('100','area','cm²').value,.01);
   assert.doesNotThrow(()=>katex.renderToString(electricalQuantity(40,'%',false),{throwOnError:true}));
   for(const d of electricalDefinitions.filter(d=>d.chart && d.chart!=='pwm')) {
-    const given=['rc-charge','rc-discharge'].includes(d.id) ? {R:10,C:.1,U:10,t:.5} : ['rl-charge','rl-discharge'].includes(d.id) ? {R:10,L:10,U:10,t:.5} : ['triangle-rms','square-rms'].includes(d.id)?{Up:10}:d.id==='sine-signal'?{Up:10,f:50,t:.001,phi:0}:Object.fromEntries(d.inputs.map(f=>[f.id,typical[f.id]]));
+    const given=['rc-charge','rc-discharge'].includes(d.id) ? {R:10,C:.1,U:10,t:.5} : ['rl-charge','rl-discharge'].includes(d.id) ? {R:10,L:10,U:10,t:.5} : d.id.startsWith('rc-')&&d.id.endsWith('-pass')?{R:1000,C:1e-6,f:1000,Uin:10}:d.id.startsWith('rl-')&&d.id.endsWith('-pass')?{R:100,L:.1,f:1000,Uin:10}:['triangle-rms','square-rms'].includes(d.id)?{Up:10}:d.id==='sine-signal'?{Up:10,f:50,t:.001,phi:0}:Object.fromEntries(d.inputs.map(f=>[f.id,typical[f.id]]));
     const r=solveElectrical(d.id,given);const curves=electricalCurves(d,r);
     assert.ok(curves.length>0,d.id);assert.ok(curves.every(c=>!c.schematic && c.values.every(Number.isFinite)));
     assert.ok(electricalCurves(d,{status:'invalid',fields:[]}).every(c=>c.schematic));

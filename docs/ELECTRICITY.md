@@ -1,6 +1,6 @@
 # Electricity & Magnetism
 
-Stand 04.11.2026: zehn Unterthemen und 44 explizite Rechenmodelle in 31 Karten im bestehenden Modellkartenstandard. Englisch bleibt die Standardsprache. Die Themen sind lokal implementiert; kein Hosting oder Deployment wurde beauftragt.
+Stand 04.11.2026: neun Unterthemen und 44 explizite Rechenmodelle in 30 Karten im bestehenden Modellkartenstandard. Three-Phase Systems enthält Stern, Dreieck und Generator gemeinsam. Englisch bleibt die Standardsprache. Die Themen sind lokal implementiert; kein Hosting oder Deployment wurde beauftragt.
 
 ## Umfang und Referenz
 
@@ -15,9 +15,8 @@ Referenz ist die aktuelle [Elecalculate-Elektrotechnik](https://elecalculate.com
 | Inductors | Transformator mit 14 Primär-/Sekundärgrössen und vorwärts/inverser Berechnung; erweiterbare Spulenliste in einer Serie-/Parallelkarte ohne Kopplung, gemeinsame Spulenberechnungen für Induktivität, Energie, Fluss, Selbst- und Bewegungsinduktion, RL-Serie/parallel an AC mit Impedanzdreiecken, Ein-/Ausschalten mit Kurven |
 | Resonant Circuits | Serien-/Parallel-RLC bei expliziter Anregungsfrequenz, Resonanzfrequenz, Güte, Bandbreite, Impedanz und Strom |
 | Gain & Attenuation | Amplituden- und Leistungsfaktoren sowie logarithmische Verstärkung/Dämpfung |
-| Filters | RC-/RL-Hoch-/Tiefpass mit Grenzfrequenz, Gain, Ausgangsspannung, Phase, Dämpfung und Frequenzgang |
-| Three-Phase Systems | Symmetrische Stern-/Dreiecksysteme mit Strang-/Leitergrössen und Leistung |
-| Three-Phase Generator | Zeitabhängige Phasenspannungen, drei Kurven und normierte rotierende Zeiger; einzelne Zeiger ein-/ausblendbar |
+| Filters | RC-/RL-Hoch-/Tiefpass mit den Referenzfeldern für Phase, Widerstand, Reaktanz, Dämpfung, Bauteil, Ein-/Ausgangsspannung, Grenzfrequenz und Frequenz; RC-Hochpass zusätzlich mit Kondensatorspannung; immer mit eigenem Schema sowie Bode-Magnitude- und Bode-Phasendiagramm |
+| Three-Phase Systems | Symmetrische Stern-/Dreiecksysteme mit Strang-/Leitergrössen und Leistung sowie zeitabhängige Generator-Phasenspannungen, drei Kurven und normierte rotierende Zeiger |
 
 Ohm’s Law verwendet eine eigene SVG-Schaltung (`OhmsLawDiagram.svelte`) mit Quelle, Widerstand, Strom-/Spannungspfeil und absorbierter Leistung. Beim Fokus auf U/I/R/P bleibt die betreffende Grösse samt Einheit farbig, die übrigen werden grau. Sobald kein Zahlenfeld mehr fokussiert ist, erscheinen wieder alle Grössen farbig; Tastaturfokus funktioniert genauso. Farben kommen aus zentralen Theme-Tokens. Das frühere Elecalculate-Bild ist entfernt.
 
@@ -28,7 +27,7 @@ Alle Schaltungen und Wellenformen werden aus validierten Rechenergebnissen mit e
 ## Umsetzung und fachliche Grenzen
 
 - `content/electricity.ts`: englische Metadaten, Eingabe-/Ausgabegrössen, Formeln, Theorie, Voraussetzungen, Quellen, Diagrammzuordnung.
-- `physics/electricity.ts`: explizite reine SI-Funktionen, Definitionsbereiche und Endlichkeitsprüfung; kein CAS. `physics/electrical-relations.ts` ergänzt für Ohm, Transformator und Spannungsteiler explizite Umstellungen mit begrenzter Weiterberechnung und Konsistenzprüfung. Ohm benötigt genau zwei manuelle Werte; degenerierte Nullwertpaare werden als unterbestimmt oder unlösbar behandelt. Der Transformator liefert auch partiell bestimmte Resultate; zwei Eingaben bestimmen nicht notwendigerweise alle Grössen. Die übrigen Modelle behalten feste Eingabekombinationen.
+- `physics/electricity.ts`: explizite reine SI-Funktionen, Definitionsbereiche und Endlichkeitsprüfung; kein CAS. `physics/electrical-relations.ts` ergänzt für Ohm, Transformator, Spannungsteiler und Filter explizite Umstellungen mit begrenzter Weiterberechnung und Konsistenzprüfung. Ohm benötigt genau zwei manuelle Werte; degenerierte Nullwertpaare werden als unterbestimmt oder unlösbar behandelt. Der Transformator und die Filter liefern nur eindeutig bestimmbare Teilresultate; zwei Eingaben bestimmen nicht notwendigerweise alle Grössen.
 - `calculators/electrical-equations.ts`: drei signifikante Stellen, sichtbare SI-Umrechnung, allgemeine Formel, Zahleneinsetzung und Ausgabe aus denselben ungerundeten Resultaten.
 - `ElectricalCalculator.svelte`: gemeinsame `QuantityField`, `UnitSelect`, `CalculatorShell`, `CalculatorTools`, `EquationBlock` und zentrale Rechnerstyles. Kein zweites Formular-/Styling-System.
 - `visualization/electrical.ts`: Sampling derselben Solver; ungültige/unvollständige Eingaben erzeugen nur unskalierte schematische Vorschauen. `MotionChart` erhält optionale X-Achsenbeschriftung und einen schematischen Modus; sein bisheriges Standardverhalten bleibt erhalten.
@@ -41,7 +40,7 @@ Magnetische Modelle sind linear und homogen; keine Sättigung, Hysterese oder St
 
 ## Verifikation
 
-`tests/electricity.test.mjs` prüft alle Modellformeln mit KaTeX, Modellzuordnung, lokale Bilder, unabhängige Referenzfälle, Bereiche, fehlende Werte, Überlauf, Vorzeichen, t = 0, PWM-Grenzen, Resonanz, Filter am −3-dB-Punkt, Einheiten und Solver-/Kurvenübereinstimmung. Bestehende Mechaniktests bleiben bestehen. Die SEO-Prüfung berücksichtigt die erweiterten veröffentlichten Routen aus der zentralen Registry.
+`tests/electricity.test.mjs` prüft alle Modellformeln mit KaTeX, Modellzuordnung, unabhängige Referenzfälle, Bereiche, fehlende Werte, Überlauf, Vorzeichen, t = 0, PWM-Grenzen, Resonanz, Filterfelder und Filter am −3-dB-Punkt, Einheiten und Solver-/Kurvenübereinstimmung. Bestehende Mechaniktests bleiben bestehen. Die SEO-Prüfung berücksichtigt die erweiterten veröffentlichten Routen aus der zentralen Registry.
 
 Browserprüfung: Themen und Rechner, Theorieformeln, beide Themes, Laptop und Mobilbreite, Invalidierung, Reset, Prozentwechsel, Tastaturbedienung des Einheitenmenüs und Theorie ohne JavaScript. Die zusammengeführte Spannungsteiler-Karte wurde zusätzlich auf Moduswechsel, bedingte Lastfelder/-grafik, Vorwärts-/Rückwärtsrechnungen, isolierte ungültige Lastangaben, Fokus/Fokusverlust und Tastaturbedienung des Schalters geprüft. Produktionsbuild und Svelte-/Typprüfung bestehen ebenfalls.
 

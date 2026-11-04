@@ -1,5 +1,4 @@
 export const ui = {
-  siReferenceLink: 'Explore SI units and constants',
   homeTitle: 'Physics calculators and theory',
   homeDescription: 'Calculate uniform motion and inclined plane forces with unit conversions, step-by-step formulas and diagrams. Explore the assumptions and theory behind each model, from learning physics to everyday engineering.',
   home: 'Home', subjects: 'Explore physics', subjectLabel: 'Subject overview',
@@ -82,6 +81,8 @@ export const electricalUi = {
   parallelRcDescription: 'An automatically generated AC circuit with resistor R and capacitor C on separate branches across the same voltage.',
   automaticRcDiagramHint: 'The circuit is generated from the selected connection. Select an input to highlight the corresponding quantity.',
   resistorConnection: 'Resistor connection', series: 'Series', parallel: 'Parallel',
+  starDeltaConversion: 'Network conversion', deltaToStar: 'Delta → Star', starToDelta: 'Star → Delta',
+  starDeltaDiagrams: 'Delta and star resistance networks', deltaNetwork: 'Delta network', starNetwork: 'Star network',
   dividerLoad: 'Load connected to the voltage divider', unloaded: 'Unloaded', loaded: 'Loaded',
   dividerDiagram: 'Unloaded voltage divider', loadedDividerDiagram: 'Loaded voltage divider',
   dividerDescription: 'A DC source supplies series resistors R1 and R2. The output voltage is measured across R2. Supply current I flows through both resistors.',
@@ -105,4 +106,5 @@ export const electricalUi = {
   diagram: 'Circuit diagram.',
   diagramNote: 'Source illustration; the assumptions stated here define this calculation.',
   zero: 'Zero is a valid input where the model permits it.'
+  ,highPassCircuit:'High-pass circuit',lowPassCircuit:'Low-pass circuit',filterCircuitDescription:'Automatically generated ideal first-order passive filter circuit.',bodeMagnitudeDiagram:'Bode magnitude',bodePhaseDiagram:'Bode phase shift',seriesResonator:'Series RLC resonator',parallelResonator:'Parallel RLC resonator',resonatorCircuitDescription:'Automatically generated ideal RLC resonant circuit.'
 };
