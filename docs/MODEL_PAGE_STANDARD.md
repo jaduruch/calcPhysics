@@ -43,6 +43,8 @@ Beide Rechner verwenden `QuantityField`, `CalculatorShell`, `CalculatorTools` un
 
 Die Umstellung wurde mit den vorhandenen Fachtests sowie Browserabläufen für beide Modelle geprüft. Kein allgemeines Formularframework oder symbolischer Gleichungslöser wurde eingeführt.
 
+Unterthemen werden zentral in `childrenOf` nach ihrer Themenummer numerisch aufsteigend sortiert (z. B. 02.2 vor 02.10), unabhängig von der Reihenfolge in der Registry. Auf Home steht SI Units & Physical Constants als eigene breite Referenzkarte oberhalb von Explore physics. Die Karte belegt die volle Inhaltsbreite und zählt nicht zu den sechs Physik-Hauptthemen im Raster. In der Header-Navigation bleibt Units am Anfang der Themenlinks.
+
 ## Akzeptierter Aufbau
 
 ```text
@@ -135,3 +137,13 @@ Oscillations & Waves ist eine Übersicht; Doppler Effect liegt unter `/oscillati
 ## Optics: Total Internal Reflection
 
 Optics ist eine Übersicht mit der Unterseite `/optics/total-internal-reflection`. Die Modellkarte verwendet gemeinsame Felder für n₁, n₂ und θ₁, Einheitenmenüs, Reset, Theorie und Ergebnisgleichungen. Zwei Indizes reichen für den Grenzwinkel beziehungsweise die Aussage, dass Totalreflexion in dieser Richtung nicht möglich ist. θ₁ ergänzt Brechungs-/Reflexionswinkel und die Einordnung. Winkel starten in rad, optional °; Ergebnisse zeigen beide Darstellungen ohne SI-Präfix. Die SVG-Skizze steht unter den Resultaten, unterscheidet schematische und berechnete Geometrie und zeigt bei Totalreflexion keinen propagierenden gebrochenen Strahl. Gleiche Indizes erzeugen keinen reflektierten Strahl. Kein zusätzliches Farbsystem, keine neue Bibliothek.
+
+## Formelthemen aus Physik1 und Physik2
+
+15 zusätzliche Unterthemen verwenden dieselben Modellkarten mit typisierten ResourceDefinition-Daten und ResourceCalculator. Nur fachliche Inhalte, Einheiten, explizite Solver und Adapter kommen hinzu. Bei relationalen Rechnern bestimmt eine fehlende Primärgrösse die inverse Rechnung; Vorwärtsmodelle zeigen ihre abgeleiteten Ergebnisse unter den manuellen Feldern. Die genaue Abdeckung steht in [RESOURCE_CONTENT.md](RESOURCE_CONTENT.md). Die Brechungsseite nutzt den vorhandenen Totalreflexions-/Snell-Rechner erneut. Keine PDF-Bilder oder leeren öffentlichen Themen.
+
+## Kinematics: Acceleration and Throws
+
+Unter `/mechanics/kinematics` folgen auf Uniform Motion die Karten Uniformly Accelerated Motion, Vertical Throw und Horizontal Throw. `content/kinematics.ts` liefert Fachinhalte/Felder, `KinematicsCalculator` verwendet die gemeinsamen Felder, Tools und Gleichungsbausteine. Vier bekannte Grössen bestimmen die fünfte im Beschleunigungsmodell; bei drei Angaben und leerem s₀ gilt sichtbar s₀ = 0. Zwei zulässige Zeiten werden beide ausgegeben; der gemeinsame Tastatur-bedienbare Umschalter wählt das Diagrammintervall. Wurfmodelle verwenden Vorwärtsrechnung und sichtbare Standardannahmen (g = 9.81 m/s², beim vertikalen Modell y₀ = 0).
+
+`KinematicsCharts` nutzt `MotionChart` auch für die Bahnkurve y(x), mit optionalem vorzeichenbehaftetem x-Bereich. Das gemeinsame Diagrammraster liegt in `calculator.css` und wird auch von Uniform Motion verwendet. Ohne gültige Eingaben werden normierte Beispiele desselben Solvers ohne Zahlenachsen gezeigt. Nullintervalle bleiben ohne erfundene Kurve. Solver-Verträge und Grenzen stehen in den Physikstandards.

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { gasFields, solveIdealGas, type GasField, type GasValues } from '#lib/physics/thermodynamics/ideal-gas.ts';
-  import { getUnit } from '#lib/physics/units.ts';
+  import { fromSI } from '#lib/physics/units.ts';
   import { gasKinds, gasUnits, gasEquations } from '#lib/calculators/ideal-gas.ts';
   import { parseQuantityInUnit, changeQuantityUnit } from '#lib/calculators/quantities.ts';
   import { idealGasUi as text, calculatorUi } from '#lib/i18n/en.ts';
@@ -22,8 +22,8 @@
     if (invalid.length) return { status: 'invalid' } as const;
     const solution = solveIdealGas(values);
     if (solution.status === 'success') {
-      const displayed = solution.value / getUnit(gasKinds[solution.field], units[solution.field]).factor;
-      if (!Number.isFinite(displayed) || displayed === 0) return { status: 'invalid' } as const;
+      const displayed = fromSI(solution.value, gasKinds[solution.field], units[solution.field]);
+      if (!Number.isFinite(displayed)) return { status: 'invalid' } as const;
     }
     return solution;
   });

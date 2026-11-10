@@ -1,4 +1,4 @@
-import { formatQuantity } from './quantities.ts';
+import { formatMeasurement } from './quantities.ts';
 import { getUnit, unitGroups } from '../physics/units.ts';
 import type { ElectricalDefinition, ElectricalField } from '../content/electricity.ts';
 import { MU0, EPS0 } from '../physics/electricity.ts';
@@ -21,7 +21,7 @@ export function electricalSymbol(id: string): string { return symbols[id] ?? (/^
 const numeric = (value: string) => value.replace(/e\+?(-?\d+)/i, String.raw`\times10^{$1}`);
 const usesEngineeringPrefix = (kind: ElectricalField['kind']) => !['ratio', 'angle', 'decibel', 'dimensionless'].includes(kind);
 export function electricalQuantity(value: number, unit: string, engineering = true): string {
-  const formatted = engineering ? formatQuantity(value) : { number: value.toPrecision(3), prefix: '' };
+  const formatted = formatMeasurement(value,unit,engineering);
   const symbol = unit === '1' ? '' : unit.replace('Ω', String.raw`\Omega`).replace('²', '^2').replace('%', String.raw`\%`);
   const prefix = formatted.prefix === 'u' ? String.raw`\mu ` : formatted.prefix;
   return `${numeric(formatted.number)}${symbol ? `\\,\\mathrm{${prefix}${symbol}}` : ''}`;

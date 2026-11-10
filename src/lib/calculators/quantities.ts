@@ -1,4 +1,4 @@
-import { getUnit, type QuantityKind } from '../physics/units.ts';
+import { getUnit, toSI, fromSI, type QuantityKind } from '../physics/units.ts';
 
 export const prefixes = [
   { symbol: 'p', factor: 1e-12 }, { symbol: 'n', factor: 1e-9 },
@@ -43,8 +43,9 @@ export function parseQuantityInUnit(raw: string, kind: QuantityKind, unit: strin
   const definition = getUnit(kind, unit);
   const parsed = parseQuantity(raw);
   if (parsed.status !== 'valid') return parsed;
-  const value = parsed.value * definition.factor;
-  if (!Number.isFinite(value) || (parsed.value !== 0 && value === 0)) return { status: 'invalid' };
+  if ('offset' in definition && parsed.prefix) return { status: 'invalid' };
+  const value = toSI(parsed.value, kind, unit);
+  if (!Number.isFinite(value) || (!('offset' in definition) && parsed.value !== 0 && value === 0)) return { status: 'invalid' };
   return { ...parsed, value };
 }
 /** Unit switches preserve the physical value and typed prefix, without display rounding. */
@@ -53,12 +54,20 @@ export function changeQuantityUnit(raw: string, kind: QuantityKind, from: string
   const newUnit = getUnit(kind, to);
   const parsed = parseQuantity(raw);
   if (parsed.status !== 'valid' || from === to) return raw;
+  if ('offset' in oldUnit || 'offset' in newUnit) return `${fromSI(toSI(parsed.value, kind, from), kind, to)}`;
   return `${Number(parsed.number) * (oldUnit.factor / newUnit.factor)}${parsed.prefix}`;
 }
 
+/** A scalar engineering prefix cannot be prepended to m²/m³ or kg unchanged.
+ * For these compound base units, retain three significant digits in the base unit.
+ */
+export function formatMeasurement(value:number,unit:string,engineering=true):{number:string;prefix:Prefix} {
+ if(!Number.isFinite(value))throw new RangeError('A finite value is required');
+ return engineering&&!/^(?:m[²³]|kg(?:$|\/)|1\/|°[CF])/.test(unit)?formatQuantity(value):{number:value.toPrecision(3),prefix:''};
+}
 /** Shared three-significant-digit LaTeX measurement, with optional engineering prefixes. */
 export function quantityLatex(value: number, unit: string, engineering = true): string {
-  const formatted = engineering ? formatQuantity(value) : { number: value.toPrecision(3), prefix: '' };
+  const formatted = formatMeasurement(value,unit,engineering);
   const number = formatted.number.replace(/e\+?(-?\d+)/i, String.raw`\times 10^{$1}`);
   const prefix = formatted.prefix === 'u' ? String.raw`\mu ` : formatted.prefix;
   return `${number}${unit ? `\\,\\mathrm{${prefix}${unit.replace('²', '^{2}').replace('³', '^{3}')}}` : ''}`;

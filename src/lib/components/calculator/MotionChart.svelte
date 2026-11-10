@@ -1,13 +1,14 @@
 <script lang="ts">
   import { formatAxisLabel } from '#lib/visualization/axis-label.ts';
   import { chartUi as text } from '#lib/i18n/en.ts';
-  let { title, yLabel, times, values, description, shape, xLabel = 't [s]', schematic = false, color = 'default', marker }: {
-    title: string; yLabel: string; times: number[]; values: number[]; description: string; shape: 'position' | 'velocity'; xLabel?: string; schematic?: boolean; color?: 'default' | 'current'; marker?: { time: number; value: number };
+  let { title, yLabel, times, values, description, shape, xLabel = 't [s]', schematic = false, color = 'default', xBounds, marker }: {
+    title: string; yLabel: string; times: number[]; values: number[]; description: string; shape: 'position' | 'velocity'; xBounds?: {min:number;max:number}; xLabel?: string; schematic?: boolean; color?: 'default' | 'current'; marker?: { time: number; value: number };
   } = $props();
   const hasData = $derived(!schematic && times.length > 0 && values.length === times.length);
   const id = $props.id();
   const plot = { left: 62, top: 24, width: 298, height: 196 };
-  const maximumTime = $derived(times.at(-1) || 1);
+  const minimumX = $derived(xBounds?.min ?? 0);
+  const maximumTime = $derived(xBounds ? (xBounds.max > minimumX ? xBounds.max : minimumX + 1) : times.at(-1) || 1);
   // Normalize before subtracting so very large signed values cannot overflow the extent.
   const scale = $derived(Math.max(...values.map(Math.abs)) || 1);
   const minimum = $derived(Math.min(0, ...values.map(value => value / scale)));
@@ -15,7 +16,7 @@
   const extent = $derived(maximum - minimum || 1);
   const low = $derived(Math.max(minimum - extent * .1, -Number.MAX_VALUE / scale));
   const high = $derived(Math.min(maximum + extent * .1, Number.MAX_VALUE / scale));
-  const x = (time: number) => plot.left + (time / maximumTime) * plot.width;
+  const x = (time: number) => plot.left + ((time - minimumX) / (maximumTime - minimumX)) * plot.width;
   const y = (value: number) => plot.top + ((high - value / scale) / (high - low)) * plot.height;
   const points = $derived(times.map((time, index) => `${x(time)},${y(values[index])}`).join(' '));
   const schematicPoints = $derived(shape === 'position'
@@ -44,10 +45,10 @@
       {@const py = plot.top + fraction * plot.height}
       <line class="grid" x1={px} y1={plot.top} x2={px} y2={plot.top + plot.height} />
       <line class="grid" x1={plot.left} y1={py} x2={plot.left + plot.width} y2={py} />
-      {#if hasData}<text x={px} y={plot.top + plot.height + 20} text-anchor="middle">{@render tickLabel(maximumTime * fraction)}</text>
+      {#if hasData}<text x={px} y={plot.top + plot.height + 20} text-anchor="middle">{@render tickLabel(minimumX + (maximumTime - minimumX) * fraction)}</text>
       {#if Math.abs(py - y(0)) >= 12}<text x={plot.left - 9} y={py + 4} text-anchor="end">{@render tickLabel((high - fraction * (high - low)) * scale)}</text>{/if}{/if}
     {/each}
-    <line class="axis" x1={plot.left} y1={plot.top + plot.height} x2={plot.left} y2={plot.top - 8} marker-end={`url(#${id}-arrow)`} />
+    <line class="axis" x1={xBounds ? x(0) : plot.left} y1={plot.top + plot.height} x2={xBounds ? x(0) : plot.left} y2={plot.top - 8} marker-end={`url(#${id}-arrow)`} />
     {#if hasData || (schematic && times.length > 0)}
       <line class="zero" x1={plot.left} y1={y(0)} x2={plot.left + plot.width + 10} y2={y(0)} marker-end={`url(#${id}-arrow)`} />
       {#if hasData}<text x={plot.left - 9} y={y(0) + 4} text-anchor="end">0</text>{/if}

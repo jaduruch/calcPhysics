@@ -1,9 +1,9 @@
 export const ui = {
   homeTitle: 'Physics calculators and theory',
-  homeDescription: 'Calculate uniform motion and inclined plane forces with unit conversions, step-by-step formulas and diagrams. Explore the assumptions and theory behind each model, from learning physics to everyday engineering.',
+  homeDescription: 'Explore mechanics, thermodynamics, electricity, waves, optics and quantum physics. Calculate with units, follow formulas and understand the assumptions behind each model.',
   mainNavigation: 'Main navigation', menu: 'Main menu',
   home: 'Home', subjects: 'Explore physics', subjectLabel: 'Subject overview',
-  subtopics: 'Subtopics', models: 'Theory & calculation models',
+  openReference: 'View reference', subtopics: 'Subtopics', models: 'Theory & calculation models',
   planned: 'Coming soon', open: 'Explore', theme: 'Appearance',
   toggleDarkMode: 'Dark mode', switchToLight: 'Switch to light mode', switchToDark: 'Switch to dark mode',
   skip: 'Skip to content', theory: 'Theory', calculate: 'Calculate',
@@ -184,4 +184,38 @@ export const reflectionUi = {
   schematic: 'Schematic ray preview; enter both indices and an incidence angle for your ray paths.',
   calculated: 'Ray geometry from the calculated angles; line brightness does not represent optical intensity.',
   diagramDescription: 'Medium 1 is below the horizontal interface and medium 2 is above. The incident ray travels toward the interface; the reflected ray remains below it. A refracted ray is drawn only when propagation into medium 2 is allowed.'
+} as const;
+
+export const resourceUi = {
+ incomplete:'Enter the model inputs to calculate the results.',
+ incompleteRelation:'Leave one model quantity empty; enter the others to calculate it.',
+ invalid:'Check the highlighted inputs against the stated model domains.',
+ conflict:'These inputs are inconsistent with the model equation.',
+ underdetermined:'These inputs do not determine a unique value (0 divided by 0).',
+ 'no-solution':'No solution exists within the stated model domain.',
+ numerical:'The result is outside the finite numerical range.',
+ consistent:'The entered values satisfy the model equation.',
+ defaultValue:'Default:',
+ prismReflection:'Total internal reflection at the second prism face: no transmitted emergence angle or transmitted total deviation.'
+} as const;
+
+export const kinematicsUi={
+ initialVelocity:'initial velocity',initialVerticalVelocity:'initial vertical velocity',acceleration:'constant acceleration',launchHeight:'launch height',horizontalVelocity:'horizontal velocity',gravity:'gravitational acceleration',
+ acceleratedAssumptions:'Straight-line motion with constant signed acceleration. Positions and velocities are directed quantities; t is elapsed time and must be non-negative. Position change is not necessarily distance travelled.',
+ projectileAssumptions:'Point mass, constant g > 0, no air resistance and horizontal ground at y = 0. Motion ends at first ground contact; no bounce or continuation below ground.',
+ verticalConvention:'The positive y-axis points upward. Positive v₀ means an upward launch; negative v₀ means a downward launch. Launch height y₀ must be non-negative.',
+ horizontalConvention:'Positive x points right and positive y upward. Negative vₓ throws to the left; R is signed displacement, not an unsigned range. Launch height h must be non-negative.',
+ incompleteAccelerated:'Enter four quantities, or three with a blank s₀ to assume s₀ = 0.',
+ incompleteProjectile:'Enter the launch conditions; blank gravity uses 9.81 m/s².',
+ domain:'Enter finite values. Time and launch height must be non-negative; g must be positive.',
+ numerical:'The motion is outside the finite numerical range.',
+ 'too-many':'Leave one quantity empty to select the accelerated-motion calculation.',
+ 'no-solution':'No solution exists for non-negative elapsed time.',
+ underdetermined:'These inputs do not determine a unique solution.',
+ parseError:'Enter valid finite numbers in the completed fields.',
+ initialAssumption:'Using s₀ = 0 m for the blank initial-position field.',
+ defaultValue:'Default:',multipleTimes:'Two non-negative times reach this position. Both are solutions; choose the interval to show in the diagrams.',
+ diagramInterval:'Diagram interval',timeSolution:'Time solution',
+ velocity:'final velocity',displacement:'position change',flight:'time to ground',peakTime:'time of maximum height',peakHeight:'maximum height after launch',impactVelocity:'vertical impact velocity',range:'horizontal displacement',vyImpact:'vertical impact velocity',speedImpact:'impact speed',
+ charts:'Motion diagrams',positionDescription:'Position over the selected elapsed-time interval, calculated from the same constant-acceleration model.',velocityDescription:'Signed velocity over the selected elapsed-time interval.',heightDescription:'Height above ground until first contact; no continuation below ground.',horizontalDescription:'Signed horizontal coordinate until first ground contact.',trajectoryDescription:'Trajectory in the x–y plane until first ground contact. A negative horizontal velocity carries the body to the left.',schematic:'Schematic preview without numerical scales.'
 } as const;

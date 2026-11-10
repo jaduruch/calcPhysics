@@ -7,7 +7,16 @@ export const unitGroups = {
   pressure: { si: 'Pa', units: [{ symbol: 'Pa', factor: 1 }, { symbol: 'bar', factor: 100000 }, { symbol: 'atm', factor: 101325 }] },
   volume: { si: 'm³', units: [{ symbol: 'm³', factor: 1 }, { symbol: 'L', factor: 0.001 }] },
   amount: { si: 'mol', units: [{ symbol: 'mol', factor: 1 }] },
-  temperature: { si: 'K', units: [{ symbol: 'K', factor: 1 }] },
+  temperature: { si: 'K', units: [{ symbol: 'K', factor: 1 }, { symbol: '°C', factor: 1, offset: 273.15 }, { symbol: '°F', factor: 5 / 9, offset: 459.67 }] },
+  temperatureDifference: { si: 'K', units: [{ symbol: 'K', factor: 1 }, { symbol: '°C', factor: 1 }] },
+  density: { si: 'kg/m³', units: [{ symbol: 'kg/m³', factor: 1 }, { symbol: 'g/cm³', factor: 1000 }] },
+  heatCapacity: { si: 'J/K', units: [{ symbol: 'J/K', factor: 1 }] },
+  specificHeat: { si: 'J/(kg K)', units: [{ symbol: 'J/(kg K)', factor: 1 }] },
+  specificEnergy: { si: 'J/kg', units: [{ symbol: 'J/kg', factor: 1 }] },
+  expansionCoefficient: { si: '1/K', units: [{ symbol: '1/K', factor: 1 }] },
+  thermalResistance: { si: 'K/W', units: [{ symbol: 'K/W', factor: 1 }] },
+  intensity: { si: 'W/m²', units: [{ symbol: 'W/m²', factor: 1 }] },
+  opticalPower: { si: '1/m', units: [{ symbol: '1/m', factor: 1 }] },
   voltage: { si: 'V', units: [{ symbol: 'V', factor: 1 }] },
   current: { si: 'A', units: [{ symbol: 'A', factor: 1 }] },
   resistance: { si: 'Ω', units: [{ symbol: 'Ω', factor: 1 }] },
@@ -54,6 +63,9 @@ export function getUnit(kind: QuantityKind, symbol: string) {
 
 /** English SI names used in theory; conversion factors remain in unitGroups. */
 export const unitNames: Partial<Record<QuantityKind, string>> = {
+  temperature: 'kelvin', temperatureDifference: 'kelvin interval', density: 'kilograms per cubic meter',
+  heatCapacity: 'joules per kelvin', specificHeat: 'joules per kilogram kelvin', specificEnergy: 'joules per kilogram',
+  expansionCoefficient: 'inverse kelvin', thermalResistance: 'kelvins per watt', intensity: 'watts per square meter', opticalPower: 'inverse meter (diopter)', mass: 'kilogram',
   voltage: 'volt', current: 'ampere', resistance: 'ohm', capacitance: 'farad', inductance: 'henry',
   frequency: 'hertz', power: 'watt', apparentPower: 'volt-ampere', reactivePower: 'var',
   energy: 'joule', charge: 'coulomb', area: 'square meter', flux: 'weber', fluxDensity: 'tesla',
@@ -61,3 +73,13 @@ export const unitNames: Partial<Record<QuantityKind, string>> = {
   ratio: 'dimensionless', decibel: 'decibel', dimensionless: 'dimensionless', length: 'meter',
   velocity: 'meters per second', time: 'second', angle: 'radian', force: 'newton'
 };
+
+/** Affine scale offset is applied before the factor: K = (°F + 459.67) × 5/9. */
+export function toSI(value: number, kind: QuantityKind, symbol: string): number {
+  const unit = getUnit(kind, symbol);
+  return (value + ('offset' in unit ? unit.offset : 0)) * unit.factor;
+}
+export function fromSI(value: number, kind: QuantityKind, symbol: string): number {
+  const unit = getUnit(kind, symbol);
+  return value / unit.factor - ('offset' in unit ? unit.offset : 0);
+}

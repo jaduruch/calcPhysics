@@ -2,7 +2,7 @@ export interface ModelDefinition {
   id: string;
   topicId: string;
   title: string;
-  calculator: 'total-reflection' | 'doppler' | 'qubit' | 'ideal-gas' | 'uniform-motion' | 'inclined-plane' | 'electrical';
+  calculator: 'kinematics' | 'resource' | 'total-reflection' | 'doppler' | 'qubit' | 'ideal-gas' | 'uniform-motion' | 'inclined-plane' | 'electrical';
   variables: readonly { name: string; symbol: string; subscript?: string; unit: string; unitName: string }[];
   formulas: readonly { label: string; expression: string }[];
   references?: readonly { title: string; url: string }[];
