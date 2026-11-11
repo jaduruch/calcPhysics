@@ -2,7 +2,7 @@
   import { gasFields, solveIdealGas, type GasField, type GasValues } from '#lib/physics/thermodynamics/ideal-gas.ts';
   import { fromSI } from '#lib/physics/units.ts';
   import { gasKinds, gasUnits, gasEquations } from '#lib/calculators/ideal-gas.ts';
-  import { parseQuantityInUnit, changeQuantityUnit } from '#lib/calculators/quantities.ts';
+  import { parseQuantityInUnit } from '#lib/calculators/quantities.ts';
   import { idealGasUi as text, calculatorUi } from '#lib/i18n/runtime.ts';
   import QuantityField from './QuantityField.svelte';
   import CalculatorShell from './CalculatorShell.svelte';
@@ -29,7 +29,6 @@
   });
   const equations = $derived(result.status === 'success' ? gasEquations(result.field, result.value, values, units) : null);
   function changeUnit(key: GasField, unit: string) {
-    raw[key] = changeQuantityUnit(raw[key], gasKinds[key], units[key], unit);
     units[key] = unit;
   }
   function reset() { raw = empty(); units = { ...gasUnits }; }

@@ -99,7 +99,7 @@ test('conversion and substitution round only display; final result uses unrounde
   assert.ok(conversions[0].endsWith('\\approx 0.343\\,\\mathrm{m/s}'));
   assert.ok(conversions[1].endsWith('\\approx 4.44\\times 10^{5}\\,\\mathrm{s}'));
   const equation = uniformMotionEquation(result, input, units);
-  assert.ok(equation.startsWith('s = s_0 + v \\cdot t = '));
+  assert.ok(equation.startsWith('s = v \\cdot t = '));
   assert.ok(equation.includes('0.343\\,\\mathrm{m/s}'));
   assert.ok(equation.endsWith('152\\,\\mathrm{km}'));
   assert.equal(JSON.stringify({ result, input }), before);

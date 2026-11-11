@@ -39,7 +39,7 @@ Diese Regeln ergänzen die [Repository-Vorgaben](../AGENTS.md). Vor Änderungen 
 - Einheiten-Auslöser entsprechend ausdrücklichem Nutzerwunsch ohne Fokusrahmen und Unterstreichung. Tastaturbedienung, ARIA-Zustände und aktive Optionsfläche in der geöffneten Liste erhalten. Keine pauschale Zusicherung vollständiger WCAG-Konformität daraus ableiten.
 - Präfixe p/n/u/m/c/d/k/M/G/T, ohne Präfix ebenfalls erlaubt; Gross-/Kleinschreibung beachten. µ/μ werden wie u akzeptiert. Dezimalkomma/-punkt und Exponentialschreibweise unterstützen; keine Tausendertrennzeichen.
 - SI ist die Startauswahl jeder Rechnerinstanz. Länge: m/AE/Lj, Geschwindigkeit: m/s und km/h, Zeit: s/min/h/d; neu Masse: kg/g, Winkel: rad/°, Beschleunigung: m/s², Kraft: N, dimensionslos: 1. Die Registry gilt überall.
-- Aktuelle bestätigte Ausnahme bei Uniform Motion: Ein Wechsel der Einheit von v lässt den Eingabetext unverändert und interpretiert ihn neu. Bei s₀/s/t wird aktuell der Wert unter Erhalt der physikalischen Grösse umgerechnet. Diese unterschiedlichen Verhaltensweisen nicht versehentlich vereinheitlichen oder ungefragt auf weitere Grössen ausdehnen; in wiederverwendbaren Feldern explizit konfigurieren.
+- Ein Einheitenwechsel lässt den manuellen Eingabetext in allen Rechnern exakt unverändert und interpretiert ihn mit der neu gewählten Einheit. Keine automatische Umrechnung oder Neuformatierung des Zahlenfelds; nach dem Wechsel Ergebnisse mit der neuen Einheit neu berechnen beziehungsweise invalidieren.
 - Ausschliesslich manuelle Rohwerte in Textfeldern anzeigen. Berechnete und angenommene Werte niemals automatisch hineinsetzen. Keine wieder eingeführten langen Eingabeanleitungen.
 
 ## Berechnung und Ergebnisse

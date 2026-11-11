@@ -199,6 +199,11 @@ export const resourceUi = {
 } as const;
 
 export const kinematicsUi={
+ conflict: "These inputs contradict the constant-acceleration equations. Check the given values.",
+ consistent: "The entered values satisfy both constant-acceleration equations.",
+ acceleratedInputHint: "Enter four quantities, or three with s₀ blank. With s₀ and v₀ blank, enter two of s, v₁, a and t. Missing quantities are calculated; extra inputs are checked for consistency.",
+
+ restAssumption: 'Using s₀ = 0 m and v₀ = 0 m/s for the blank initial-condition fields.',
  launchSpeed: "launch speed",
  launchAngle: "launch angle",
  obliqueConvention: "The positive x-axis points right and the positive y-axis upward. The launch angle α is measured counterclockwise from +x: 0 is rightward, π/2 is upward, ±π is leftward and −π/2 is downward. R is signed horizontal displacement.",
@@ -210,7 +215,7 @@ export const kinematicsUi={
  projectileAssumptions:'Point mass, constant g > 0, no air resistance and horizontal ground at y = 0. Motion ends at first ground contact; no bounce or continuation below ground.',
  verticalConvention:'The positive y-axis points upward. Positive v₀ means an upward launch; negative v₀ means a downward launch. Launch height y₀ must be non-negative.',
  horizontalConvention:'Positive x points right and positive y upward. Negative vₓ throws to the left; R is signed displacement, not an unsigned range. Launch height h must be non-negative.',
- incompleteAccelerated:'Enter four quantities, or three with a blank s₀ to assume s₀ = 0.',
+ incompleteAccelerated:'Enter four quantities; with blank s₀, three are sufficient. With both s₀ and v₀ blank, enter two of s, a and t to assume both initial values are zero.',
  incompleteProjectile:'Enter the launch conditions; blank gravity uses 9.81 m/s².',
  domain:'Enter finite values. Time and launch height must be non-negative; g must be positive.',
  numerical:'The motion is outside the finite numerical range.',
@@ -219,7 +224,7 @@ export const kinematicsUi={
  underdetermined:'These inputs do not determine a unique solution.',
  parseError:'Enter valid finite numbers in the completed fields.',
  initialAssumption:'Using s₀ = 0 m for the blank initial-position field.',
- defaultValue:'Default:',multipleTimes:'Two non-negative times reach this position. Both are solutions; choose the interval to show in the diagrams.',
+ defaultValue:'Default:',multipleTimes:'Two physically admissible solutions exist. Choose the motion interval to show in the diagrams.',
  diagramInterval:'Diagram interval',timeSolution:'Time solution',
  velocity:'final velocity',displacement:'position change',flight:'time to ground',peakTime:'time of maximum height',peakHeight:'maximum height after launch',impactVelocity:'vertical impact velocity',range:'horizontal displacement',vyImpact:'vertical impact velocity',speedImpact:'impact speed',
  charts:'Motion diagrams',positionDescription:'Position over the selected elapsed-time interval, calculated from the same constant-acceleration model.',velocityDescription:'Signed velocity over the selected elapsed-time interval.',heightDescription:'Height above ground until first contact; no continuation below ground.',horizontalDescription:'Signed horizontal coordinate until first ground contact.',trajectoryDescription:'Trajectory in the x–y plane until first ground contact. A negative horizontal velocity carries the body to the left.',schematic:'Schematic preview without numerical scales.'

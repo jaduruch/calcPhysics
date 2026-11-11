@@ -3,7 +3,7 @@
  import {solveAcceleratedMotion,type AcceleratedField,type KinematicsResult} from '#lib/physics/mechanics/accelerated-motion.ts';
  import {solveVerticalThrow,solveHorizontalThrow,solveObliqueThrow} from '#lib/physics/mechanics/projectiles.ts';
  import {unitGroups,fromSI} from '#lib/physics/units.ts';
- import {parseQuantityInUnit,changeQuantityUnit,formatMeasurement} from '#lib/calculators/quantities.ts';
+ import {parseQuantityInUnit,formatMeasurement} from '#lib/calculators/quantities.ts';
  import {kinematicsEquations} from '#lib/calculators/kinematics-equations.ts';
  import {kinematicsUi as text,calculatorUi} from '#lib/i18n/runtime.ts';
  import CalculatorShell from './CalculatorShell.svelte';
@@ -26,7 +26,7 @@
   for(const field of fields){const item=parsed[field.id];if(item.status==='valid')input[field.id]=item.value;}
   if(modelId==='accelerated-motion'){
    const solution=solveAcceleratedMotion(input as Partial<Record<AcceleratedField,number>>);
-   if(solution.status==='success'&&solution.target){const key=solution.target;const field=fields.find(item=>item.id===key)!;if(solution.scenarios.some(item=>!Number.isFinite(fromSI(item.values[key],field.kind,unit(key)))))return {status:'invalid',code:'numerical',fields:[]};}
+   if(solution.status==='success'){if(solution.scenarios.some(item=>item.steps?.some(step=>{const field=fields.find(item=>item.id===step.field)!;return !Number.isFinite(fromSI(item.values[step.field],field.kind,unit(step.field)));})))return {status:'invalid',code:'numerical',fields:[]};}
    return solution;
   }
   if(modelId==='vertical-throw')return solveVerticalThrow(input);
@@ -39,26 +39,27 @@
  const timeLabel=(time:number)=>{const value=formatMeasurement(time,'s');return `t = ${value.number} ${value.prefix}s`;};
  const statusId=$derived(`${modelId}-status`);
  $effect(()=>{const current=result;selectedScenario=0;});
- function changeUnit(key:string,next:string){const field=fields.find(field=>field.id===key)!;raw[key]=changeQuantityUnit(raw[key]??'',field.kind,unit(key),next);selectedUnits[key]=next;}
+ function changeUnit(key:string,next:string){selectedUnits[key]=next;}
  function reset(){raw={};selectedUnits={};selectedScenario=0;}
 </script>
 <CalculatorShell>
  <div class="input-grid">
   {#each fields as field}
-   <QuantityField id={`${modelId}-${field.id}`} symbol={field.symbol} name={field.name} kind={field.kind} raw={raw[field.id]??''} unit={unit(field.id)} invalid={invalid.includes(field.id)} state={field.defaultValue!==undefined&&!(raw[field.id]??'').trim()?`${text.defaultValue} ${field.defaultValue} ${unitGroups[field.kind].si}`:''} describedby={statusId} onvalue={value=>raw[field.id]=value} onunit={next=>changeUnit(field.id,next)}/>
+   <QuantityField id={`${modelId}-${field.id}`} symbol={field.symbol} name={field.name} kind={field.kind} raw={raw[field.id]??''} unit={unit(field.id)} invalid={invalid.includes(field.id)} state={modelId==='accelerated-motion'&&result.status==='success'&&result.assumed.includes(field.id)?calculatorUi.assumed:field.defaultValue!==undefined&&!(raw[field.id]??'').trim()?`${text.defaultValue} ${field.defaultValue} ${unitGroups[field.kind].si}`:''} describedby={statusId} onvalue={value=>raw[field.id]=value} onunit={next=>changeUnit(field.id,next)}/>
   {/each}
  </div>
  <CalculatorTools onreset={reset}/>
  <div id={statusId} aria-live="polite" aria-atomic="true">
   {#if result.status==='success'&&equations}
-   {#if result.assumed.includes('s0')}<p class="assumption">{text.initialAssumption}</p>{/if}
+   {#if modelId==='accelerated-motion'&&result.target===null}<p class="status">{text.consistent}</p>{/if}
+   {#if result.assumed.includes('s0')}<p class="assumption">{result.assumed.includes('v0')?text.restAssumption:text.initialAssumption}</p>{/if}
    {#if equations.conversions.length}<EquationBlock label={calculatorUi.unitConversion} equations={equations.conversions} conversion/>{/if}
    {#each equations.scenarios as group,index}
     {#if equations.scenarios.length>1}<p class="status">{text.timeSolution} {index+1}</p>{/if}
     {#each group as equation}<EquationBlock label={equation.label} equations={[equation.expression]}/>{/each}
    {/each}
   {:else if result.status==='invalid'}<p class="status error">{parseErrors.length?text.parseError:modelId==='oblique-throw'&&result.code==='domain'?text.obliqueDomain:text[result.code]}</p>
-  {:else if result.status!=='success'}<p class="status" class:error={result.status!=='incomplete'}>{result.status==='incomplete'?(modelId==='accelerated-motion'?text.incompleteAccelerated:text.incompleteProjectile):text[result.status]}</p>{/if}
+  {:else if result.status!=='success'}<p class="status" class:error={result.status!=='incomplete'}>{result.status==='incomplete'?(modelId==='accelerated-motion'?text.acceleratedInputHint:text.incompleteProjectile):text[result.status]}</p>{/if}
  </div>
  <p class="assumption">{modelId==='accelerated-motion'?text.acceleratedAssumptions:text.projectileAssumptions}</p>
  {#if modelId!=='accelerated-motion'}<p class="assumption">{modelId==='vertical-throw'?text.verticalConvention:modelId==='oblique-throw'?text.obliqueConvention:text.horizontalConvention}</p>{/if}

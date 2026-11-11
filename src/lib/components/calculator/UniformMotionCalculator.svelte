@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fields, solveUniformMotion, type Field, type Values } from '#lib/physics/mechanics/uniform-motion.ts';
-  import { parseQuantityInUnit, changeQuantityUnit } from '#lib/calculators/quantities.ts';
-  import { getUnit, type QuantityKind } from '#lib/physics/units.ts';
+  import { parseQuantityInUnit } from '#lib/calculators/quantities.ts';
+  import { getUnit } from '#lib/physics/units.ts';
   import { uniformMotionEquation, uniformMotionConversions, defaultMotionUnits, motionQuantityKinds } from '#lib/calculators/uniform-motion-equation.ts';
   import QuantityField from './QuantityField.svelte';
   import CalculatorShell from './CalculatorShell.svelte';
@@ -17,8 +17,7 @@
   ] as const);
   let raw = $state<Record<Field, string>>({ s0: '', s: '', v: '', t: '' });
   let selectedUnits = $state<Record<Field, string>>({ ...defaultMotionUnits });
-  function changeUnit(field: Field, kind: QuantityKind, unit: string) {
-    if (field !== 'v') raw[field] = changeQuantityUnit(raw[field], kind, selectedUnits[field], unit);
+  function changeUnit(field: Field, unit: string) {
     selectedUnits[field] = unit;
   }
   const parsed = $derived(Object.fromEntries(fields.map(key => [key, parseQuantityInUnit(raw[key], motionQuantityKinds[key], selectedUnits[key])])) as Record<Field, ReturnType<typeof parseQuantityInUnit>>);
@@ -49,7 +48,7 @@
   <div class="input-grid">
     {#each definitions as field}
       {@const assumed = result.status === 'success' && result.assumedInitial && field.key === 's0'}
-      <QuantityField id={`motion-${field.key}`} symbol={field.symbol} name={field.name} kind={field.kind} raw={raw[field.key]} unit={selectedUnits[field.key]} state={assumed ? text.assumed : ''} invalid={invalidFields.includes(field.key) || (field.key === 't' && result.status === 'invalid' && result.code === 'negative-time')} describedby="motion-status" onvalue={value => raw[field.key] = value} onunit={unit => changeUnit(field.key, field.kind, unit)} />
+      <QuantityField id={`motion-${field.key}`} symbol={field.symbol} name={field.name} kind={field.kind} raw={raw[field.key]} unit={selectedUnits[field.key]} state={assumed ? text.assumed : ''} invalid={invalidFields.includes(field.key) || (field.key === 't' && result.status === 'invalid' && result.code === 'negative-time')} describedby="motion-status" onvalue={value => raw[field.key] = value} onunit={unit => changeUnit(field.key, unit)} />
     {/each}
   </div>
   <CalculatorTools onreset={reset} />

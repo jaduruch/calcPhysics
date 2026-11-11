@@ -23,9 +23,11 @@ test('shows a full equation for every target, preserving input prefixes and unit
     assert.doesNotThrow(() => katex.renderToString(equation, { throwOnError: true, trust: false }));
   }
 });
-test('includes assumed initial zero and a rounded result', () => {
+test('omits assumed initial zero and preserves a rounded result', () => {
   const equation = calculate({ s: '1k', t: '3' });
-  assert.ok(equation.includes('0.00\\,\\mathrm{m}'));
+  assert.ok(equation.startsWith('v = \\frac{s}{t} ='));
+  assert.ok(!equation.includes('0.00\\,\\mathrm{m}'));
+  assert.ok(!equation.includes('s_0'));
   assert.ok(equation.includes('\\approx 333\\,\\mathrm{m/s}'));
   assert.ok(equation.includes('1.00\\,\\mathrm{km}'));
 });
@@ -33,4 +35,22 @@ test('renders micro prefixes, negative values and exponents with valid KaTeX', (
   const equation = calculate({ s0: '-2u', v: '2e-3', t: '1m' });
   assert.ok(equation.includes('\\mu\\mathrm{m}'));
   assert.doesNotThrow(() => katex.renderToString(equation));
+});
+
+test('assumed-zero equations simplify every target while explicit zeros stay visible', () => {
+ for (const [raw, formula] of [
+  [{v:'2',t:'1'}, String.raw`s = v \cdot t = 2.00\,\mathrm{m/s} \cdot 1.00\,\mathrm{s} = 2.00\,\mathrm{m}`],
+  [{s:'2',t:'1'}, String.raw`v = \frac{s}{t} =`],
+  [{s:'2',v:'2'}, String.raw`t = \frac{s}{v} =`]
+ ]) {
+  const equation=calculate(raw);
+  assert.ok(equation.startsWith(formula), equation);
+  assert.ok(!equation.includes('s_0'));
+  assert.doesNotThrow(()=>katex.renderToString(equation,{throwOnError:true}));
+ }
+ const explicit=calculate({s0:'0',v:'2',t:'1'});
+ assert.ok(explicit.startsWith(String.raw`s = s_0 + v \cdot t =`));
+ assert.ok(explicit.includes(String.raw`0.00\,\mathrm{m} +`));
+ const negative=calculate({v:'-2',t:'1'});
+ assert.ok(negative.includes(String.raw`\left(-2.00\,\mathrm{m/s}\right)`));
 });

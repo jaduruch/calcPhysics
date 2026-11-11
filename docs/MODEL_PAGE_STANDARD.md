@@ -65,6 +65,8 @@ Modellkarte (anfangs geschlossen, kein blauer Überschriften-Hover)
     Diagramme
 ```
 
+Im Rechenweg entfallen additiv wirkende, als null angenommene Anfangswerte sowohl in der allgemeinen Formel als auch in der Zahleneinsetzung (z. B. s = v·t bei angenommenem s₀ = 0). Die Annahme bleibt am Eingabefeld beziehungsweise im Annahmenhinweis sichtbar. Explizit eingegebene Nullwerte und tatsächliche Nullergebnisse bleiben erhalten. Die Darstellung verändert weder Solverwerte noch Diagramme.
+
 Keine zusätzliche Überschrift „Theory & calculation models“, kein „01 MODEL“-Zähler und keine lange Eingabeanleitung über der Karte beziehungsweise den Feldern. Die kleine Nummer innerhalb des Kartenheaders bleibt davon unberührt. Keine Übungen, keine Diagrammtabelle. Theorie und Berechnen liegen in derselben Modellkarte auf der jeweiligen Unterthemenseite; keine separaten Modellrouten allein zur Erfüllung eines älteren Architekturentwurfs anlegen.
 
 Das Schliessen der gesamten Modellkarte setzt einen geöffneten Theorie-Bereich zurück. Beim erneuten Öffnen der Karte ist die Theorie wieder geschlossen; ihr Zustand wird nicht unsichtbar über den Kartenwechsel hinweg beibehalten.
@@ -90,7 +92,7 @@ Auch die numerische Einsetzung verwendet passende Engineering-Präfixe, etwa `12
 - Gleichung `s = s₀ + v · t`. Drei manuelle Werte bestimmen den vierten. Zwei Werte aus s/v/t setzen s₀ = 0 voraus; zwei Werte einschliesslich s₀ reichen nicht. Annahme sichtbar anzeigen, ohne das leere Feld zu füllen.
 - Vier manuelle Werte: ein Feld muss geleert werden. Keine stillen Überschreibungen. Null zählt als Eingabe; negative Position/Geschwindigkeit sind möglich, verstrichene Zeit ist nicht negativ.
 - Einheiten: s₀/s → m, AE, Lj; v → m/s, km/h; t → s, min, h, d. Die Auswahl am fehlenden Feld steuert die Ergebniseinheit.
-- Bei v ändert ein Einheitenwechsel nur die Interpretation, nicht den Eingabetext. Bei s₀/s/t bleibt derzeit die physikalische Grösse erhalten und die Zahl wird umgerechnet. Das ist eine bestätigte Ausnahme, keine versehentliche Inkonsistenz, die ungefragt zu beheben wäre.
+- In allen Rechnern ändert ein Einheitenwechsel nur die Interpretation, niemals den manuellen Eingabetext. Zahl, Präfix, Dezimaltrennzeichen und Schreibweise bleiben exakt erhalten. Die neue Einheit wird beim erneuten Validieren und Umrechnen nach SI berücksichtigt; Ergebnisse werden aktualisiert oder verworfen.
 - Theorie enthält Variablen, Positions-/Geschwindigkeits-/Beschleunigungsformel und die Erklärung `v(t) = dot(s)(t) = constant` mit echter KaTeX-Punktnotation.
 - Nur bei berechnetem t: zusätzliche Dauer hinter `=` aus dem ungerundeten SI-Ergebnis. t < 60 s: keine; ab 60 s MM:SS.s; ab 3600 s HH:MM:SS.s; ab einem Tag Nd, HH:MM:SS.s. Keine Klammern oder „0d,“. Zehntelsekunden mit Überträgen runden.
 

@@ -2,7 +2,7 @@
   import { electricalDefinitions, electricalDisplaySymbol, resistorNetworkDefinition, capacitorNetworkDefinition, inductorNetworkDefinition, rlAcDefinition, type ElectricalDefinition } from '#lib/content/electricity.ts';
   import { solveElectrical, electricalPhysics, inDomain, type ElectricalModelId, type ElectricalPhysics } from '#lib/physics/electricity.ts';
   import { unitGroups, getUnit, type QuantityKind } from '#lib/physics/units.ts';
-  import { parseQuantityInUnit, changeQuantityUnit } from '#lib/calculators/quantities.ts';
+  import { parseQuantityInUnit } from '#lib/calculators/quantities.ts';
   import { electricalEquations, electricalSymbol, electricalQuantity } from '#lib/calculators/electrical-equations.ts';
   import { electricalCurves } from '#lib/visualization/electrical.ts';
   import { electricalUi as text } from '#lib/i18n/runtime.ts';
@@ -92,8 +92,7 @@
     const last = Math.max(2, ...definition.inputs.filter(field => (raw[field.id] ?? '').trim()).map(field => Number(field.id.slice(1))));
     return isNetwork ? definition.inputs.slice(0, last).map(field => ({ id: field.id, pending: !(raw[field.id] ?? '').trim() })) : [];
   });
-  function changeUnit(id: string, kind: QuantityKind, next: string) {
-    raw[id] = changeQuantityUnit(raw[id] ?? '', kind, unit(id, kind), next);
+  function changeUnit(id: string, next: string) {
     selectedUnits[id] = next;
   }
 </script>
@@ -121,7 +120,7 @@
   {/if}
   <div class="input-grid" class:input-grid--single={isNetwork}>
     {#each definition.inputs as field}
-      <QuantityField id={`${modelId}-${field.id}`} symbol={inputSymbol(field.id)} name={inputName(field)} kind={field.kind} raw={raw[field.id] ?? ''} unit={unit(field.id, field.kind)} invalid={invalid.includes(field.id) || (result.status === 'no-solution' && result.fields.includes(field.id))} describedby={`${modelId}-assumptions`} pending={isNetwork && field.id !== `${networkPrefix}1` && !(raw[field.id] ?? '').trim()} onvalue={value => setValue(field.id, value)} onunit={next => changeUnit(field.id, field.kind, next)} onfocuschange={focused => { if (modelId === 'ohms-law' || isDivider || isNetwork || isRcAc || isRlAc || isStarDelta) activeQuantity = focused ? field.id : null; }} />
+      <QuantityField id={`${modelId}-${field.id}`} symbol={inputSymbol(field.id)} name={inputName(field)} kind={field.kind} raw={raw[field.id] ?? ''} unit={unit(field.id, field.kind)} invalid={invalid.includes(field.id) || (result.status === 'no-solution' && result.fields.includes(field.id))} describedby={`${modelId}-assumptions`} pending={isNetwork && field.id !== `${networkPrefix}1` && !(raw[field.id] ?? '').trim()} onvalue={value => setValue(field.id, value)} onunit={next => changeUnit(field.id, next)} onfocuschange={focused => { if (modelId === 'ohms-law' || isDivider || isNetwork || isRcAc || isRlAc || isStarDelta) activeQuantity = focused ? field.id : null; }} />
     {/each}
   </div>
   <CalculatorTools onreset={() => { raw = {}; selectedUnits = {}; activeQuantity = null; componentCount = 2; }} />

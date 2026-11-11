@@ -42,23 +42,27 @@ export function uniformMotionEquation(result: MotionResult, input: Record<Field,
   let substitutionRounded = false;
   const source = (field: Field) => {
     const parsed = input[field];
-    if (field === 's0' && result.assumedInitial) return String.raw`\left(0.00\,\mathrm{m}\right)`;
     if (parsed.status !== 'valid') throw new Error('Missing source quantity');
     const si = unitGroups[motionQuantityKinds[field]].si;
     const value = selectedUnits[field] === si ? Number(parsed.number) : result.values[field];
     const displayed = value.toPrecision(3);
     if (Number(displayed) !== value) substitutionRounded = true;
     const quantity = quantityLatex(displayed, selectedUnits[field] === si ? parsed.prefix : '', si);
-    return `\\left(${quantity}\\right)`;
+    return value < 0 ? `\\left(${quantity}\\right)` : quantity;
   };
-  const numeric = result.field === 's' ? `${source('s0')} + ${source('v')} \\cdot ${source('t')}`
+  const initialTerm = result.assumedInitial || result.field === 's0' ? '' : `${source('s0')} + `;
+  const displacement = result.field === 'v' || result.field === 't' ? result.assumedInitial ? source('s') : `${source('s')} - ${source('s0')}` : '';
+  const formula = result.assumedInitial
+    ? result.field === 's' ? String.raw`v \cdot t` : result.field === 'v' ? String.raw`\frac{s}{t}` : String.raw`\frac{s}{v}`
+    : formulas[result.field];
+  const numeric = result.field === 's' ? `${initialTerm}${source('v')} \\cdot ${source('t')}`
     : result.field === 's0' ? `${source('s')} - ${source('v')} \\cdot ${source('t')}`
-    : `\\frac{${source('s')} - ${source('s0')}}{${source(result.field === 'v' ? 't' : 'v')}}`;
+    : `\\frac{${displacement}}{${source(result.field === 'v' ? 't' : 'v')}}`;
   const outputFactor = getUnit(motionQuantityKinds[result.field], selectedUnits[result.field]).factor;
   const formatted = formatQuantity(result.value / outputFactor);
   const displayedValue = Number(formatted.number) * prefixes.find(item => item.symbol === formatted.prefix)!.factor * outputFactor;
   const equality = displayedValue === result.value && !substitutionRounded ? '=' : String.raw`\approx`;
   const clock = result.field === 't' ? formatDuration(result.value) : '';
   const duration = clock ? ` = \\text{${clock}}` : '';
-  return `${symbols[result.field]} = ${formulas[result.field]} = ${numeric} ${equality} ${quantityLatex(formatted.number, formatted.prefix, selectedUnits[result.field])}${duration}`;
+  return `${symbols[result.field]} = ${formula} = ${numeric} ${equality} ${quantityLatex(formatted.number, formatted.prefix, selectedUnits[result.field])}${duration}`;
 }

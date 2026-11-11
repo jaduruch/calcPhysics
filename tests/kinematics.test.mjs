@@ -30,11 +30,12 @@ test('accelerated time branches, apex, signed position and linear cases',()=>{
  assert.equal(solveAcceleratedMotion({s0:0,s:1,v0:0,a:0}).status,'no-solution');
  const assumed=success(solveAcceleratedMotion({v0:2,a:3,t:4}));assert.deepEqual(assumed.assumed,['s0']);close(assumed.scenarios[0].values.s,32);
 });
-test('zero intervals, incomplete, excessive and invalid inputs stay distinct',()=>{
+test('zero intervals, incomplete, redundant and invalid inputs stay distinct',()=>{
  assert.equal(solveAcceleratedMotion({s0:2,s:2,a:3,t:0}).status,'underdetermined');
  assert.equal(solveAcceleratedMotion({s0:2,s:3,a:3,t:0}).status,'no-solution');
  assert.equal(solveAcceleratedMotion({s0:2,v0:1}).status,'incomplete');
- assert.equal(solveAcceleratedMotion(fixture).code,'too-many');
+ assert.equal(solveAcceleratedMotion(fixture).status,'success');
+ assert.equal(solveAcceleratedMotion({...fixture,s:43}).code,'conflict');
  for(const input of [{t:-1},{a:Infinity},{v0:NaN}])assert.equal(solveAcceleratedMotion(input).status,'invalid');
  const zero=success(solveAcceleratedMotion({s0:2,v0:3,a:4,t:0})).scenarios[0];
  assert.deepEqual(kinematicsChartData(zero),{times:[0],positions:[2],velocities:[3],horizontal:[0]});

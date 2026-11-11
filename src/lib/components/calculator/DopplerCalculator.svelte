@@ -2,7 +2,7 @@
   import { dopplerFields, solveDoppler, type DopplerField, type DopplerInput } from '#lib/physics/waves/doppler.ts';
   import { getUnit } from '#lib/physics/units.ts';
   import { dopplerEquations, dopplerKinds, dopplerUnits } from '#lib/calculators/doppler.ts';
-  import { changeQuantityUnit, parseQuantityInUnit } from '#lib/calculators/quantities.ts';
+  import { parseQuantityInUnit } from '#lib/calculators/quantities.ts';
   import { dopplerUi as text, calculatorUi } from '#lib/i18n/runtime.ts';
   import CalculatorShell from './CalculatorShell.svelte';
   import CalculatorTools from './CalculatorTools.svelte';
@@ -32,7 +32,6 @@
   const equations = $derived(result.status === 'success' ? dopplerEquations(result, units) : null);
   const message = $derived(result.status === 'success' ? '' : result.status === 'parse-error' ? text.parseError : result.status === 'invalid' ? text[result.code] : text[result.status]);
   function changeUnit(key: Field, unit: string) {
-    raw[key] = changeQuantityUnit(raw[key], dopplerKinds[key], units[key], unit);
     units[key] = unit;
   }
   function reset() { raw = empty(); units = { ...dopplerUnits }; }

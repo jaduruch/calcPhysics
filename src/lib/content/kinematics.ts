@@ -8,6 +8,7 @@ export const kinematicFields:Record<KinematicsModelId,readonly KinematicField[]>
   {id:'s0',symbol:'s₀',name:calculatorUi.initialPosition,kind:'length'},
   {id:'s',symbol:'s',name:calculatorUi.position,kind:'length'},
   {id:'v0',symbol:'v₀',name:text.initialVelocity,kind:'velocity'},
+  {id:'v',symbol:'v₁',name:text.velocity,kind:'velocity'},
   {id:'a',symbol:'a',name:text.acceleration,kind:'acceleration'},
   {id:'t',symbol:'t',name:calculatorUi.time,kind:'time'}
  ],
@@ -31,9 +32,24 @@ export const kinematicFields:Record<KinematicsModelId,readonly KinematicField[]>
 const reference={title:'OpenStax — Motion with Constant Acceleration',url:'https://openstax.org/books/university-physics-volume-1/pages/3-4-motion-with-constant-acceleration'};
 export const kinematicModels:readonly ModelDefinition[]=[
  {id:'accelerated-motion',topicId:'kinematics',calculator:'kinematics',title:'Uniformly Accelerated Motion',
- variables:[{name:'initial position',symbol:'s₀',unit:'m',unitName:'meter'},{name:'position',symbol:'s',unit:'m',unitName:'meter'},{name:'initial velocity',symbol:'v₀',unit:'m/s',unitName:'meters per second'},{name:'constant acceleration',symbol:'a',unit:'m/s²',unitName:'meters per second squared'},{name:'elapsed time',symbol:'t',unit:'s',unitName:'second'}],
- formulas:[{label:'Acceleration',expression:String.raw`a=\dot v=\ddot s=\mathrm{constant}`},{label:'Velocity',expression:String.raw`v(t)=v_0+at`},{label:'Position',expression:String.raw`s(t)=s_0+v_0t+\frac12at^2`},{label:'Integration',expression:String.raw`s(t)-s_0=\int_0^t(v_0+a\tau)\,\mathrm d\tau`},{label:'Time equation',expression:String.raw`\frac12at^2+v_0t+(s_0-s)=0,\quad t\geq0`}],
- notes:[{text:text.acceleratedAssumptions},{text:'Requires algebra and quadratic equations; the integral connects velocity to displacement. Four known quantities determine the fifth. With three known quantities and a blank initial position, s₀ = 0 is explicitly assumed. A zero acceleration reduces to uniform motion. Time inversion may give two non-negative crossings of the same position; both are reported and either can be selected for the diagrams.'}],references:[reference]},
+ variables:[{name:'initial position',symbol:'s₀',unit:'m',unitName:'meter'},{name:'position',symbol:'s',unit:'m',unitName:'meter'},{name:'initial velocity',symbol:'v₀',unit:'m/s',unitName:'meters per second'},{name:'final velocity',symbol:'v₁',unit:'m/s',unitName:'meters per second'},{name:'constant acceleration',symbol:'a',unit:'m/s²',unitName:'meters per second squared'},{name:'elapsed time',symbol:'t',unit:'s',unitName:'second'}],
+ formulas:[
+  {label:'Acceleration',expression:String.raw`a=\dot v=\ddot s=\mathrm{constant}`},
+  {label:'Displacement',expression:String.raw`\Delta s=s-s_0`},
+  {label:'Position',expression:String.raw`s=s_0+v_0t+\frac12at^2`},
+  {label:'Without initial velocity: displacement',expression:String.raw`\Delta s=\frac{v_1t}{2}=\frac{at^2}{2}=\frac{v_1^2}{2a}`},
+  {label:'Without initial velocity: final velocity',expression:String.raw`v_1=\frac{2\Delta s}{t}=\pm\sqrt{2a\Delta s}=at`},
+  {label:'Without initial velocity: time',expression:String.raw`t=\frac{2\Delta s}{v_1}=\sqrt{\frac{2\Delta s}{a}}=\frac{v_1}{a}`},
+  {label:'Without initial velocity: acceleration',expression:String.raw`a=\frac{v_1}{t}=\frac{2\Delta s}{t^2}=\frac{v_1^2}{2\Delta s}`},
+  {label:'With initial velocity: displacement',expression:String.raw`\Delta s=\frac{v_0+v_1}{2}t=v_0t+\frac12at^2`},
+  {label:'With initial velocity: final velocity',expression:String.raw`v_1=v_0+at,\quad v_1=\pm\sqrt{v_0^2+2a\Delta s}`},
+  {label:'Initial velocity',expression:String.raw`v_0=v_1-at,\quad v_0=\pm\sqrt{v_1^2-2a\Delta s}`},
+  {label:'With initial velocity: time',expression:String.raw`t=\frac{2\Delta s}{v_0+v_1}=\frac{v_1-v_0}{a}`},
+  {label:'Quadratic time equation',expression:String.raw`t=\frac{-v_0\pm\sqrt{v_0^2+2a\Delta s}}{a},\quad t\geq0`},
+  {label:'With initial velocity: acceleration',expression:String.raw`a=\frac{v_1-v_0}{t}=\frac{v_1^2-v_0^2}{2\Delta s}`},
+  {label:'Integration',expression:String.raw`\Delta s=\int_0^t(v_0+a\tau)\,\mathrm d\tau`}
+ ],
+ notes:[{text:text.acceleratedAssumptions},{text:text.acceleratedInputHint},{text:'Formula coverage: Formelbuch, page 49. The book’s s denotes displacement, written Δs = s − s₀ here. v₁ is the final signed velocity. The formulas without initial velocity require v₀ = 0. Every displayed quotient requires a non-zero denominator; zero and degenerate cases are handled separately. Square roots require a non-negative radicand. Both velocity signs are considered and retained only when they satisfy the other inputs and t ≥ 0. Requires algebra, square roots and quadratic equations; the integral connects velocity to displacement.'}],references:[reference]},
  {id:'vertical-throw',topicId:'kinematics',calculator:'kinematics',title:'Vertical Throw',
  variables:[{name:'launch height above ground',symbol:'y₀',unit:'m',unitName:'meter'},{name:'initial vertical velocity (up is positive)',symbol:'v₀',unit:'m/s',unitName:'meters per second'},{name:'gravitational acceleration magnitude',symbol:'g',unit:'m/s²',unitName:'meters per second squared'}],
  formulas:[{label:'Height',expression:String.raw`y(t)=y_0+v_0t-\frac12gt^2`},{label:'Vertical velocity',expression:String.raw`v_y(t)=v_0-gt`},{label:'Time to ground',expression:String.raw`t_f=\frac{v_0+\sqrt{v_0^2+2gy_0}}{g}`},{label:'Highest point after launch',expression:String.raw`t_{peak}=\max(0,v_0/g),\quad y_{peak}=y_0+v_0t_{peak}-\frac12gt_{peak}^2`},{label:'Impact velocity',expression:String.raw`v_{impact}=-\sqrt{v_0^2+2gy_0}`}],

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { solveTotalReflection, type ReflectionInput } from '#lib/physics/optics/total-internal-reflection.ts';
   import { reflectionEquations, reflectionKinds, reflectionUnits } from '#lib/calculators/total-reflection.ts';
-  import { parseQuantityInUnit, changeQuantityUnit } from '#lib/calculators/quantities.ts';
+  import { parseQuantityInUnit } from '#lib/calculators/quantities.ts';
   import { reflectionUi as text, calculatorUi } from '#lib/i18n/runtime.ts';
   import CalculatorShell from './CalculatorShell.svelte';
   import CalculatorTools from './CalculatorTools.svelte';
@@ -25,7 +25,6 @@
   const equations = $derived(result.status === 'success' ? reflectionEquations(result, units.angle) : null);
   const message = $derived(result.status === 'success' ? '' : result.status === 'parse-error' ? text.parseError : result.status === 'invalid' ? text[result.code] : text.incomplete);
   function changeUnit(key: Field, unit: string) {
-    raw[key] = changeQuantityUnit(raw[key], reflectionKinds[key], units[key], unit);
     units[key] = unit;
   }
   function reset() { raw = empty(); units = { ...reflectionUnits }; }

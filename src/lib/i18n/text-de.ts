@@ -1,5 +1,22 @@
 /** Explicit editorial translations; identifiers, equations and unit symbols are untouched. */
 export const germanText: Record<string, string> = {
+
+  "final velocity": "Endgeschwindigkeit",
+  "Displacement": "Ortsänderung",
+  "Without initial velocity: displacement": "Aus Ruhe: Ortsänderung",
+  "Without initial velocity: final velocity": "Aus Ruhe: Endgeschwindigkeit",
+  "Without initial velocity: time": "Aus Ruhe: Zeit",
+  "Without initial velocity: acceleration": "Aus Ruhe: Beschleunigung",
+  "With initial velocity: displacement": "Mit Anfangsgeschwindigkeit: Ortsänderung",
+  "With initial velocity: final velocity": "Mit Anfangsgeschwindigkeit: Endgeschwindigkeit",
+  "Initial velocity": "Anfangsgeschwindigkeit",
+  "With initial velocity: time": "Mit Anfangsgeschwindigkeit: Zeit",
+  "Quadratic time equation": "Quadratische Zeitgleichung",
+  "With initial velocity: acceleration": "Mit Anfangsgeschwindigkeit: Beschleunigung",
+  "Integration": "Integration",
+  "Enter four quantities, or three with s₀ blank. With s₀ and v₀ blank, enter two of s, v₁, a and t. Missing quantities are calculated; extra inputs are checked for consistency.": "Gib vier Grössen ein, oder drei bei leerem s₀. Sind s₀ und v₀ leer, genügen zwei Angaben aus s, v₁, a und t. Fehlende Grössen werden berechnet; zusätzliche Angaben werden auf Widersprüche geprüft.",
+  "Formula coverage: Formelbuch, page 49. The book’s s denotes displacement, written Δs = s − s₀ here. v₁ is the final signed velocity. The formulas without initial velocity require v₀ = 0. Every displayed quotient requires a non-zero denominator; zero and degenerate cases are handled separately. Square roots require a non-negative radicand. Both velocity signs are considered and retained only when they satisfy the other inputs and t ≥ 0. Requires algebra, square roots and quadratic equations; the integral connects velocity to displacement.": "Formelumfang: Formelbuch, Seite 49. Das dortige s bezeichnet die Ortsänderung, hier Δs = s − s₀. v₁ ist die vorzeichenbehaftete Endgeschwindigkeit. Die Formeln aus Ruhe setzen v₀ = 0 voraus. Bei jedem Quotienten muss der Nenner ungleich null sein; Null- und Sonderfälle werden getrennt behandelt. Unter einer Quadratwurzel darf kein negativer Wert stehen. Beide Vorzeichen der Geschwindigkeit werden geprüft und nur beibehalten, wenn sie die übrigen Angaben und t ≥ 0 erfüllen. Vorausgesetzt werden Algebra, Quadratwurzeln und quadratische Gleichungen; das Integral verbindet Geschwindigkeit und Ortsänderung."
+,
  'Point mass, constant g > 0, no air resistance and horizontal ground at y = 0. Motion ends at first ground contact; no bounce or continuation below ground.':'Punktmasse, konstantes g > 0, kein Luftwiderstand und horizontaler Boden bei y = 0. Die Bewegung endet beim ersten Bodenkontakt; kein Rückprall und keine Fortsetzung unter dem Boden.',
  'meters per second squared':'Meter pro Sekunde zum Quadrat',
  'time to ground':'Zeit bis zum Boden',

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { solveInclinedPlane, type InclineInput } from '#lib/physics/mechanics/inclined-plane.ts';
-  import { parseQuantityInUnit, changeQuantityUnit } from '#lib/calculators/quantities.ts';
+  import { parseQuantityInUnit } from '#lib/calculators/quantities.ts';
   import { inclineFields, inclineKinds, inclineDefaults, inclineEquations, inclineConversions, type InclineField } from '#lib/calculators/inclined-plane-equations.ts';
   import { calculatorUi, inclinedPlaneUi as text } from '#lib/i18n/runtime.ts';
   import CalculatorShell from './CalculatorShell.svelte';
@@ -27,7 +27,6 @@
   const equations = $derived(result.status === 'success' ? inclineEquations(result) : []);
   const conversions = $derived(result.status === 'success' ? inclineConversions(result, parsed, units) : []);
   function changeUnit(field: InclineField, unit: string) {
-    raw[field] = changeQuantityUnit(raw[field], inclineKinds[field], units[field], unit);
     units[field] = unit;
   }
   function reset() { raw = { mass: '', angle: '', friction: '', gravity: '', length: '', height: '' }; units = { ...inclineDefaults }; }

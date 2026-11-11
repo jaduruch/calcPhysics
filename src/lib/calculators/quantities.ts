@@ -48,7 +48,8 @@ export function parseQuantityInUnit(raw: string, kind: QuantityKind, unit: strin
   if (!Number.isFinite(value) || (!('offset' in definition) && parsed.value !== 0 && value === 0)) return { status: 'invalid' };
   return { ...parsed, value };
 }
-/** Unit switches preserve the physical value and typed prefix, without display rounding. */
+/** Explicit text conversion preserving physical value and prefix, without display rounding.
+ * Calculator unit menus deliberately keep raw input unchanged and do not call this helper. */
 export function changeQuantityUnit(raw: string, kind: QuantityKind, from: string, to: string): string {
   const oldUnit = getUnit(kind, from);
   const newUnit = getUnit(kind, to);

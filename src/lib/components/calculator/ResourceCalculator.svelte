@@ -3,7 +3,7 @@
   import {resourcePhysics} from '#lib/physics/resources/models.ts';
   import {solveResourceModel,inResourceDomain,type Values} from '#lib/physics/resources/solver.ts';
   import {unitGroups,fromSI} from '#lib/physics/units.ts';
-  import {parseQuantityInUnit,changeQuantityUnit} from '#lib/calculators/quantities.ts';
+  import {parseQuantityInUnit} from '#lib/calculators/quantities.ts';
   import {resourceEquations,resourceDisplaySymbol} from '#lib/calculators/resource-equations.ts';
   import {resourceUi as text,calculatorUi} from '#lib/i18n/runtime.ts';
   import CalculatorShell from './CalculatorShell.svelte';
@@ -30,7 +30,7 @@
     return solution;
   });
   const equations=$derived(result.status==='success'?resourceEquations(definition,result,selectedUnits):null);
-  function changeUnit(key:string,next:string){const field=definition.fields.find(field=>field.id===key)!;raw[key]=changeQuantityUnit(raw[key]??'',field.kind,unit(key),next);selectedUnits[key]=next;}
+  function changeUnit(key:string,next:string){selectedUnits[key]=next;}
   function reset(){raw={};selectedUnits={};}
   const statusId=$derived(`${modelId}-status`);
 </script>

@@ -3,7 +3,7 @@
   import { applyGate, blochAngles, blochVector, gateTrajectory, probability, zeroQubit, type Gate, type GateId, type Qubit, type Vector3 } from '#lib/physics/quantum/qubit.ts';
   import { qubitGates } from '#lib/content/quantum.ts';
   import { qubitNumber, qubitStateEquation } from '#lib/calculators/qubit.ts';
-  import { changeQuantityUnit, parseQuantityInUnit } from '#lib/calculators/quantities.ts';
+  import { parseQuantityInUnit } from '#lib/calculators/quantities.ts';
   import { qubitUi as text } from '#lib/i18n/runtime.ts';
   import QuantityField from './QuantityField.svelte';
   import QubitGateInfo from './QubitGateInfo.svelte';
@@ -38,7 +38,6 @@
     return !Number.isFinite(value) || (key === 'gamma' ? Math.abs(value) > 2 * Math.PI : value < 0 || (key === 'theta' ? value > Math.PI : value >= 2 * Math.PI));
   }
   function changeUnit(key: AngleKey, unit: string) {
-    raw[key] = changeQuantityUnit(raw[key], 'angle', units[key], unit);
     units[key] = unit;
   }
   function finish() {
