@@ -8,13 +8,13 @@
   import CalculatorTools from './CalculatorTools.svelte';
   import EquationBlock from './EquationBlock.svelte';
   import UniformMotionCharts from './UniformMotionCharts.svelte';
-  import { calculatorUi as text } from '#lib/i18n/en.ts';
-  const definitions = [
+  import { calculatorUi as text } from '#lib/i18n/runtime.ts';
+  const definitions = $derived([
     { key: 's0', symbol: 's₀', name: text.initialPosition, kind: 'length' },
     { key: 's', symbol: 's', name: text.position, kind: 'length' },
     { key: 'v', symbol: 'v', name: text.velocity, kind: 'velocity' },
     { key: 't', symbol: 't', name: text.time, kind: 'time' }
-  ] as const;
+  ] as const);
   let raw = $state<Record<Field, string>>({ s0: '', s: '', v: '', t: '' });
   let selectedUnits = $state<Record<Field, string>>({ ...defaultMotionUnits });
   function changeUnit(field: Field, kind: QuantityKind, unit: string) {

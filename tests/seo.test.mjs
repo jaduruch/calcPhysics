@@ -33,7 +33,7 @@ test('sitemap follows the publication registry automatically and escapes XML', (
   assert.ok(xml.includes('https://calcphysics.com/new-topic'));
   assert.ok(xml.includes('/a&amp;b'));
   assert.ok(!xml.includes('/future'));
-  assert.equal((xml.match(/<url>/g) ?? []).length, 3);
+  assert.equal((xml.match(/<url>/g) ?? []).length, 6);
   assert.ok(!xml.includes('lastmod'));
   assert.ok(!xml.includes('priority'));
 });

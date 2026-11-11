@@ -5,7 +5,7 @@
   import { parseQuantityInUnit, changeQuantityUnit } from '#lib/calculators/quantities.ts';
   import { electricalEquations, electricalSymbol, electricalQuantity } from '#lib/calculators/electrical-equations.ts';
   import { electricalCurves } from '#lib/visualization/electrical.ts';
-  import { electricalUi as text } from '#lib/i18n/en.ts';
+  import { electricalUi as text } from '#lib/i18n/runtime.ts';
   import CalculatorShell from './CalculatorShell.svelte';
   import QuantityField from './QuantityField.svelte';
   import CalculatorTools from './CalculatorTools.svelte';

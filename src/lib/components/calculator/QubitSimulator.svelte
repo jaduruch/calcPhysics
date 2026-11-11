@@ -4,7 +4,7 @@
   import { qubitGates } from '#lib/content/quantum.ts';
   import { qubitNumber, qubitStateEquation } from '#lib/calculators/qubit.ts';
   import { changeQuantityUnit, parseQuantityInUnit } from '#lib/calculators/quantities.ts';
-  import { qubitUi as text } from '#lib/i18n/en.ts';
+  import { qubitUi as text } from '#lib/i18n/runtime.ts';
   import QuantityField from './QuantityField.svelte';
   import QubitGateInfo from './QubitGateInfo.svelte';
   import CalculatorShell from './CalculatorShell.svelte';

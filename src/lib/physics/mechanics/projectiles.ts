@@ -38,3 +38,29 @@ export function solveHorizontalThrow(input:{h?:number;vx?:number;g?:number}):Kin
   if(!finiteScenario(scenario)||(h>0&&flight===0))return {status:'invalid',code:'numerical',fields:[]};
   return {status:'success',target:null,assumed:input.g===undefined?['g']:[],scenarios:[scenario]};
 }
+
+/** Oblique launch in the x–y plane; x0=0, y0>=0, speed v0>=0.
+ * Angle alpha is measured counterclockwise from +x, -pi <= alpha <= pi.
+ * Reuses the vertical solver for the first ground contact, including downward
+ * and vertical launches. Exact cardinal angles avoid spurious horizontal drift.
+ * Reference: OpenStax University Physics 1, 4.3 Projectile Motion.
+ */
+export function solveObliqueThrow(input:{y0?:number;v0?:number;alpha?:number;g?:number}):KinematicsResult {
+  const y0=input.y0??0,g=input.g??DEFAULT_PROJECTILE_GRAVITY,{v0,alpha}=input;
+  const invalid=(['y0','v0','alpha','g'] as const).filter(key=>{
+    const value=key==='y0'?y0:key==='g'?g:input[key];
+    return value!==undefined&&(!Number.isFinite(value)||((key==='y0'||key==='v0')&&value<0)||(key==='g'&&value<=0)||(key==='alpha'&&Math.abs(value)>Math.PI));
+  });
+  if(invalid.length)return {status:'invalid',code:'domain',fields:invalid};
+  if(v0===undefined||alpha===undefined)return {status:'incomplete'};
+  const sine=alpha===0||Math.abs(alpha)===Math.PI?0:alpha===Math.PI/2?1:alpha===-Math.PI/2?-1:Math.sin(alpha);
+  const cosine=Math.abs(alpha)===Math.PI/2?0:alpha===0?1:Math.abs(alpha)===Math.PI?-1:Math.cos(alpha);
+  const vx=v0*cosine,vy0=v0*sine;
+  if(v0>0&&((cosine!==0&&vx===0)||(sine!==0&&vy0===0)))return {status:'invalid',code:'numerical',fields:[]};
+  const vertical=solveVerticalThrow({y0,v0:vy0,g});
+  if(vertical.status!=='success')return vertical;
+  const base=vertical.scenarios[0],range=base.duration===0?0:vx*base.duration,speedImpact=Math.hypot(vx,base.finalVelocity);
+  const scenario:MotionScenario={...base,horizontalVelocity:vx,values:{...base.values,v0,alpha,vx,vy0,range,vyImpact:base.finalVelocity,speedImpact}};
+  if(!finiteScenario(scenario)||(vx!==0&&base.duration>0&&range===0))return {status:'invalid',code:'numerical',fields:[]};
+  return {status:'success',target:null,assumed:[...(input.y0===undefined?['y0']:[]),...(input.g===undefined?['g']:[])],scenarios:[scenario]};
+}

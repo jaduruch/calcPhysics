@@ -1,7 +1,7 @@
 <script lang="ts">
   import { solveElectrical,type ElectricalModelId,type ElectricalResult } from '#lib/physics/electricity.ts';
   import { formatAxisLabel } from '#lib/visualization/axis-label.ts';
-  import { electricalUi as text } from '#lib/i18n/en.ts';
+  import { electricalUi as text } from '#lib/i18n/runtime.ts';
   let { modelId,result }:{modelId:ElectricalModelId;result:ElectricalResult}=$props();
   const calculated=$derived(result.status==='success'&&result.values.fc>0);
   const fc=$derived(result.status==='success'&&result.values.fc>0?result.values.fc:1);

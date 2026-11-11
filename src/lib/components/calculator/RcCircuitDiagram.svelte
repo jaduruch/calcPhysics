@@ -1,6 +1,6 @@
 <script lang="ts">
   import '#lib/styles/circuit-diagram.css';
-  import { electricalUi as text } from '#lib/i18n/en.ts';
+  import { electricalUi as text } from '#lib/i18n/runtime.ts';
   let { parallel = false, inductive = false, active = null }: { parallel?: boolean; inductive?: boolean; active?: string | null } = $props();
   const id = $props.id();
   const highlight = $derived(['R', 'C', 'L', 'I', 'U', 'UR', 'UC', 'UL', 'IR', 'IC', 'IL'].includes(active ?? '') ? active : null);

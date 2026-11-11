@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { InclineResult } from '#lib/physics/mechanics/inclined-plane.ts';
   import { inclinedPlaneSketch } from '#lib/visualization/inclined-plane.ts';
-  import { inclinedPlaneUi as text } from '#lib/i18n/en.ts';
+  import { inclinedPlaneUi as text } from '#lib/i18n/runtime.ts';
   let { result, enteredAngle, enteredFriction, highlightAngle = false, highlightLength = false, highlightHeight = false }: { highlightAngle?: boolean; highlightLength?: boolean; highlightHeight?: boolean; result: InclineResult | null; enteredAngle?: number; enteredFriction?: number } = $props();
   const id = $props.id();
   const data = $derived(result?.status === 'success' ? result : null);

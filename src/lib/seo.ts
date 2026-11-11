@@ -1,3 +1,5 @@
+import { basePath, localeFromPath, languagePath } from './i18n/locale.ts';
+import { germanText } from './i18n/text-de.ts';
 import { topics, type Topic } from './content/topics.ts';
 
 export const site = {
@@ -16,11 +18,18 @@ export function canonicalUrl(path: string): string {
   return `${site.origin}${pathname}`;
 }
 export function publishedPaths(items: readonly Topic[] = topics): string[] {
-  return ['/', ...items.filter(topic => topic.published).map(topic => topic.path)];
+  return ['/', '/de', ...items.filter(topic => topic.published).flatMap(topic => [topic.path, languagePath(topic.path, 'de')])];
 }
 export function pageMetadata(path: string) {
   const pathname = path.split(/[?#]/)[0].replace(/\/+$/, '') || '/';
-  const topic = topics.find(topic => topic.published && topic.path === pathname);
+  const german = localeFromPath(pathname) === 'de';
+  const base = basePath(pathname);
+  const topic = topics.find(topic => topic.published && topic.path === base);
+  if (german && (base === '/' || topic)) return {
+    title: `${topic ? germanText[topic.title] ?? topic.title : 'Physik verstehen und berechnen'} | ${site.name}`,
+    description: topic ? germanText[topic.description] ?? topic.description : 'Physik verstehen: Rechner, Theorie, SI-Einheiten und nachvollziehbare Rechenwege.',
+    canonical: canonicalUrl(pathname)
+  };
   if (pathname !== '/' && !topic) return null;
   return {
     title: topic ? (topic.seo?.title ?? `${topic.title}: Physics Theory & Calculators | ${site.name}`) : site.homeTitle,
@@ -46,19 +55,22 @@ export function robotsTxt(allowIndexing = indexable): string {
 export function pageStructuredData(path: string) {
   const metadata = pageMetadata(path);
   if (!metadata) return null;
-  const topic = topics.find(item => item.published && canonicalUrl(item.path) === metadata.canonical);
+  const locale = localeFromPath(path);
+  const localized = (value: string) => locale === 'de' ? germanText[value] ?? value : value;
+  const url = (value: string) => canonicalUrl(languagePath(value, locale));
+  const topic = topics.find(item => item.published && item.path === basePath(path));
   const parent = topics.find(item => item.published && item.id === topic?.parentId);
   const breadcrumbs = [
-    { name: 'Home', url: canonicalUrl('/') },
-    ...(parent ? [{ name: parent.title, url: canonicalUrl(parent.path) }] : []),
-    ...(topic ? [{ name: topic.title, url: metadata.canonical }] : [])
+    { name: locale === 'de' ? 'Startseite' : 'Home', url: url('/') },
+    ...(parent ? [{ name: localized(parent.title), url: url(parent.path) }] : []),
+    ...(topic ? [{ name: localized(topic.title), url: metadata.canonical }] : [])
   ];
   return {
     '@context': 'https://schema.org',
     '@graph': [
-      { '@type': 'WebSite', '@id': `${site.origin}/#website`, url: canonicalUrl('/'), name: site.name, inLanguage: 'en' },
+      { '@type': 'WebSite', '@id': `${site.origin}/#website`, url: canonicalUrl('/'), name: site.name, inLanguage: locale },
       { '@type': 'WebPage', '@id': `${metadata.canonical}#webpage`, url: metadata.canonical,
-        name: metadata.title, description: metadata.description, inLanguage: 'en',
+        name: metadata.title, description: metadata.description, inLanguage: locale,
         isPartOf: { '@id': `${site.origin}/#website` },
         ...(topic ? { breadcrumb: { '@id': `${metadata.canonical}#breadcrumb` } } : {}) },
       ...(topic ? [{ '@type': 'BreadcrumbList', '@id': `${metadata.canonical}#breadcrumb`,

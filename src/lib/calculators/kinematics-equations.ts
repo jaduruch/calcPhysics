@@ -2,23 +2,23 @@ import {formatDuration} from './duration.ts';
 import type {KinematicsModelId} from '../content/kinematics.ts';
 import {kinematicsUi as text} from '../i18n/en.ts';
 import {quantityLatex} from './quantities.ts';
-import {fromSI,getUnit,type QuantityKind} from '../physics/units.ts';
+import {fromSI,getUnit,unitGroups,type QuantityKind} from '../physics/units.ts';
 import {kinematicFields} from '../content/kinematics.ts';
 import type {KinematicsResult} from '../physics/mechanics/accelerated-motion.ts';
 export function kinematicsEquations(id:KinematicsModelId,result:Extract<KinematicsResult,{status:'success'}>,units:Record<string,string>) {
  const fields=kinematicFields[id];
- const kind=(key:string):QuantityKind=>fields.find(field=>field.id===key)?.kind??(key==='flight'||key==='peakTime'?'time':key==='v'||key==='impactVelocity'||key==='vyImpact'||key==='speedImpact'?'velocity':'length');
- const symbol:Record<string,string>={s0:'s_0',s:'s',v0:'v_0',a:'a',t:'t',y0:'y_0',h:'h',vx:'v_x',g:'g'};
+ const kind=(key:string):QuantityKind=>fields.find(field=>field.id===key)?.kind??(key==='flight'||key==='peakTime'?'time':key==='vx'||key==='vy0'||key==='v'||key==='impactVelocity'||key==='vyImpact'||key==='speedImpact'?'velocity':'length');
+ const symbol:Record<string,string>={s0:'s_0',s:'s',v0:'v_0',a:'a',t:'t',y0:'y_0',h:'h',vx:'v_x',g:'g',alpha:'\\alpha'};
  const conversions=fields.flatMap(field=>{
-  const unit=units[field.id];if(!unit||unit===({length:'m',velocity:'m/s',acceleration:'m/s²',time:'s'} as Record<string,string>)[field.kind]||result.assumed.includes(field.id)||result.target===field.id)return [];
-  const si=field.kind==='length'?'m':field.kind==='velocity'?'m/s':field.kind==='acceleration'?'m/s²':'s';
+  const unit=units[field.id];if(!unit||unit===unitGroups[field.kind].si||result.assumed.includes(field.id)||result.target===field.id)return [];
+  const si=unitGroups[field.kind].si;
   const v=result.scenarios[0].values[field.id],definition=getUnit(field.kind,unit);
   const factor='factorLatex' in definition?definition.factorLatex:definition.factor.toString();
-  return [`${symbol[field.id]}=${quantityLatex(fromSI(v,field.kind,unit),unit,false)}\\cdot\\frac{${factor}\\,\\mathrm{${si}}}{1\\,\\mathrm{${unit}}}\\approx ${quantityLatex(v,si)}`];
+  return [`${symbol[field.id]}=${quantityLatex(fromSI(v,field.kind,unit),unit,false)}\\cdot\\frac{${factor}\\,\\mathrm{${si}}}{1\\,\\mathrm{${unit}}}\\approx ${quantityLatex(v,si,field.kind!=='angle')}`];
  });
  const scenarios=result.scenarios.map(scenario=>{
   const v=scenario.values;
-  const q=(key:string)=>{const value=v[key];const unit=kind(key)==='length'?'m':kind(key)==='time'?'s':kind(key)==='acceleration'?'m/s²':'m/s';const latex=quantityLatex(value,unit);return value<0?`\\left(${latex}\\right)`:latex;};
+  const q=(key:string)=>{const value=v[key];const unit=unitGroups[kind(key)].si;const latex=quantityLatex(value,unit,kind(key)!=='angle');return value<0?`\\left(${latex}\\right)`:latex;};
   const square=(key:string)=>`\\left(${q(key)}\\right)^2`;
   const output=(key:string,formula:string,numeric:string,label:string,targetSymbol:string,unit:string)=>{
    const selected=units[key]??unit;
@@ -37,6 +37,15 @@ export function kinematicsEquations(id:KinematicsModelId,result:Extract<Kinemati
    equations.push(output('peakTime',String.raw`\max(0,v_0/g)`,`\\max\\left(0\\,\\mathrm{s},\\frac{${q('v0')}}{${q('g')}}\\right)`,text.peakTime,'t_{peak}','s'));
    equations.push(output('peakHeight',String.raw`y_0+v_0t_{peak}-\frac12gt_{peak}^2`,`${q('y0')}+${q('v0')}\\cdot${q('peakTime')}-\\frac12\\cdot${q('g')}\\cdot${square('peakTime')}`,text.peakHeight,'y_{peak}','m'));
    equations.push(output('impactVelocity',String.raw`-\sqrt{v_0^2+2gy_0}`,`-\\sqrt{${square('v0')}+2\\cdot${q('g')}\\cdot${q('y0')}}`,text.impactVelocity,'v_{impact}','m/s'));
+  }else if(id==='oblique-throw'){
+   equations.push(output('vx',String.raw`v_0\cdot\cos\alpha`,`${q('v0')}\\cdot\\cos\\left(${q('alpha')}\\right)`,text.horizontalVelocity,'v_x','m/s'));
+   equations.push(output('vy0',String.raw`v_0\cdot\sin\alpha`,`${q('v0')}\\cdot\\sin\\left(${q('alpha')}\\right)`,text.initialVerticalVelocity,'v_{y0}','m/s'));
+   equations.push(output('flight',String.raw`\frac{v_{y0}+\sqrt{v_{y0}^2+2gy_0}}{g}`,`\\frac{${q('vy0')}+\\sqrt{${square('vy0')}+2\\cdot${q('g')}\\cdot${q('y0')}}}{${q('g')}}`,text.flight,'t_f','s'));
+   equations.push(output('peakTime',String.raw`\max(0,v_{y0}/g)`,`\\max\\left(0\\,\\mathrm{s},\\frac{${q('vy0')}}{${q('g')}}\\right)`,text.peakTime,'t_{peak}','s'));
+   equations.push(output('peakHeight',String.raw`y_0+v_{y0}\cdot t_{peak}-\frac12g\cdot t_{peak}^2`,`${q('y0')}+${q('vy0')}\\cdot${q('peakTime')}-\\frac12\\cdot${q('g')}\\cdot${square('peakTime')}`,text.peakHeight,'y_{peak}','m'));
+   equations.push(output('range',String.raw`v_x\cdot t_f`,`${q('vx')}\\cdot${q('flight')}`,text.range,'R','m'));
+   equations.push(output('vyImpact',String.raw`-\sqrt{v_{y0}^2+2gy_0}`,`-\\sqrt{${square('vy0')}+2\\cdot${q('g')}\\cdot${q('y0')}}`,text.vyImpact,'v_{y,impact}','m/s'));
+   equations.push(output('speedImpact',String.raw`\sqrt{v_x^2+v_{y,impact}^2}`,`\\sqrt{${square('vx')}+${square('vyImpact')}}`,text.speedImpact,'v_{impact}','m/s'));
   }else{
    equations.push(output('flight',String.raw`\sqrt{2h/g}`,`\\sqrt{\\frac{2\\cdot${q('h')}}{${q('g')}}}`,text.flight,'t_f','s'));
    equations.push(output('range',String.raw`v_x\cdot t_f`,`${q('vx')}\\cdot${q('flight')}`,text.range,'R','m'));

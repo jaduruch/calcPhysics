@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ElectricalResult } from '#lib/physics/electricity.ts';
   import { generatorVectors } from '#lib/visualization/electrical.ts';
-  import { electricalUi as text } from '#lib/i18n/en.ts';
+  import { electricalUi as text } from '#lib/i18n/runtime.ts';
   let { result }: { result: ElectricalResult } = $props();
   const diagram = $derived(generatorVectors(result));
   let enabled = $state([true, true, true]);

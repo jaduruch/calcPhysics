@@ -1,6 +1,6 @@
 <script lang="ts">
   import '#lib/styles/circuit-diagram.css';
-  import { electricalUi as text } from '#lib/i18n/en.ts';
+  import { electricalUi as text } from '#lib/i18n/runtime.ts';
   let { parallel = false, kind = 'resistance', active = null, components }: {
     parallel?: boolean; kind?: 'resistance' | 'capacitance' | 'inductance'; active?: string | null; components: readonly { id: string; pending: boolean }[];
   } = $props();

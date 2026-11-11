@@ -1,6 +1,6 @@
 <script lang="ts">
   import { formatAxisLabel } from '#lib/visualization/axis-label.ts';
-  import { chartUi as text } from '#lib/i18n/en.ts';
+  import { chartUi as text } from '#lib/i18n/runtime.ts';
   let { title, yLabel, times, values, description, shape, xLabel = 't [s]', schematic = false, color = 'default', xBounds, marker }: {
     title: string; yLabel: string; times: number[]; values: number[]; description: string; shape: 'position' | 'velocity'; xBounds?: {min:number;max:number}; xLabel?: string; schematic?: boolean; color?: 'default' | 'current'; marker?: { time: number; value: number };
   } = $props();

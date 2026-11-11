@@ -1,11 +1,11 @@
 <script lang="ts">
  import {kinematicFields,type KinematicsModelId} from '#lib/content/kinematics.ts';
  import {solveAcceleratedMotion,type AcceleratedField,type KinematicsResult} from '#lib/physics/mechanics/accelerated-motion.ts';
- import {solveVerticalThrow,solveHorizontalThrow} from '#lib/physics/mechanics/projectiles.ts';
+ import {solveVerticalThrow,solveHorizontalThrow,solveObliqueThrow} from '#lib/physics/mechanics/projectiles.ts';
  import {unitGroups,fromSI} from '#lib/physics/units.ts';
  import {parseQuantityInUnit,changeQuantityUnit,formatMeasurement} from '#lib/calculators/quantities.ts';
  import {kinematicsEquations} from '#lib/calculators/kinematics-equations.ts';
- import {kinematicsUi as text,calculatorUi} from '#lib/i18n/en.ts';
+ import {kinematicsUi as text,calculatorUi} from '#lib/i18n/runtime.ts';
  import CalculatorShell from './CalculatorShell.svelte';
  import CalculatorTools from './CalculatorTools.svelte';
  import QuantityField from './QuantityField.svelte';
@@ -30,6 +30,7 @@
    return solution;
   }
   if(modelId==='vertical-throw')return solveVerticalThrow(input);
+  if(modelId==='oblique-throw')return solveObliqueThrow(input);
   return solveHorizontalThrow(input);
  });
  const equations=$derived(result.status==='success'?kinematicsEquations(modelId,result,selectedUnits):null);
@@ -56,11 +57,11 @@
     {#if equations.scenarios.length>1}<p class="status">{text.timeSolution} {index+1}</p>{/if}
     {#each group as equation}<EquationBlock label={equation.label} equations={[equation.expression]}/>{/each}
    {/each}
-  {:else if result.status==='invalid'}<p class="status error">{parseErrors.length?text.parseError:text[result.code]}</p>
+  {:else if result.status==='invalid'}<p class="status error">{parseErrors.length?text.parseError:modelId==='oblique-throw'&&result.code==='domain'?text.obliqueDomain:text[result.code]}</p>
   {:else if result.status!=='success'}<p class="status" class:error={result.status!=='incomplete'}>{result.status==='incomplete'?(modelId==='accelerated-motion'?text.incompleteAccelerated:text.incompleteProjectile):text[result.status]}</p>{/if}
  </div>
  <p class="assumption">{modelId==='accelerated-motion'?text.acceleratedAssumptions:text.projectileAssumptions}</p>
- {#if modelId!=='accelerated-motion'}<p class="assumption">{modelId==='vertical-throw'?text.verticalConvention:text.horizontalConvention}</p>{/if}
+ {#if modelId!=='accelerated-motion'}<p class="assumption">{modelId==='vertical-throw'?text.verticalConvention:modelId==='oblique-throw'?text.obliqueConvention:text.horizontalConvention}</p>{/if}
  {#if result.status==='success'&&result.scenarios.length>1}
   <p class="status">{text.multipleTimes}</p>
   <ToggleSwitch label={text.diagramInterval} checked={selectedScenario===1} offLabel={timeLabel(result.scenarios[0].duration)} onLabel={timeLabel(result.scenarios[1].duration)} onchange={checked=>selectedScenario=checked?1:0}/>

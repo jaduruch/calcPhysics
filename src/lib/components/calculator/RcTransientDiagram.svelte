@@ -1,6 +1,6 @@
 <script lang="ts">
   import '#lib/styles/circuit-diagram.css';
-  import { electricalUi as text } from '#lib/i18n/en.ts';
+  import { electricalUi as text } from '#lib/i18n/runtime.ts';
   let { discharging = false, inductive = false }: { discharging?: boolean; inductive?: boolean } = $props();
   const id = $props.id();
 </script>

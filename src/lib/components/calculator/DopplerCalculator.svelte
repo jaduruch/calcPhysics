@@ -3,7 +3,7 @@
   import { getUnit } from '#lib/physics/units.ts';
   import { dopplerEquations, dopplerKinds, dopplerUnits } from '#lib/calculators/doppler.ts';
   import { changeQuantityUnit, parseQuantityInUnit } from '#lib/calculators/quantities.ts';
-  import { dopplerUi as text, calculatorUi } from '#lib/i18n/en.ts';
+  import { dopplerUi as text, calculatorUi } from '#lib/i18n/runtime.ts';
   import CalculatorShell from './CalculatorShell.svelte';
   import CalculatorTools from './CalculatorTools.svelte';
   import EquationBlock from './EquationBlock.svelte';

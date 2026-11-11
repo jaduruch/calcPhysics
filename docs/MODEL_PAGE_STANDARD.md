@@ -31,7 +31,7 @@ Seit 03.11.2026 verwendet auch Inclined Plane unter Mechanics → Dynamics die g
 | Achsen, Raster, Kurven und Pfeile | [MotionChart.svelte](../src/lib/components/calculator/MotionChart.svelte) |
 | Wissenschaftliche Achsenbeschriftung | [axis-label.ts](../src/lib/visualization/axis-label.ts) |
 | Zeit-Zusatzformat | [duration.ts](../src/lib/calculators/duration.ts) |
-| Gemeinsame englische UI-Texte | [en.ts](../src/lib/i18n/en.ts) |
+| Gemeinsame UI-Texte und Sprachwahl | [en.ts](../src/lib/i18n/en.ts), [de.ts](../src/lib/i18n/de.ts), [runtime.ts](../src/lib/i18n/runtime.ts); Footer in `+layout.svelte` |
 
 Gemeinsame Komponenten importieren, nicht kopieren. Nur Eigenschaften, die bewusst pro Modell variieren, werden als typisierte Props/Definitionen/Snippets übergeben. Keine themenspezifischen CSS-Überschreibungen für dieselben Felder, Menüs oder Diagrammachsen anlegen.
 

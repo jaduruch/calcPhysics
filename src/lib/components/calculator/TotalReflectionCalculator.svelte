@@ -2,7 +2,7 @@
   import { solveTotalReflection, type ReflectionInput } from '#lib/physics/optics/total-internal-reflection.ts';
   import { reflectionEquations, reflectionKinds, reflectionUnits } from '#lib/calculators/total-reflection.ts';
   import { parseQuantityInUnit, changeQuantityUnit } from '#lib/calculators/quantities.ts';
-  import { reflectionUi as text, calculatorUi } from '#lib/i18n/en.ts';
+  import { reflectionUi as text, calculatorUi } from '#lib/i18n/runtime.ts';
   import CalculatorShell from './CalculatorShell.svelte';
   import CalculatorTools from './CalculatorTools.svelte';
   import EquationBlock from './EquationBlock.svelte';

@@ -16,7 +16,7 @@ Abnahme: nachvollziehbare Architektur, dokumentierte Annahmen und ein vereinbart
 
 ## Aktueller Stand und nächster Erweiterungsschritt
 
-Lokales Grundgerüst Home → Mechanics → Kinematics ist vorhanden. Home führt alle Hauptthemen; Mechanics, Thermodynamics, Electricity & Magnetism, Oscillations & Waves, Optics und Modern Physics sind aktiv. Optics führt Total Internal Reflection mit Grenzwinkel und Strahlenskizze. Oscillations & Waves führt Doppler Effect mit einem akustischen Modell und animierten Wellenfronten. Modern Physics führt Quantum mit dem Qubit-Simulator und animierter 3D-Blochkugel. Thermodynamics ist eine Themenübersicht mit der Unterseite Ideal Gases und dem ersten Modell Ideal Gas Law. Mechanics enthält Kinematics mit Uniform Motion, Uniformly Accelerated Motion, Vertical Throw und Horizontal Throw sowie Dynamics. Uniform Motion ist mit Theorie, vier Eingaben, Präfix-/Einheitenunterstützung, automatischen Resultaten, KaTeX-Rechenweg und zwei SVG-Diagrammen implementiert und vom Nutzer vorerst als Referenz akzeptiert. Seit 03.11.2026 sind zusätzlich Inclined Plane unter Dynamics sowie neun Elektrotechnik-Unterthemen mit 44 expliziten Rechenmodellen in 30 Karten beauftragt und implementiert. Three-Phase Systems bündelt Stern, Dreieck und Generator. Umfang und Quellen stehen in [ELECTRICITY.md](ELECTRICITY.md). Weitere Modelle und Veröffentlichung bleiben auftragsgebunden.
+Lokales Grundgerüst Home → Mechanics → Kinematics ist vorhanden. Home führt alle Hauptthemen; Mechanics, Thermodynamics, Electricity & Magnetism, Oscillations & Waves, Optics und Modern Physics sind aktiv. Optics führt Total Internal Reflection mit Grenzwinkel und Strahlenskizze. Oscillations & Waves führt Doppler Effect mit einem akustischen Modell und animierten Wellenfronten. Modern Physics führt Quantum mit dem Qubit-Simulator und animierter 3D-Blochkugel. Thermodynamics ist eine Themenübersicht mit der Unterseite Ideal Gases und dem ersten Modell Ideal Gas Law. Mechanics enthält Kinematics mit Uniform Motion, Uniformly Accelerated Motion, Vertical Throw, Horizontal Throw und Oblique Throw sowie Dynamics. Uniform Motion ist mit Theorie, vier Eingaben, Präfix-/Einheitenunterstützung, automatischen Resultaten, KaTeX-Rechenweg und zwei SVG-Diagrammen implementiert und vom Nutzer vorerst als Referenz akzeptiert. Seit 03.11.2026 sind zusätzlich Inclined Plane unter Dynamics sowie neun Elektrotechnik-Unterthemen mit 44 expliziten Rechenmodellen in 30 Karten beauftragt und implementiert. Three-Phase Systems bündelt Stern, Dreieck und Generator. Umfang und Quellen stehen in [ELECTRICITY.md](ELECTRICITY.md). Weitere Modelle und Veröffentlichung bleiben auftragsgebunden.
 
 Mit dem zweiten Modell abgeschlossen: Uniform-Motion-Bindung von `ModelCard` gelöst und gemeinsame Feld-/Ergebnisdarstellung samt Styles extrahiert. Den akzeptierten Aufbau erhalten; Details und Änderungsstellen stehen im [Modellseitenstandard](MODEL_PAGE_STANDARD.md). Die folgenden Phasen beschreiben den weiteren Plan, nicht bereits vollständig erledigte Qualitäts-/Veröffentlichungsprüfungen.
 
@@ -40,7 +40,7 @@ Abnahme: alle Modi fachlich getestet; `0`, fehlende Eingaben, Nulldivision, Einh
 
 ## Phase 3 – Kinematik und analytische Analysis
 
-Gleichmässig beschleunigte Bewegung, vertikaler und horizontaler Wurf sind als drei zusätzliche Modellkarten unter Kinematics umgesetzt. Freier Fall ist der Sonderfall v₀ = 0 im vertikalen Modell. Beide Zeitlösungen bei beschleunigter Bewegung werden angezeigt; Koordinaten, Anfangsbedingungen und erster Bodenkontakt sind explizit. Schiefer Wurf bleibt ein möglicher späterer Ausbau bei entsprechendem Auftrag.
+Gleichmässig beschleunigte Bewegung, vertikaler, horizontaler und schiefer Wurf sind als vier zusätzliche Modellkarten unter Kinematics umgesetzt. Freier Fall ist der Sonderfall v₀ = 0 im vertikalen Modell. Beide Zeitlösungen bei beschleunigter Bewegung werden angezeigt; Koordinaten, Anfangsbedingungen und erster Bodenkontakt sind explizit. Der schiefe Wurf verwendet Abwurfgeschwindigkeit, Winkel und Abwurfhöhe; seine Flugbahn endet ebenfalls beim ersten Bodenkontakt.
 
 Anhand dieser Modelle Ableitungen und bestimmte Integrale vermitteln: Position, Geschwindigkeit, Beschleunigung und Fläche unter der Kurve. Geschwindigkeitsbetrag und gerichtete Geschwindigkeit unterscheiden. Synchronisierte Skizzen und Diagramme, pausierbare Animationen.
 
@@ -62,11 +62,11 @@ Weitere Themen schrittweise priorisieren: Thermodynamik, Elektrizität und Magne
 
 Abnahme: numerische Beispiele stimmen innerhalb dokumentierter Toleranzen mit Referenzen überein; schwierige Eingaben terminieren kontrolliert. Darstellung unterscheidet analytische Lösung und Näherung.
 
-## Späterer Ausbau – deutsche Sprachoption
+## Deutsche Sprachoption – schrittweise umgesetzt
 
-Nach dem englischen Pilot und unabhängig vom Ausbau weiterer Fachgebiete: deutsche UI-Texte und redaktionell geprüfte Theorie ergänzen. Stabile Themen-IDs verbinden die Sprachfassungen. Deutsche Seiten unter `/de/` veröffentlichen; Sprachschalter, lokalisierte Zahlenformate, HTML-Sprache, Metadaten und reziproke Sprachalternativen ergänzen. Nur vollständig geprüfte Übersetzungen veröffentlichen.
+Seit 10.11.2026: Sprachwechsel English / Deutsch im Footer, deutsche vorgerenderte Routen unter `/de/`, übersetzte Navigation, Themenbeschreibungen und gemeinsame Bedienung. Die Kinematik-Meldungen und Uniform-Motion-Theorie sind übersetzt. Weitere Fachinhalte werden schrittweise ergänzt; die deutsche Oberfläche weist auf englische Restinhalte hin. Stabile Themen-IDs verbinden die Sprachfassungen. Deutsche Seiten unter `/de/` veröffentlichen; Sprachschalter, lokalisierte Zahlenformate, HTML-Sprache, Metadaten und reziproke Sprachalternativen ergänzen. Fehlende Fachübersetzungen bleiben ausdrücklich als englische Restinhalte erkennbar.
 
-Abnahme: Beide Sprachen verwenden dieselbe Fachlogik; Sprachwechsel verändert keine physikalischen Werte. Längere deutsche Texte, Dezimalkomma/-punkt, fehlende Übersetzungen und SEO-Verknüpfungen sind geprüft. Ein Termin für Deutsch ist noch nicht festgelegt.
+Abnahme: Beide Sprachen verwenden dieselbe Fachlogik; Sprachwechsel verändert keine physikalischen Werte. Längere deutsche Texte, Dezimalkomma/-punkt, fehlende Übersetzungen und SEO-Verknüpfungen sind geprüft. Die vollständige Fachübersetzung ist noch offen.
 
 ## Veröffentlichungsreife und laufende Pflege
 

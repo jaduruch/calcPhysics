@@ -3,7 +3,7 @@
   import { fromSI } from '#lib/physics/units.ts';
   import { gasKinds, gasUnits, gasEquations } from '#lib/calculators/ideal-gas.ts';
   import { parseQuantityInUnit, changeQuantityUnit } from '#lib/calculators/quantities.ts';
-  import { idealGasUi as text, calculatorUi } from '#lib/i18n/en.ts';
+  import { idealGasUi as text, calculatorUi } from '#lib/i18n/runtime.ts';
   import QuantityField from './QuantityField.svelte';
   import CalculatorShell from './CalculatorShell.svelte';
   import CalculatorTools from './CalculatorTools.svelte';

@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { qubitGates } from '#lib/content/quantum.ts';
   import type { GateId } from '#lib/physics/quantum/qubit.ts';
-  import { qubitUi as text } from '#lib/i18n/en.ts';
+  import { qubitUi as text } from '#lib/i18n/runtime.ts';
   import InfoButton from '../ui/InfoButton.svelte';
   import Formula from '../Formula.svelte';
   let { label, gates }: { label: string; gates: readonly GateId[] } = $props();

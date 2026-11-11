@@ -159,3 +159,11 @@ Vorzeichen: Wärme positiv zum Körper, Expansion und Temperaturintervalle dürf
 - Beide Würfe sind Punktmassenmodelle ohne Luftwiderstand mit konstantem g und ebenem Boden; kein Rückprall, keine Fortsetzung unter Boden. `visualization/kinematics.ts` verwendet `motionAt` desselben Solvers und die validierten Endwerte, einschliesslich exaktem y = 0 am Boden. Diagramme enthalten den Scheitelpunkt und bleiben bei t = 0 echte Nullintervalle.
 
 Quellen: [OpenStax – Motion with Constant Acceleration](https://openstax.org/books/university-physics-volume-1/pages/3-4-motion-with-constant-acceleration), [Projectile Motion](https://openstax.org/books/university-physics-volume-1/pages/4-3-projectile-motion).
+
+## Schiefer Wurf (11.11.2026)
+
+`solveObliqueThrow` in `projectiles.ts` zerlegt v₀ ≥ 0 mit −π ≤ α ≤ π in vₓ = v₀ cos α und vᵧ₀ = v₀ sin α. α wird gegen den Uhrzeigersinn ab +x gemessen. y₀ ≥ 0 (leer: 0 m), g > 0 (leer: 9.81 m/s²). Keine Luftreibung, x₀ = 0, Boden y = 0. Die stabile Zeit- und Scheitelberechnung verwendet denselben vertikalen Solver wie der senkrechte Wurf. Exakte Achsenwinkel erzeugen exakt verschwindende Komponenten; kleine benachbarte Winkel werden nicht auf null geklemmt.
+
+Ausgaben: Geschwindigkeitskomponenten, Flugzeit, Zeit und Höhe des höchsten Punktes nach Abwurf, vorzeichenbehaftete horizontale Verschiebung sowie vertikale und gesamte Aufprallgeschwindigkeit. Abwurf vom Boden mit vᵧ₀ ≤ 0 hat Flugdauer null; senkrechter Wurf hat R = 0. Winkel starten in rad und können in ° umgerechnet werden. Die vier Diagramme y(x), x(t), y(t), vᵧ(t) verwenden dieselben ungerundeten Daten und enden beim ersten Bodenkontakt. Referenz: v₀ = 20 m/s, α = π/4, y₀ = 0, g = 10 m/s² → t_f = 2√2 s, R = 40 m, y_peak = 10 m, v_impact = 20 m/s.
+
+Quelle: [OpenStax – Projectile Motion](https://openstax.org/books/university-physics-volume-1/pages/4-3-projectile-motion).

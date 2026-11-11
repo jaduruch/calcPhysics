@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ReflectionResult } from '#lib/physics/optics/total-internal-reflection.ts';
   import { totalReflectionScene, type RayPoint } from '#lib/visualization/total-reflection.ts';
-  import { reflectionUi as text } from '#lib/i18n/en.ts';
+  import { reflectionUi as text } from '#lib/i18n/runtime.ts';
   let { result }: { result: Extract<ReflectionResult, { status: 'success' }> | null } = $props();
   const scene = $derived(totalReflectionScene(result));
   const id = $props.id();

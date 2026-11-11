@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type { ModelDefinition } from '#lib/content/model-types.ts';
-  import { ui } from '#lib/i18n/en.ts';
+  import { ui, text } from '#lib/i18n/runtime.ts';
   import Formula from './Formula.svelte';
   import InfoButton from './ui/InfoButton.svelte';
   let { model, index, calculator }: { model: ModelDefinition; index: number; calculator: Snippet } = $props();
@@ -14,12 +14,12 @@
 <details class="motion-card" ontoggle={resetTheoryOnClose}>
   <summary>
     <span class="topic-number">{String(index + 1).padStart(2, '0')}</span>
-    <h3>{model.title}</h3>
+    <h3>{text(model.title)}</h3>
     <span class="chevron" aria-hidden="true"></span>
   </summary>
   <div class="motion-content">
     <div class="theory-heading">
-      <InfoButton expanded={showTheory} controls={`${model.id}-theory`} label={`${showTheory ? ui.hideTheory : ui.showTheory}: ${model.title}`} title={showTheory ? ui.hideTheory : ui.showTheory} onclick={() => showTheory = !showTheory} />
+      <InfoButton expanded={showTheory} controls={`${model.id}-theory`} label={`${showTheory ? ui.hideTheory : ui.showTheory}: ${text(model.title)}`} title={showTheory ? ui.hideTheory : ui.showTheory} onclick={() => showTheory = !showTheory} />
     </div>
     <section class="theory-panel" id={`${model.id}-theory`} hidden={!showTheory} aria-label={ui.theory}>
       <div class="theory-layout">
@@ -28,8 +28,8 @@
           <dl class="variables-list">
             {#each model.variables as variable}
               <div class="variable-row">
-                <dt><span class="variable-symbol">{variable.symbol}{#if variable.subscript}<sub>{variable.subscript}</sub>{/if}</span><span class="variable-name">{variable.name}</span></dt>
-                <dd><strong>{variable.unit}</strong><span>{variable.unitName}</span></dd>
+                <dt><span class="variable-symbol">{variable.symbol}{#if variable.subscript}<sub>{variable.subscript}</sub>{/if}</span><span class="variable-name">{text(variable.name)}</span></dt>
+                <dd><strong>{variable.unit}</strong><span>{text(variable.unitName)}</span></dd>
               </div>
             {/each}
           </dl>
@@ -37,12 +37,12 @@
         <div class="formulas-section">
           <h5>{ui.keyFormulas}</h5>
           {#each model.formulas as formula}
-            <div class="formula-row"><span class="formula-label">{formula.label}</span><Formula expression={formula.expression} /></div>
+            <div class="formula-row"><span class="formula-label">{text(formula.label)}</span><Formula expression={formula.expression} /></div>
           {/each}
         </div>
       </div>
       {#each model.notes ?? [] as note}
-        <div class="derivative-note"><p>{note.text}</p>{#if note.expression}<Formula expression={note.expression} />{/if}</div>
+        <div class="derivative-note"><p>{text(note.text)}</p>{#if note.expression}<Formula expression={note.expression} />{/if}</div>
       {/each}
       {#each model.references ?? [] as reference}<p class="theory-source"><a href={reference.url}>{reference.title}</a></p>{/each}
     </section>

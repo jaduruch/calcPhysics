@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ElectricalResult } from '#lib/physics/electricity.ts';
   import { electricalQuantity } from '#lib/calculators/electrical-equations.ts';
-  import { electricalUi as text } from '#lib/i18n/en.ts';
+  import { electricalUi as text } from '#lib/i18n/runtime.ts';
   import Formula from '../Formula.svelte';
   let { result }: { result: ElectricalResult } = $props();
   const phase = $derived(result.status === 'success' ? result.outputs.phi ?? result.values.phi : undefined);

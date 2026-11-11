@@ -1,7 +1,7 @@
 <script lang="ts">
   import { solveElectrical,type ElectricalResult } from '#lib/physics/electricity.ts';
   import { formatAxisLabel } from '#lib/visualization/axis-label.ts';
-  import { electricalUi as text } from '#lib/i18n/en.ts';
+  import { electricalUi as text } from '#lib/i18n/runtime.ts';
   let { parallel,result }:{parallel:boolean;result:ElectricalResult}=$props();
   const values=$derived(result.status==='success'?result.values:{});
   const complete=$derived((values.R??0)>0&&(values.L??0)>0&&(values.C??0)>0);

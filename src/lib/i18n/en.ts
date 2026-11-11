@@ -1,6 +1,6 @@
 export const ui = {
   homeTitle: 'Physics calculators and theory',
-  homeDescription: 'Explore mechanics, thermodynamics, electricity, waves, optics and quantum physics. Calculate with units, follow formulas and understand the assumptions behind each model.',
+  homeDescription: 'Calculators, formulas and model assumptions for mechanics, thermodynamics, electricity, waves, optics and quantum physics.',
   mainNavigation: 'Main navigation', menu: 'Main menu',
   home: 'Home', subjects: 'Explore physics', subjectLabel: 'Subject overview',
   openReference: 'View reference', subtopics: 'Subtopics', models: 'Theory & calculation models',
@@ -12,7 +12,6 @@ export const ui = {
   velocityDerivative: 'Velocity v(t) is the first time derivative of position s(t). A dot above s denotes differentiation with respect to time. For uniform motion, this derivative is constant.',
   showTheory: 'Show theory', hideTheory: 'Hide theory', modelAssumptions: 'Model assumptions',
   calculatorPending: 'The calculator and visualizations for this model are not available yet.',
-  footer: 'Physics, made clear.', footerDetail: 'Understand the model. Work with the numbers.'
 } as const;
 
 export const calculatorUi = {
@@ -200,6 +199,12 @@ export const resourceUi = {
 } as const;
 
 export const kinematicsUi={
+ launchSpeed: "launch speed",
+ launchAngle: "launch angle",
+ obliqueConvention: "The positive x-axis points right and the positive y-axis upward. The launch angle α is measured counterclockwise from +x: 0 is rightward, π/2 is upward, ±π is leftward and −π/2 is downward. R is signed horizontal displacement.",
+ obliqueDomain: "Use finite values with v₀ ≥ 0, y₀ ≥ 0, g > 0 and −π ≤ α ≤ π rad (−180° to 180°). Blank y₀ assumes 0 m; blank g assumes 9.81 m/s².",
+ obliqueTheory: "Requires trigonometry and quadratic equations. Resolve the launch velocity into horizontal and vertical components. Flight ends at the first future contact with y = 0; an upward launch from the ground returns later, while a horizontal or downward launch from ground level has zero flight duration. Maximum height is measured after launch. The flight-time formula is evaluated in a numerically stable form for downward launches.",
+
  initialVelocity:'initial velocity',initialVerticalVelocity:'initial vertical velocity',acceleration:'constant acceleration',launchHeight:'launch height',horizontalVelocity:'horizontal velocity',gravity:'gravitational acceleration',
  acceleratedAssumptions:'Straight-line motion with constant signed acceleration. Positions and velocities are directed quantities; t is elapsed time and must be non-negative. Position change is not necessarily distance travelled.',
  projectileAssumptions:'Point mass, constant g > 0, no air resistance and horizontal ground at y = 0. Motion ends at first ground contact; no bounce or continuation below ground.',

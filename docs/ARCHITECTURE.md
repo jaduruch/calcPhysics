@@ -6,7 +6,7 @@ Stand: 29.10.2026. Die Spezifikation entstand auf Basis eines Repositorys mit nu
 
 calcPhysics verbindet Theorie, nach verschiedenen Grössen auflösbare Formeln, automatische Folgeergebnisse und Visualisierungen. Das vom Betreiber beschriebene Konzept von elecalculate.com bleibt erhalten und wird um anspruchsvollere Mathematik erweitert. Die öffentliche [Referenzseite](https://elecalculate.com/) dient als Produktkontext; deren interner Code wurde nicht untersucht.
 
-Bestätigt sind Englisch als Standardsprache mit späterer deutscher Sprachoption und ein höheres mathematisches Niveau als Lehrlings-Grundformeln. Die Plattform richtet sich sowohl an Lernende als auch an Ingenieurinnen und Ingenieure für einfache Berechnungen in der Industrie. Gestufte Erklärungen reichen von elementarer Umstellung bis zur Differential- und Integralrechnung; mathematische Voraussetzungen werden je Thema benannt. Übungsaufgaben, Quiz, Bewertungen und Lernfortschritt gehören derzeit nicht zum Produktumfang. Zunächst keine Konten, Datenbank, Bezahlfunktionen oder CMS; dafür besteht noch kein bestätigter Bedarf.
+Bestätigt sind Englisch als Standardsprache mit deutscher Sprachoption im Footer und ein höheres mathematisches Niveau als Lehrlings-Grundformeln. Die Plattform richtet sich sowohl an Lernende als auch an Ingenieurinnen und Ingenieure für einfache Berechnungen in der Industrie. Gestufte Erklärungen reichen von elementarer Umstellung bis zur Differential- und Integralrechnung; mathematische Voraussetzungen werden je Thema benannt. Übungsaufgaben, Quiz, Bewertungen und Lernfortschritt gehören derzeit nicht zum Produktumfang. Zunächst keine Konten, Datenbank, Bezahlfunktionen oder CMS; dafür besteht noch kein bestätigter Bedarf.
 
 ## Technische Entscheidungen
 
@@ -34,7 +34,7 @@ src/
       topics.ts                 # Stabile IDs, sprachabhängige Slugs und Metadaten
       en/                       # Englische Theorie; de/ erst mit Übersetzungen
       mechanics/kinematics/     # Redaktionelle Theorie-Komponenten
-    i18n/                       # Locale-Regeln und UI-Wörterbücher (zunächst en)
+    i18n/                       # Locale-Regeln und UI-Wörterbücher (en und de)
     physics/
       quantities.ts             # Grössen, Dimensionen, SI-Konventionen
       units.ts                  # Umrechnung, einschliesslich Offsets
@@ -71,7 +71,7 @@ Leere Zukunftsverzeichnisse müssen nicht vorab angelegt werden. Inhalts-, Physi
 
 ## Themen und Routing
 
-Ein Themenbaum führt stabile ID, Eltern-ID, Slug-Segment, Titel, Kurzbeschreibung, Seitentyp und Publikationsstatus. Alle Eltern sind echte Übersichten. Englische Standardseiten erhalten URLs ohne Sprachpräfix. Aktuell liegen die Modellkarten unter `/mechanics/kinematics`; eigene Modellrouten sind kein Bestandteil der akzeptierten Referenz. Deutsche Übersetzungen sind später unter `/de/` vorgesehen. Deutsche Umlaute werden für Slugs ausgeschrieben, sichtbare Titel behalten korrekte Schreibweise. Gross-/Kleinschreibung und abschliessende Slashes erhalten eine einheitliche Regel.
+Ein Themenbaum führt stabile ID, Eltern-ID, Slug-Segment, Titel, Kurzbeschreibung, Seitentyp und Publikationsstatus. Alle Eltern sind echte Übersichten. Englische Standardseiten erhalten URLs ohne Sprachpräfix. Aktuell liegen die Modellkarten unter `/mechanics/kinematics`; eigene Modellrouten sind kein Bestandteil der akzeptierten Referenz. Deutsche Seiten liegen unter `/de/` und verwenden dieselben sprachneutralen Themenpfade. Deutsche Umlaute werden für Slugs ausgeschrieben, sichtbare Titel behalten korrekte Schreibweise. Gross-/Kleinschreibung und abschliessende Slashes erhalten eine einheitliche Regel.
 
 Oscillations & Waves führt Doppler Effect mit dem akustischen Dopplermodell. Der reine SI-Solver bestimmt aus drei Angaben eine der vier Grössen fₛ, fₒ, vₛ oder vₒ; c ist ein anpassbarer Mediumparameter. Der SVG-Wellenfrontenadapter verwendet dieselben validierten Ergebnisse.
 
@@ -83,13 +83,13 @@ Der Baum umfasst Mechanik mit Kinematik und Dynamik sowie Thermodynamik, Elektri
 
 Registry und Routing sind getrennt: gemeinsame Vorlagen rendern alle Themen; explizite Lazy-Imports laden nur benötigte Theorie und Rechner. Die Catch-all-Route liefert vollständige Einträge für alle veröffentlichten Pfade an den Prerenderer. Navigation, Breadcrumbs und Sitemap entstehen aus demselben Baum. Build-Prüfungen erkennen doppelte Slugs, fehlende Eltern und ungültige Referenzen.
 
-## Sprache und spätere Lokalisierung
+## Sprache und Lokalisierung
 
-Englisch (`en`) ist die Standard- und erste Veröffentlichungssprache. Deutsch (`de`) ist als spätere Erweiterung bestätigt. UI-Beschriftungen, Validierungstexte und Rechenweg-Erläuterungen werden ab dem ersten Rechner über ein kleines typisiertes Wörterbuch referenziert; ein umfangreiches i18n-Framework ist dafür zunächst nicht nötig. Theorie-Komponenten und SEO-Metadaten werden pro Sprache gepflegt, die Fachfunktionen und Rechnerdefinitionen bleiben gemeinsam. Symbole und Formeln benötigen keine duplizierte Berechnungslogik.
+Englisch (`en`) bleibt die Standardsprache. Deutsch (`de`) ist über English / Deutsch im Footer verfügbar. Die URL bestimmt die Sprache; keine automatische Browser-Sprachumleitung. Beide Fassungen nutzen dieselben Seitenvorlagen, Themen-IDs, Solver und Einheiten. `/de` und `/de/<Themenpfad>` werden von derselben Catch-all-Route explizit als deutsche Seiten geladen und vorgerendert.
 
-Stabile sprachneutrale Themen-IDs verbinden Übersetzungen; Slugs, Titel und Publikationsstatus sind sprachabhängig. Der Bereich `/de` ist für die spätere Sprachroute reserviert. Beim Ausbau erhält er eine eigene schlanke Route mit derselben Seitenvorlage; die englische Catch-all-Route darf ihn nicht als englischen Inhalt behandeln. Prerender-Einträge werden aus tatsächlich veröffentlichten Sprachfassungen erzeugt.
+`lib/i18n/en.ts` enthält die englischen Bedienungstexte, `de.ts` die deutschen Übersetzungen und `text-de.ts` redaktionelle Inhaltsübersetzungen. Komponenten lesen über `runtime.ts` reaktiv die Sprache der aktuellen Anfrage; es gibt keinen veränderlichen globalen Sprachzustand. Reine Fachmodule importieren keine Svelte-Zustände. Noch fehlende Fachübersetzungen bleiben englisch und werden durch einen zentralen Hinweis auf deutschen Seiten kenntlich gemacht. Die vollständige Fachübersetzung ist offen.
 
-Die URL bestimmt die Sprache, anfangs immer Englisch. Keine automatische Browser-Sprachumleitung. Ein Sprachschalter erscheint erst mit verfügbaren Übersetzungen und führt zur entsprechenden Themenseite. Fehlende Übersetzungen erzeugen keine deutschen URLs mit englischem Volltext; ihre Nichtverfügbarkeit wird im Sprachmenü erklärt. Ein Sprachwechsel bewahrt kompatible Eingaben und Einheiten, soweit der Zustand im Rechner gehalten beziehungsweise ausdrücklich übertragen wird.
+Der Footer verlinkt die entsprechende Themenseite in der anderen Sprache. Beim Wechsel innerhalb der Themenroute bleiben Rechnerkomponenten und ihre lokalen Eingaben erhalten. Die deutsche Darstellung ändert keine Berechnungswerte. Punkt und Komma bleiben als Dezimaltrennzeichen zulässig; die mathematische Ausgabe bleibt vorerst sprachneutral.
 
 HTML erhält das passende `lang`; Titel, Beschreibung, Breadcrumbs und zugängliche Beschriftungen folgen derselben Sprache. Jede Sprachfassung hat eine eigene kanonische URL. Sobald Übersetzungen veröffentlicht sind, verweisen reziproke `hreflang`-Alternativen für `en` und `de` auf vorhandene Fassungen; `x-default` zeigt auf die englische Standardfassung. Die Sitemap bildet die veröffentlichten Sprachfassungen ab.
 

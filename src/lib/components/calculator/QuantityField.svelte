@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { QuantityKind } from '#lib/physics/units.ts';
-  import { calculatorUi as text } from '#lib/i18n/en.ts';
+  import { calculatorUi as text, text as translate } from '#lib/i18n/runtime.ts';
   import UnitSelect from '../ui/UnitSelect.svelte';
   let { id, symbol, name, kind, raw, unit, invalid = false, pending = false, state = '', describedby, onvalue, onunit, onfocuschange }: {
     id: string; symbol: string; name: string; kind: QuantityKind; raw: string; unit: string;
@@ -9,9 +9,9 @@
   } = $props();
 </script>
 <div class="quantity-field" class:pending>
-  <label for={id}><span class="symbol">{symbol}</span> {name}<span class="field-state">{state}</span></label>
+  <label for={id}><span class="symbol">{symbol}</span> {translate(name)}<span class="field-state">{state}</span></label>
   <div class="quantity-controls">
     <input {id} type="text" autocomplete="off" spellcheck="false" value={raw} placeholder="—" aria-invalid={invalid} aria-describedby={describedby} oninput={event => onvalue(event.currentTarget.value)} onfocus={() => onfocuschange?.(true)} onblur={() => onfocuschange?.(false)} />
-    <UnitSelect {kind} value={unit} label={`${text.unitFor} ${name}`} onchange={onunit} />
+    <UnitSelect {kind} value={unit} label={`${text.unitFor} ${translate(name)}`} onchange={onunit} />
   </div>
 </div>

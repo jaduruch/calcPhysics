@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { ui } from '#lib/i18n/en.ts';
+  import { ui } from '#lib/i18n/runtime.ts';
   const componentId = $props.id();
   const maskId = `${componentId}-disc-mask`;
   let dark = $state(false);

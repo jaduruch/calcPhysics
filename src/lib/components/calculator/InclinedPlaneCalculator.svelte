@@ -2,7 +2,7 @@
   import { solveInclinedPlane, type InclineInput } from '#lib/physics/mechanics/inclined-plane.ts';
   import { parseQuantityInUnit, changeQuantityUnit } from '#lib/calculators/quantities.ts';
   import { inclineFields, inclineKinds, inclineDefaults, inclineEquations, inclineConversions, type InclineField } from '#lib/calculators/inclined-plane-equations.ts';
-  import { calculatorUi, inclinedPlaneUi as text } from '#lib/i18n/en.ts';
+  import { calculatorUi, inclinedPlaneUi as text } from '#lib/i18n/runtime.ts';
   import CalculatorShell from './CalculatorShell.svelte';
   import CalculatorTools from './CalculatorTools.svelte';
   import QuantityField from './QuantityField.svelte';

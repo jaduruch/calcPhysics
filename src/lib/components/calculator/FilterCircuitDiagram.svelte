@@ -1,6 +1,6 @@
 <script lang="ts">
   import '#lib/styles/circuit-diagram.css';
-  import { electricalUi as text } from '#lib/i18n/en.ts';
+  import { electricalUi as text } from '#lib/i18n/runtime.ts';
   let { rc, highPass }: { rc: boolean; highPass: boolean } = $props();
   const id=$props.id();
   const seriesComponent=$derived(highPass?(rc?'C':'R'):(rc?'R':'L'));

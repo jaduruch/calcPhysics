@@ -1,7 +1,7 @@
 <script lang="ts">
   import { projectBloch, sphereGrid, blochLabels, defaultBlochCamera, blochAngleGuides } from '#lib/visualization/bloch.ts';
   import type { Vector3 } from '#lib/physics/quantum/qubit.ts';
-  import { qubitUi as text } from '#lib/i18n/en.ts';
+  import { qubitUi as text } from '#lib/i18n/runtime.ts';
   let { vector, trajectory = [] }: { vector: Vector3; trajectory?: readonly Vector3[] } = $props();
   let camera = $state({ ...defaultBlochCamera });
   let drag: { id: number; x: number; y: number } | null = null;

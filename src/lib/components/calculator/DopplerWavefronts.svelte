@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import type { DopplerResult } from '#lib/physics/waves/doppler.ts';
   import { dopplerScene } from '#lib/visualization/doppler.ts';
-  import { dopplerUi as text } from '#lib/i18n/en.ts';
+  import { dopplerUi as text } from '#lib/i18n/runtime.ts';
   let { result }: { result: Extract<DopplerResult, { status: 'success' }> | null } = $props();
   let root: HTMLElement;
   let phase = $state(2);

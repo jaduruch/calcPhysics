@@ -17,9 +17,13 @@ Diese Regeln ergänzen die [Repository-Vorgaben](../AGENTS.md). Vor Änderungen 
 
 `lib/seo.ts` und `components/SeoHead.svelte` erzeugen Metadaten/Canonical-URLs gemeinsam. Themen liefern optionale SEO-Überschreibungen in `lib/content/topics.ts`. Sitemap und robots sind vorgerenderte Endpunkte, keine manuell gepflegten Dateien in `static/`. Neue veröffentlichte Themen automatisch in die Sitemap aufnehmen; Vorschau-Builds nicht indexieren. Domain-/Redirectdetails und letzte mobile Labormessung siehe [SEO.md](../docs/SEO.md).
 
+## Sprache und Ton
+
+- Sachliche, fachlich konkrete UI-Texte verwenden. Keine Werbesprüche oder motivierenden Schlagwortzeilen; deutsche Texte natürlich formulieren statt englische Slogans wörtlich zu übersetzen.
+
 ## Seiten- und Kartendesign
 
-- Englische Oberfläche; spätere deutsche Übersetzung vorbereiten. Keine Übungen, Quiz oder Lernfortschrittsanzeigen.
+- Englisch ist Standard; Deutsch ist über den Footer unter `/de/` verfügbar. Übersetzungen in `lib/i18n/de.ts` und `text-de.ts` pflegen; Komponenten nutzen `runtime.ts`, reine Fachlogik bleibt sprachneutral. Fehlende Fachübersetzungen erscheinen mit zentralem Hinweis auf Englisch. Keine Übungen, Quiz oder Lernfortschrittsanzeigen.
 - Eine standardmässig eingeklappte Karte je Modell, Karten untereinander. Kartenüberschrift ohne blauen Hover-Farbwechsel. Header-Links behalten ihren Hover-Effekt und markieren das aktive Hauptthema auch auf Unterseiten blau und unterstrichen. Breadcrumbs bleiben ohne Unterstreichung.
 - Kein zusätzlicher Modellüberschrift-/Zähler-/Hilfetextblock über den Karten.
 - Theorie hinter dem linksbündigen, rahmenlosen ⓘ-Button; geöffnet wird daraus ✕. Kein sichtbarer „Theory“-Titel. Theorie und Formeln direkt auf der Kartenfläche, keine zusätzliche Theorie-Karte.

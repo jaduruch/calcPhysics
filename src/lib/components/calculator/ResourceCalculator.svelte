@@ -5,7 +5,7 @@
   import {unitGroups,fromSI} from '#lib/physics/units.ts';
   import {parseQuantityInUnit,changeQuantityUnit} from '#lib/calculators/quantities.ts';
   import {resourceEquations,resourceDisplaySymbol} from '#lib/calculators/resource-equations.ts';
-  import {resourceUi as text,calculatorUi} from '#lib/i18n/en.ts';
+  import {resourceUi as text,calculatorUi} from '#lib/i18n/runtime.ts';
   import CalculatorShell from './CalculatorShell.svelte';
   import CalculatorTools from './CalculatorTools.svelte';
   import QuantityField from './QuantityField.svelte';

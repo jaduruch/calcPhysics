@@ -82,5 +82,5 @@ test('unit conversion, result units, duration and all theory/calculation formula
  for(const [id,r] of cases){const eqs=kinematicsEquations(id,r,{});for(const eq of eqs.scenarios.flat())katex.renderToString(eq.expression,{throwOnError:true});}
  for(const model of kinematicModels)for(const eq of model.formulas)katex.renderToString(eq.expression,{throwOnError:true});
  for(const expression of [...eq.conversions,...eq.scenarios.flat().map(eq=>eq.expression)])katex.renderToString(expression,{throwOnError:true});
- assert.deepEqual(models.filter(model=>model.topicId==='kinematics').map(model=>model.id),['uniform-motion','accelerated-motion','vertical-throw','horizontal-throw']);
+ assert.deepEqual(models.filter(model=>model.topicId==='kinematics').map(model=>model.id),['uniform-motion','accelerated-motion','vertical-throw','horizontal-throw','oblique-throw']);
 });

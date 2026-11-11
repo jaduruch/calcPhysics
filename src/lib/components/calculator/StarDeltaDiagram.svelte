@@ -1,6 +1,6 @@
 <script lang="ts">
   import { formatQuantity } from '#lib/calculators/quantities.ts';
-  import { electricalUi as text } from '#lib/i18n/en.ts';
+  import { electricalUi as text } from '#lib/i18n/runtime.ts';
   let { starToDelta, inputs, outputs, active }: { starToDelta: boolean; inputs: Record<string, number>; outputs: Record<string, number>; active: string | null } = $props();
   const resistance = (value: number | undefined, fallback: string) => {
     if (value === undefined) return fallback;
