@@ -3,6 +3,7 @@
   :root {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     --graphic-scale: 0.7;
+    --color-slider-thumb: var(--color-surface-raised);
     --calculator-width: 52rem; --theory-width: 48rem;
     --control-height: 44px; --control-radius: 8px; --unit-control-width: 88px; --control-gap: 8px;
     --calculator-row-gap: 18px; --calculator-column-gap: 24px;

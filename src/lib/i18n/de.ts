@@ -110,3 +110,5 @@ export const keplerUi={
  areaHelp:'Die Flächensektoren beginnen in der Nähe von Periapsis und Apoapsis. Ihre Flächen folgen A₁:A₂; die Zeitintervalle haben dasselbe Verhältnis. Gleiche Intervalle ergeben gleiche Flächen. Bahngrösse und Exzentrizität sind schematisch.',
  desmos:'Desmos-Originalmodell öffnen'
 };
+
+export const searchUi = { label: 'Seite durchsuchen', placeholder: 'Themen, Rechner, Formeln und Konstanten…', result: 'Treffer', results: 'Treffer', noResults: 'Keine Treffer gefunden.', more: 'Weitere Treffer anzeigen' } as const;

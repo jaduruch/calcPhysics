@@ -1,6 +1,6 @@
 # Electricity & Magnetism
 
-Stand 04.11.2026: neun Unterthemen und 44 explizite Rechenmodelle in 30 Karten im bestehenden Modellkartenstandard. Three-Phase Systems enthält Stern, Dreieck und Generator gemeinsam. Englisch bleibt die Standardsprache. Die Themen sind lokal implementiert; kein Hosting oder Deployment wurde beauftragt.
+Stand 12.11.2026: neun Unterthemen und 44 explizite Rechenmodelle in 22 Karten im bestehenden Modellkartenstandard. Three-Phase Systems enthält Stern, Dreieck und Generator gemeinsam. Englisch bleibt die Standardsprache. Die Themen sind lokal implementiert; kein Hosting oder Deployment wurde beauftragt.
 
 ## Umfang und Referenz
 
@@ -78,3 +78,5 @@ Die Vorlage verwendet I/Φ sowohl für Zustandswerte als auch für Änderungen u
 Die expliziten Regeln liegen in `physics/electrical-relations.ts` und verwenden die bestehende begrenzte Ergebnisfortpflanzung. Quellenzuordnung bleibt in der Projektdokumentation; die auf Wunsch entfernten sichtbaren Quellenlinks wurden nicht wieder eingeführt.
 
 „Series RC at AC“ und „Parallel RC at AC“ erscheinen als gemeinsame Karte „RC at AC: Series & Parallel“. Die kompakte Auswahlleiste schaltet Solver, allgemeine Formeln, numerische Ergebnisse, Schaltungsbild und Zeigerdiagramm gemeinsam um. R, C, f und U bleiben beim Wechsel erhalten; Reset leert die Werte, ohne die gewählte Schaltungsart still zu ändern. Beide expliziten SI-Modelle bleiben getrennt geprüft, da Impedanz, Strom und Leistungen fachlich unterschiedliche Gleichungen verwenden.
+
+Die Kartenstruktur wird zentral in `src/lib/content/model-groups.ts` zusammengefasst: Signalformen und Effektivwerte in einer Karte, Serien-/Parallelresonanz in einer Karte, Filter in je einer RC- und RL-Karte, Stern/Dreieck in einer Karte. Varianten verwenden den gemeinsamen Umschalter; jeder vorhandene Rechner behält seine Eingaben, Formeln und Grafik.

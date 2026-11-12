@@ -173,9 +173,9 @@ Quelle: [OpenStax – Projectile Motion](https://openstax.org/books/university-p
 
 Die 138 ergänzten Beziehungen und 496 expliziten Inversen verwenden SI und deklarierte Domains. Der [seitenweise Fachvertrag](FORMULA_BOOK.md) dokumentiert jede Modellzuordnung und alle Quellkorrekturen. Physikalische Konstanten bleiben fest, g ist in den ergänzten Beziehungen eine vollständig inverse Eingabe. Geschwindigkeit kann je Modell eine signierte Komponente oder ein nichtnegativer Betrag sein; dies ist ausdrücklich beschriftet. Mehrere zulässige diskrete Lösungen werden vollständig ausgegeben; 0/0 wird nicht als einzelner Zahlenwert interpretiert. Temperaturumrechnung umfasst K, °C, °F, °Ra und °Ré mit exakten Offsets und positivem bzw. null absolutem Temperaturbereich.
 
-Dynamics bündelt die bestehenden 14 Definitionen in sechs Karten; die zugrunde liegenden expliziten Inversen bleiben erhalten. Geometrie allein und Kraftgrössen allein können Teilresultate liefern. Ohne Masse bleibt die Kraftzeichnung schematisch, während ein bekannter oder berechneter Winkel bereits übernommen wird.
+Dynamics bündelt die bestehenden 14 Definitionen in vier Karten; die zugrunde liegenden expliziten Inversen bleiben erhalten. Geometrie allein und Kraftgrössen allein können Teilresultate liefern. Ohne Masse bleibt die Kraftzeichnung schematisch, während ein bekannter oder berechneter Winkel bereits übernommen wird.
 
-Prüfung der Dynamics-Zusammenfassung: 353 Tests inklusive massenfreier Geometrie, aller unterstützten Geschwindigkeits-Inversen, überbestimmter Widersprüche, Reibungsgleichgewicht, ungültiger Eingaben und SI-Konversionen. Gezielter Browserablauf prüft sechs Karten, erhaltene Eingaben beim Wechsel der Teilrechnung, Reset, Tastatur, beide Themes, Laptop/Mobil und Deutsch.
+Die Gruppierung wird auf vollständige, eindeutige Erreichbarkeit aller ursprünglichen Definitionen und unveränderte Solver-/Theoriedaten geprüft. Fachtests decken massenfreie Geometrie, Geschwindigkeits-Inversen, überbestimmte Widersprüche, Reibungsgleichgewicht, ungültige Eingaben und SI-Konversionen ab. Browserprüfungen berücksichtigen Variantenwechsel, erhaltene Eingaben, aktive Theorie, Tastatur/Touch, beide Themes, Laptop/Mobil und Deutsch.
 
 ## Keplersche Gesetze
 

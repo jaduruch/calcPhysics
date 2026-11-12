@@ -1,4 +1,5 @@
 <script lang="ts">
+ import RangeSlider from '../ui/RangeSlider.svelte';
  import type {ResourceResult} from '#lib/physics/resources/solver.ts';
  import {orbitGeometry,orbitProjection,defaultOrbitCamera,type OrbitPoint} from '#lib/visualization/kepler.ts';
  import {keplerUi as text} from '#lib/i18n/runtime.ts';
@@ -65,7 +66,7 @@
    <circle cx={point.x} cy={point.y} r="5" class="body"/>
   </svg>
  </div>
- <label class="phase-control" for={`${id}-phase`}>{text.phase}<input id={`${id}-phase`} type="range" min="0" max="1" step="0.001" bind:value={phase}/></label>
+ <label class="phase-control" for={`${id}-phase`}>{text.phase}<RangeSlider id={`${id}-phase`} label={text.phase} value={phase} onvalue={value=>phase=value}/></label>
  <p class="diagram-help" id={`${id}-help`}>{section?text.controls:text.phaseHelp}</p>
  {#if section}<div class="construction-equations"><Formula wrap expression={String.raw`x^2+y^2=z^2,\quad z=e x+p,\quad r=\frac{p}{1+e\cos\varphi}`}/></div>{/if}
  {#if modelId==='kepler-areas'}<p class="diagram-help">{text.areaHelp}</p>{/if}
@@ -89,7 +90,7 @@
  .sector { fill:var(--color-accent); fill-opacity:.18; stroke:var(--color-accent); stroke-width:1; }.sector.second { fill-opacity:.35; }
  text { fill:var(--color-text); font-size:15px; }
  .phase-control { display:flex; flex-wrap:wrap; align-items:center; gap:12px; font-size:.8125rem; margin-top:12px; }
- input[type=range] { flex:1; min-width:140px; accent-color:var(--color-accent); }
+ .phase-control :global(.range-control) { flex:1; min-width:140px; }
  .diagram-help,figcaption { color:var(--color-text-muted); font-size:.75rem; margin:8px 0 0; }
  @media(max-width:40rem) { text { font-size:24px; } }
  .construction-equations :global(.formula) { margin:8px 0; padding:0; background:transparent; }

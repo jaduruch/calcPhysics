@@ -4,7 +4,7 @@
 
 Uniform Motion wurde vom Nutzer vorerst als Referenz für Aufbau, Gestaltung und Bedienung akzeptiert. Dieser Stand ist die Grundlage für neue Modelle, keine Aufforderung, bereits weitere Themen zu implementieren oder zu veröffentlichen. Die Arbeitsregeln für künftige Implementierungen stehen in [src/AGENTS.md](../src/AGENTS.md); die Farbpalette steht im [Designsystem](DESIGN_SYSTEM.md), die fachlichen Regeln in den [Physikstandards](PHYSICS_STANDARDS.md).
 
-Electricity & Magnetism verwendet für neun Unterthemen und 44 Modelle in 30 Karten ebenfalls dieselben Modellkarten, Felder, Einheitenmenüs und Ergebnisbausteine. Der modellabhängige Elektrotechnik-Rechner steuert explizite SI-Funktionen an; Details siehe [ELECTRICITY.md](ELECTRICITY.md).
+Electricity & Magnetism verwendet für neun Unterthemen und 44 Modelle in 22 Karten ebenfalls dieselben Modellkarten, Felder, Einheitenmenüs und Ergebnisbausteine. Der modellabhängige Elektrotechnik-Rechner steuert explizite SI-Funktionen an; Details siehe [ELECTRICITY.md](ELECTRICITY.md).
 
 Seit 03.11.2026 verwendet auch Inclined Plane unter Mechanics → Dynamics die gemeinsame Oberfläche. Ihre Physik, Eingabegrössen und Visualisierungen dürfen fachlich anders sein. Uniform Motion hat vier Eingabegrössen und zwei Diagramme; das ist kein Zwang für jedes künftige Modell. Die nachfolgende Zuordnung unterscheidet bereits gemeinsame Implementierung und noch nötige Wiederverwendung.
 
@@ -17,6 +17,7 @@ Seit 03.11.2026 verwendet auch Inclined Plane unter Mechanics → Dynamics die g
 | Theme-Verhalten und Morph-Symbol | [ThemeToggle.svelte](../src/lib/components/ThemeToggle.svelte); frühe Initialisierung in [app.html](../src/app.html) |
 | Favicon und Logo-Geometrie | [favicon.svg](../static/favicon.svg); Header nutzt es als Maske |
 | Hierarchie, verfügbare Themen und aktuelle Modelldaten | [topics.ts](../src/lib/content/topics.ts); Elektrotechnik-Inhalte in [electricity.ts](../src/lib/content/electricity.ts) |
+| Startseitensuche, Suchindex und Trefferpillen | [SiteSearch.svelte](../src/lib/components/SiteSearch.svelte), [site-search.ts](../src/lib/search/site-search.ts) |
 | Übersichten und Breadcrumb-Aufbau | [Overview.svelte](../src/lib/components/Overview.svelte) |
 | Modellkartenrahmen und Theorie-Layout | [ModelCard.svelte](../src/lib/components/ModelCard.svelte) |
 | Gemeinsamer Info-Button (ⓘ/✕) | [InfoButton.svelte](../src/lib/components/ui/InfoButton.svelte) |
@@ -27,6 +28,7 @@ Seit 03.11.2026 verwendet auch Inclined Plane unter Mechanics → Dynamics die g
 | Zahlenfelder und gemeinsames Rechnerlayout | [QuantityField.svelte](../src/lib/components/calculator/QuantityField.svelte), [CalculatorShell.svelte](../src/lib/components/calculator/CalculatorShell.svelte), [calculator.css](../src/lib/styles/calculator.css) |
 | Reset und Ergebnisgleichungen | [CalculatorTools.svelte](../src/lib/components/calculator/CalculatorTools.svelte), [EquationBlock.svelte](../src/lib/components/calculator/EquationBlock.svelte) |
 | Rechner-Zuordnung und Modellvertrag | [ModelHost.svelte](../src/lib/components/ModelHost.svelte), [model-types.ts](../src/lib/content/model-types.ts) |
+| Numerische Schieberegler | [RangeSlider.svelte](../src/lib/components/ui/RangeSlider.svelte), Farb-Tokens in app.css |
 | Einheitenmenü samt Tastaturbedienung | [UnitSelect.svelte](../src/lib/components/ui/UnitSelect.svelte) |
 | Achsen, Raster, Kurven und Pfeile | [MotionChart.svelte](../src/lib/components/calculator/MotionChart.svelte) |
 | Wissenschaftliche Achsenbeschriftung | [axis-label.ts](../src/lib/visualization/axis-label.ts) |
@@ -157,3 +159,17 @@ Beide Teilrechnungen des Flaschenzugs zeigen dieselbe responsive SVG-Seilführun
 ## Mechanics: Kepler’s Laws
 
 Drei normale Modellkarten nutzen ResourceCalculator und die gemeinsamen Felder/Einheiten/Rechenwege. Ergänzende Theoriedaten liegen beim jeweiligen Modell. Die ersten beiden Karten verwenden eine eigene responsive SVG-Ansicht: drehbarer Kegel-/Ebenenschnitt mit horizontaler Ellipsenprojektion beziehungsweise Flächensektoren. Kamera per Pointer/Pfeiltasten/Home, Bahnphase per beschriftetem Range-Regler; keine automatische Animation und keine externe 3D-Laufzeit. Das bereitgestellte Desmos-Original ist verlinkt. Geometrie und Grenzen: [KEPLER.md](KEPLER.md).
+
+## Zusammengehörige Formeln bündeln
+
+`src/lib/content/model-groups.ts` legt die Karten für alle Unterthemen zentral fest. Einzelne Beziehungen mit zwei oder drei Eingabegrössen erhalten innerhalb eines verwandten Themenblocks keine zusätzliche ausklappbare Karte. Im Zweifel zusammenfassen. Eigenständige Modelle bleiben getrennt, wenn Voraussetzungen und Rechenablauf dies fachlich begründen. Alle bisherigen IDs, expliziten Inversen und Fachtests bleiben erhalten.
+
+`ModelHost` steuert die aktive Variante und deren Theorie; `ModelCalculator` ordnet nur die vorhandenen Rechner zu. `ModelVariantSwitch` nutzt bei zwei Varianten den bestehenden Serie-/Parallel-Slider (`ToggleSwitch`), bei mehreren Varianten eine kompakte, tastaturbedienbare Radioauswahl. Keine verschachtelten Dropdowns. Nur besuchte Rechner werden instanziiert; ihre manuellen Eingaben und Einheiten bleiben beim Wechsel erhalten. Verdeckte Rechner sind weder sichtbar noch per Tastatur erreichbar. `ModelTheory` teilt die Theoriegestaltung zwischen interaktiver Ansicht und der vollständigen Ansicht ohne JavaScript.
+
+Beispiele: Rotation 20 → 4 Karten, optische Abbildung 13 → 3, Wärmeausdehnung 12 → 3, Fluidstatik 13 → 5 und Kinematik 27 → 7. Dynamics umfasst vier Karten mit insgesamt 14 unveränderten Rechnerdefinitionen.
+
+## Suche auf der Startseite
+
+Die Startseite bietet eine lokale Suche über alle veröffentlichten Themen, ursprünglichen Rechner samt zusammengefassten Varianten, Variablen, Formeln, Modellhinweise sowie die SI- und Konstantenreferenz. Der Index wird aus den vorhandenen Inhaltsquellen erstellt; keine zweite manuelle Rechnerliste und kein externer Suchdienst. Deutsche und englische Begriffe, Akzente und zusammengeschriebene Modellnamen werden berücksichtigt.
+
+Treffer erscheinen direkt unter dem Suchfeld als Linkpillen mit vollständigem Themenpfad. Zunächst zwölf anzeigen, weitere über den gemeinsamen Mehr-Treffer-Button erreichbar machen. Status und Leerzustand sind übersetzt und für Screenreader angekündigt. Links zu Rechnern nutzen stabile ursprüngliche IDs (`#model-…`); `ModelHost` öffnet die richtige Karte, aktiviert die gefundene Variante und fokussiert deren Zusammenfassung. Ein unbekannter oder ungültig kodierter Hash öffnet keine fremde Karte.

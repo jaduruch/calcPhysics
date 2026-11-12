@@ -1,22 +1,56 @@
 <script lang="ts">
+  import { tick, untrack } from 'svelte';
+  import { page } from '$app/state';
+  import { linkedModelIndex } from '#lib/content/model-groups.ts';
   import type { ModelDefinition } from '#lib/content/model-types.ts';
-  import ElectricalCalculator from './calculator/ElectricalCalculator.svelte';
-  import type { ElectricalModelId } from '#lib/physics/electricity.ts';
-  import DynamicsCalculator from './calculator/DynamicsCalculator.svelte';
+  import { ui, text } from '#lib/i18n/runtime.ts';
   import ModelCard from './ModelCard.svelte';
-  import UniformMotionCalculator from './calculator/UniformMotionCalculator.svelte';
-  import InclinedPlaneCalculator from './calculator/InclinedPlaneCalculator.svelte';
-  import IdealGasCalculator from './calculator/IdealGasCalculator.svelte';
-  import QubitSimulator from './calculator/QubitSimulator.svelte';
-  import DopplerCalculator from './calculator/DopplerCalculator.svelte';
-  import TotalReflectionCalculator from './calculator/TotalReflectionCalculator.svelte';
-  import ResourceCalculator from './calculator/ResourceCalculator.svelte';
-  import KinematicsCalculator from './calculator/KinematicsCalculator.svelte';
-  import type { KinematicsModelId } from '#lib/content/kinematics.ts';
-  const calculators = { 'total-reflection': TotalReflectionCalculator, doppler: DopplerCalculator, qubit: QubitSimulator, 'ideal-gas': IdealGasCalculator, 'uniform-motion': UniformMotionCalculator, 'inclined-plane': InclinedPlaneCalculator };
+  import ModelTheory from './ModelTheory.svelte';
+  import ModelCalculator from './ModelCalculator.svelte';
+  import ModelVariantSwitch from './ui/ModelVariantSwitch.svelte';
   let { model, index }: { model: ModelDefinition; index: number } = $props();
-  const Calculator = $derived(model.calculator === 'dynamics' || model.calculator === 'kinematics' || model.calculator === 'electrical' || model.calculator === 'resource' ? null : calculators[model.calculator]);
+  let currentHash = $state('');
+  let open = $state(false);
+  let element = $state<HTMLDetailsElement>();
+  let selected = $state(0);
+  let visited = $state<number[]>([0]);
+  const active = $derived(model.variants?.[selected]?.model ?? model);
+  const displayed = $derived({ ...active, id: model.id, title: model.title });
+  function select(value: number) {
+    selected = value;
+    if (!visited.includes(value)) visited = [...visited, value];
+  }
+  $effect(() => { currentHash = page.url.hash; });
+  $effect(() => {
+    const hash = currentHash;
+    const position = linkedModelIndex(model, hash);
+    if (position === null) return;
+    untrack(() => select(position));
+    open = true;
+    void tick().then(() => {
+      if (window.location.hash !== hash) return;
+      element?.scrollIntoView({ block: 'start' });
+      element?.querySelector('summary')?.focus({ preventScroll: true });
+    });
+  });
 </script>
-<ModelCard {model} {index}>
-  {#snippet calculator()}{#if model.calculator === 'dynamics'}<DynamicsCalculator modelId={model.id}/>{:else if model.calculator === 'kinematics'}<KinematicsCalculator modelId={model.id as KinematicsModelId}/>{:else if model.calculator === 'resource'}<ResourceCalculator modelId={model.id}/>{:else if model.calculator === 'electrical'}<ElectricalCalculator modelId={model.id as ElectricalModelId} />{:else if Calculator}<Calculator />{/if}{/snippet}
+<svelte:window onhashchange={() => currentHash = window.location.hash} />
+<ModelCard model={displayed} {index} bind:open bind:element>
+  {#snippet calculator()}
+    <noscript>
+      {#each model.variants ?? [{ model, label: model.title }] as variant}
+        <section aria-label={text(variant.label)}><h4>{text(variant.label)}</h4><ModelTheory model={variant.model} /></section>
+      {/each}
+    </noscript>
+    {#if model.variants}
+      <ModelVariantSwitch options={model.variants.map(variant => text(variant.label))} value={selected} label={`${ui.calculate}: ${text(model.title)}`} onchange={select} />
+      {#each model.variants as variant, position (variant.model.id)}
+        {#if visited.includes(position)}
+          <div hidden={selected !== position}><ModelCalculator model={variant.model} /></div>
+        {/if}
+      {/each}
+    {:else}
+      <ModelCalculator {model} />
+    {/if}
+  {/snippet}
 </ModelCard>

@@ -270,3 +270,5 @@ export const keplerUi={
  areaHelp:'The shaded sectors start near periapsis and apoapsis. Their areas follow A₁:A₂; their time intervals have the same ratio. Equal intervals produce equal areas. Orbit size and eccentricity are illustrative.',
  desmos:'Open original Desmos model'
 } as const;
+
+export const searchUi = { label: 'Search the site', placeholder: 'Topics, calculators, formulas and constants…', result: 'result', results: 'results', noResults: 'No results found.', more: 'Show more results' } as const;

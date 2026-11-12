@@ -23,3 +23,5 @@ export const reflectionUi = dictionary(en.reflectionUi, de.reflectionUi);
 export const opticsDiagramUi = dictionary(en.opticsDiagramUi, de.opticsDiagramUi);
 export const pulleyUi = dictionary(en.pulleyUi, de.pulleyUi);
 export const keplerUi=dictionary(en.keplerUi,de.keplerUi);
+
+export const searchUi = dictionary(en.searchUi, de.searchUi);
