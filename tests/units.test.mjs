@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import katex from 'katex';
-import { unitGroups, getUnit } from '../src/lib/physics/units.ts';
+import { unitGroups, getUnit, defaultInputUnit } from '../src/lib/physics/units.ts';
 import { parseQuantityInUnit, changeQuantityUnit } from '../src/lib/calculators/quantities.ts';
 import { fields, solveUniformMotion } from '../src/lib/physics/mechanics/uniform-motion.ts';
 import { uniformMotionEquation, uniformMotionConversions, defaultMotionUnits, motionQuantityKinds } from '../src/lib/calculators/uniform-motion-equation.ts';
@@ -35,7 +35,7 @@ test('switching units preserves the physical input and its prefix', () => {
   for (const kind of Object.keys(unitGroups)) {
     for (const unit of unitGroups[kind].units) {
       const si = unitGroups[kind].si;
-      const converted = changeQuantityUnit('12.345k', kind, si, unit.symbol);
+      const converted = changeQuantityUnit(kind==='powerLevel'?'12345':'12.345k', kind, si, unit.symbol);
       near(parseQuantityInUnit(converted, kind, unit.symbol).value, 12345);
       const back = changeQuantityUnit(converted, kind, unit.symbol, si);
       near(parseQuantityInUnit(back, kind, si).value, 12345);
@@ -104,4 +104,11 @@ test('conversion and substitution round only display; final result uses unrounde
   assert.ok(equation.endsWith('152\\,\\mathrm{km}'));
   assert.equal(JSON.stringify({ result, input }), before);
   for (const latex of [...conversions, equation]) assert.doesNotThrow(() => katex.renderToString(latex));
+});
+
+test('angle input defaults to degrees while SI remains radians', () => {
+  assert.equal(defaultInputUnit('angle'), '°');
+  assert.equal(unitGroups.angle.si, 'rad');
+  near(parseQuantityInUnit('180', 'angle', defaultInputUnit('angle')).value, Math.PI);
+  near(parseQuantityInUnit(String(Math.PI), 'angle', 'rad').value, Math.PI);
 });

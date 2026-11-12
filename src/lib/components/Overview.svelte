@@ -2,13 +2,14 @@
   import { childrenOf, models, topics, type Topic } from '#lib/content/topics.ts';
   import { ui, text, localPath, isGerman } from '#lib/i18n/runtime.ts';
   import TopicCard from './TopicCard.svelte';
+  import {groupDynamicsModels} from '#lib/content/dynamics.ts';
   import ModelHost from './ModelHost.svelte';
   import SiReference from './SiReference.svelte';
   let { topic = null }: { topic?: Topic | null } = $props();
   const children = $derived(childrenOf(topic?.id ?? null));
   const reference = $derived(topic ? undefined : children.find(child => child.id === 'si-reference'));
   const listedChildren = $derived(topic ? children : children.filter(child => child.id !== 'si-reference'));
-  const topicModels = $derived(models.filter(model => model.topicId === topic?.id));
+  const topicModels = $derived(topic?.id==='dynamics'?groupDynamicsModels(models.filter(model=>model.topicId==='dynamics')):models.filter(model => model.topicId === topic?.id));
   const parent = $derived(topics.find(item => item.id === topic?.parentId));
 </script>
 

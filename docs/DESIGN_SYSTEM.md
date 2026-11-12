@@ -72,7 +72,7 @@ Modellkarte und Theorie nicht kopieren. `ModelCard` erhält seit Inclined Plane 
 
 ## Eingaben, Fokus und Einheiten
 
-Pro Grösse ein Textfeld für Zahl mit Präfix und ein kleineres eigenes Einheitenmenü. Keine Präfix-Dropdowns. Die verfügbaren Einheiten und Faktoren stammen ausschliesslich aus `src/lib/physics/units.ts`; SI ist Standard. Auswahlverhalten wird explizit konfiguriert: Uniform Motions v behält beim Einheitenwechsel den Eingabetext; Positionen und Zeit werden aktuell umgerechnet. Keine ungefragte Vereinheitlichung.
+Pro Grösse ein Textfeld für Zahl mit Präfix und ein kleineres eigenes Einheitenmenü. Keine Präfix-Dropdowns. Die verfügbaren Einheiten und Faktoren stammen ausschliesslich aus `src/lib/physics/units.ts`; SI ist Standard; Winkeleingaben starten mit Grad (°), Radiant (rad) bleibt auswählbar. Intern bleiben Winkel in rad. Auswahlverhalten wird explizit konfiguriert: Uniform Motions v behält beim Einheitenwechsel den Eingabetext; Positionen und Zeit werden aktuell umgerechnet. Keine ungefragte Vereinheitlichung.
 
 Zahlenfelder, Reset und Einheiten-Auslöser verwenden `--color-control`, 8-px-Radien und mindestens 44-px-Höhe. Zahlenfokus grau, 1 px, ohne Abstand; Fehlerzustand derselbe Rahmen gestrichelt, ohne zweiten Rahmen. Der Einheiten-Auslöser bleibt gemäss ausdrücklichem Nutzerwunsch ohne Fokusrahmen und Unterstreichung. Die eigene Optionsliste nutzt Theme-Flächen, 10-px-Rundung, dezenten Schatten und ein Häkchen beim ausgewählten Eintrag. Der aktive Eintrag erhält eine neutrale Fläche; keine blauen Hover-Flächen. Pfeilabstand rechts 14 px.
 

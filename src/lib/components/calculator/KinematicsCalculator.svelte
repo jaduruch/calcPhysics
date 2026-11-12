@@ -2,7 +2,7 @@
  import {kinematicFields,type KinematicsModelId} from '#lib/content/kinematics.ts';
  import {solveAcceleratedMotion,type AcceleratedField,type KinematicsResult} from '#lib/physics/mechanics/accelerated-motion.ts';
  import {solveVerticalThrow,solveHorizontalThrow,solveObliqueThrow} from '#lib/physics/mechanics/projectiles.ts';
- import {unitGroups,fromSI} from '#lib/physics/units.ts';
+ import {unitGroups,fromSI,defaultInputUnit} from '#lib/physics/units.ts';
  import {parseQuantityInUnit,formatMeasurement} from '#lib/calculators/quantities.ts';
  import {kinematicsEquations} from '#lib/calculators/kinematics-equations.ts';
  import {kinematicsUi as text,calculatorUi} from '#lib/i18n/runtime.ts';
@@ -17,7 +17,7 @@
  let raw=$state<Record<string,string>>({});
  let selectedUnits=$state<Record<string,string>>({});
  let selectedScenario=$state(0);
- const unit=(key:string)=>selectedUnits[key]??unitGroups[fields.find(field=>field.id===key)!.kind].si;
+ const unit=(key:string)=>selectedUnits[key]??defaultInputUnit(fields.find(field=>field.id===key)!.kind);
  const parsed=$derived(Object.fromEntries(fields.map(field=>[field.id,parseQuantityInUnit(raw[field.id]??'',field.kind,unit(field.id))])));
  const parseErrors=$derived(fields.filter(field=>parsed[field.id].status==='invalid').map(field=>field.id));
  const result:KinematicsResult=$derived.by(()=>{

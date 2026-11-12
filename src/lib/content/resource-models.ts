@@ -21,16 +21,19 @@ const references:Record<string,string>={
  'interference':'https://openstax.org/books/university-physics-volume-1/pages/17-6-beats',
  'sound-levels':'https://openstax.org/books/university-physics-volume-1/pages/17-3-sound-intensity'
 };
-const domains={positive:'> 0',nonnegative:'≥ 0',real:'finite real',nonzero:'≠ 0',incidence:'0 ≤ angle < π/2 rad',acute:'0 < angle < π/2 rad',index:'≥ 1'};
+const domains={positive:'> 0',nonnegative:'≥ 0',real:'finite real',nonzero:'≠ 0',incidence:'0 ≤ angle < π/2 rad',acute:'0 < angle < π/2 rad',index:'≥ 1',quadrant:'0 ≤ angle ≤ π/2 rad',solidAngle:'0 ≤ Ω ≤ 4π sr',unitInterval:'0 ≤ value ≤ 1',positiveInteger:'positive safe integer',atLeastOne:'≥ 1',criticalAngle:'0 < angle < π/2 rad',eccentricity:'0 ≤ e < 1'};
 export const resourceModels:readonly ModelDefinition[]=resourceDefinitions.map(definition=>{
  const physics=resourcePhysics[definition.id];
  const expressions=[...Object.entries(definition.rules).map(([key,formula])=>({label:definition.fields.find(field=>field.id===key)!.name,expression:`${definition.fields.find(field=>field.id===key)!.symbol}=${resourceFormula(formula,definition.fields)}`})),...definition.outputs.map(output=>({label:output.name,expression:`${output.symbol}=${resourceFormula(output.formula,[...definition.fields,...definition.outputs])}`}))];
+
+ expressions.push(...(definition.theory?.formulas??[]));
+
  return {id:definition.id,topicId:definition.topic,calculator:'resource',title:definition.title,
  variables:[...definition.fields,...definition.outputs].map(field=>{
  const unit:string='unit' in field&&typeof field.unit==='string'?field.unit:unitGroups[field.kind].si;
  return {name:field.name,symbol:resourceDisplaySymbol(field.symbol),unit,unitName:unit==='°C'?'degrees Celsius':unit==='°F'?'degrees Fahrenheit':unitNames[field.kind]??unit};
- }),
+ }).concat([...(definition.theory?.variables??[])]),
  formulas:expressions,
- notes:[{text:definition.assumption},{text:'Prerequisites: algebra and SI unit conversion'+(['parallel-plate','prism-deviation'].includes(definition.id)?', including trigonometry and inverse sine.':'.')},{text:'Input domains: '+definition.fields.map(field=>`${field.name}: ${domains[physics.domains[field.id]]}`).join('; ')+'.'}],
- references:[{title:'OpenStax — physics reference',url:definition.reference??references[definition.topic]}]};
+ notes:[{text:definition.assumption},{text:'Prerequisites: algebra and SI unit conversion'+(definition.fields.some(field=>field.kind==='angle')?', including trigonometry and inverse sine.':'.')},{text:'Input domains: '+definition.fields.map(field=>`${field.name}: ${domains[physics.domains[field.id]]}`).join('; ')+'.'},...(definition.theory?.notes??[])],
+ references:[{title:definition.reference?.includes('bipm.org')?'BIPM — SI photometry':definition.reference?.includes('rp-photonics.com')?'RP Photonics Encyclopedia — Decibel':definition.reference?.includes('nist.gov')?'NIST — gravitational constant':'OpenStax — physics reference',url:definition.reference??references[definition.topic]},...(definition.theory?.references??[])]};
 });

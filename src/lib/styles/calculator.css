@@ -33,3 +33,8 @@
 .motion-charts { margin-top: 28px; }
 .motion-chart-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (max-width: 44rem) { .motion-chart-grid { grid-template-columns: 1fr; } }
+
+.calculator-modes { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+.calculator-modes button { font:inherit; font-size:.8125rem; color:var(--color-text); background:var(--color-control); border:1px solid transparent; border-radius:var(--control-radius); min-height:var(--control-height); padding:8px 12px; cursor:pointer; }
+.calculator-modes button[aria-pressed="true"] { border-color:var(--color-text-muted); }
+.calculator-modes button:focus-visible { outline:2px solid var(--color-accent); outline-offset:2px; }

@@ -68,7 +68,7 @@ for(const [id,[reference,outputs]] of Object.entries(fixtures)) {
  });
 }
 test('inventory is complete, every formula renders and new pages have working cards',()=>{
- assert.equal(resourceDefinitions.length,32);assert.equal(Object.keys(fixtures).length,32);
+ assert.equal(resourceDefinitions.filter(item=>item.source==='Physik1'||item.source==='Physik2').length,32);assert.equal(Object.keys(fixtures).length,32);
  for(const model of resourceModels){assert.ok(models.some(item=>item.id===model.id));assert.ok(topics.find(topic=>topic.id===model.topicId)?.published);assert.ok(model.notes.length>=3);for(const formula of model.formulas)katex.renderToString(formula.expression,{throwOnError:true});}
  for(const definition of resourceDefinitions){assert.equal(new Set(definition.fields.map(f=>f.id)).size,definition.fields.length);for(const field of resourcePhysics[definition.id].primary??[])assert.ok(definition.rules[field]);}
  assert.equal(resourceDisplaySymbol('\\Delta T'),'Δ T');assert.equal(resourceDisplaySymbol('\\rho_1'),'ρ₁');

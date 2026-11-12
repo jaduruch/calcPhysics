@@ -1,8 +1,8 @@
 import { quantityLatex } from './quantities.ts';
-import { getUnit, type QuantityKind } from '../physics/units.ts';
+import { getUnit, defaultInputUnit, type QuantityKind } from '../physics/units.ts';
 import type { ReflectionResult } from '../physics/optics/total-internal-reflection.ts';
 export const reflectionKinds: Record<'n1' | 'n2' | 'angle', QuantityKind> = { n1: 'dimensionless', n2: 'dimensionless', angle: 'angle' };
-export const reflectionUnits = { n1: '1', n2: '1', angle: 'rad' };
+export const reflectionUnits = { n1: '1', n2: '1', angle: defaultInputUnit('angle') };
 const q = (value: number) => quantityLatex(value, '', false);
 const a = (value: number) => `${quantityLatex(value, 'rad', false)}\\approx ${q(value * 180 / Math.PI)}^\\circ`;
 export function reflectionEquations(result: Extract<ReflectionResult, { status: 'success' }>, angleUnit: string) {

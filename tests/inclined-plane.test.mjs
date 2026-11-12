@@ -34,7 +34,7 @@ test('acceleration is independent of mass, while forces scale with mass', () => 
 });
 test('domains, incomplete inputs, zero coefficients and extreme values are handled', () => {
   assert.equal(solveInclinedPlane({}).status, 'incomplete');
-  assert.equal(solveInclinedPlane({ mass: 1 }).status, 'incomplete');
+  near(solveInclinedPlane({ mass: 1 }).weight,9.81);
   for (const bad of [{ mass: 0 }, { mass: -1 }, { angle: -.01 }, { angle: 2 }, { friction: -1 }, { gravity: 0 }]) {
     assert.equal(solveInclinedPlane({ mass: 1, angle: .5, ...bad }).status, 'invalid');
   }
@@ -44,7 +44,7 @@ test('domains, incomplete inputs, zero coefficients and extreme values are handl
 });
 test('unit conversions and equation strings use the same unrounded result', () => {
   const units = { ...inclineDefaults, mass: 'g', angle: '°' };
-  const raw = { mass: '10k', angle: '30', friction: '200m', gravity: '', length: '', height: '' };
+  const raw = { mass: '10k', angle: '30', friction: '200m', gravity: '', length: '', height: '', endVelocity: '' };
   const parsed = Object.fromEntries(inclineFields.map(key => [key, parseQuantityInUnit(raw[key], inclineKinds[key], units[key])]));
   const values = Object.fromEntries(inclineFields.filter(key => parsed[key].status === 'valid').map(key => [key, parsed[key].value]));
   const result = solveInclinedPlane(values);
@@ -76,7 +76,7 @@ test('geometry rejects impossible, contradictory and degenerate values', () => {
   const consistent = solveInclinedPlane({mass: 2, length: 10, height: 5, angle: Math.PI/6});
   assert.equal(consistent.status, 'success'); assert.equal(consistent.geometryTarget, undefined);
   const flat = solveInclinedPlane({mass: 2, angle: 0, height: 0});
-  assert.equal(flat.length, undefined); assert.equal(flat.endVelocity, undefined);
+  assert.equal(flat.length, undefined); assert.equal(flat.endVelocity, 0);
 });
 test('speed from rest uses full precision and never invents motion against friction', () => {
   const r = solveInclinedPlane({mass: 2, length: 13.4567, height: 4.12345, friction: .1});
@@ -88,4 +88,53 @@ test('speed from rest uses full precision and never invents motion against frict
   assert.equal(flat.endVelocity, 0);
   const vertical = solveInclinedPlane({mass: 2, length: 10, height: 10, friction: 100});
   near(vertical.endVelocity, Math.sqrt(196.2));
+});
+
+test('geometry, acceleration and speed are available without mass',()=>{
+ for(const input of [{length:10,height:5},{length:10,angle:Math.PI/6},{height:5,angle:Math.PI/6}]){
+  const result=solveInclinedPlane(input);assert.equal(result.status,'success');near(result.height,5);near(result.length,10);near(result.acceleration,4.905);near(result.endVelocity,Math.sqrt(98.1));assert.equal(result.weight,undefined);
+  const equations=inclineEquations(result);assert.ok(equations.some(eq=>eq.startsWith('a=')));assert.ok(!equations.some(eq=>eq.startsWith('F_')));
+  for(const eq of equations)katex.renderToString(eq,{throwOnError:true});
+ }
+ const onlyHeight=solveInclinedPlane({height:5});near(onlyHeight.endVelocity,Math.sqrt(98.1));assert.equal(onlyHeight.angle,undefined);
+});
+test('entered end speed solves the height and geometry without mass',()=>{
+ const speed=Math.sqrt(98.1);
+ for(const input of [{endVelocity:speed},{endVelocity:speed,length:10},{endVelocity:speed,angle:Math.PI/6}]){
+  const r=solveInclinedPlane(input);assert.equal(r.status,'success');near(r.height,5);assert.equal(r.velocityCalculated,false);
+  if(input.angle!==undefined)near(r.length,10);if(input.length!==undefined)near(r.angle,Math.PI/6);
+  for(const eq of inclineEquations(r))katex.renderToString(eq,{throwOnError:true});
+ }
+});
+test('kinetic-friction speed inverses recover slope, height and length',()=>{
+ const original=solveInclinedPlane({angle:.6,length:10,friction:.2});assert.equal(original.status,'success');
+ for(const input of [{endVelocity:original.endVelocity,length:10,friction:.2},{endVelocity:original.endVelocity,angle:.6,friction:.2},{endVelocity:original.endVelocity,height:original.height,friction:.2}]){
+  const r=solveInclinedPlane(input);assert.equal(r.status,'success');near(r.angle,.6);near(r.length,10);near(r.height,original.height);
+  for(const eq of inclineEquations(r))katex.renderToString(eq,{throwOnError:true});
+ }
+});
+test('overdetermined speed inputs are checked; impossible speed and friction pairs fail',()=>{
+ for(const input of [{angle:.5,length:10,endVelocity:100},{height:1,endVelocity:100},{length:1,endVelocity:100},{angle:0,length:10,endVelocity:1},{angle:.1,friction:1,endVelocity:1},{height:1,friction:.2,endVelocity:100},{endVelocity:-1}])assert.equal(solveInclinedPlane(input).status,'invalid',JSON.stringify(input));
+ const r=solveInclinedPlane({height:5,endVelocity:Math.sqrt(98.1)});assert.equal(r.status,'success');assert.equal(r.length,undefined);
+});
+test('partial invalidation cannot retain earlier geometric or force results',()=>{
+ assert.equal(solveInclinedPlane({length:10,height:11}).status,'invalid');
+ const r=solveInclinedPlane({length:10,height:5});assert.equal(r.weight,undefined);assert.equal(r.net,undefined);
+ assert.equal(solveInclinedPlane({length:10}).status,'incomplete');
+ const zero=solveInclinedPlane({endVelocity:0});near(zero.height,0);near(zero.endVelocity,0);
+});
+
+test('zero end speed at kinetic balance is not turned into a spurious positive acceleration',()=>{
+ const r=solveInclinedPlane({endVelocity:0,length:10,friction:.2});assert.equal(r.status,'success');near(r.angle,Math.atan(.2));assert.equal(r.acceleration,0);assert.equal(r.motion,'no-start');
+});
+
+test('prefixed zero speed and non-SI speed conversion remain finite and render correctly',()=>{
+ const raw=Object.fromEntries(inclineFields.map(key=>[key,'']));raw.endVelocity='0k';
+ const units={...inclineDefaults,endVelocity:'km/h'};
+ const parsed=Object.fromEntries(inclineFields.map(key=>[key,parseQuantityInUnit(raw[key],inclineKinds[key],units[key])]));
+ const result=solveInclinedPlane({endVelocity:parsed.endVelocity.value});
+ for(const eq of [...inclineConversions(result,parsed,units),...inclineEquations(result)]){assert.ok(!eq.includes('NaN'));katex.renderToString(eq,{throwOnError:true});}
+ raw.endVelocity='36';parsed.endVelocity=parseQuantityInUnit(raw.endVelocity,'velocity','km/h');
+ const r=solveInclinedPlane({endVelocity:parsed.endVelocity.value});near(r.height,100/(2*9.81));
+ for(const eq of [...inclineConversions(r,parsed,units),...inclineEquations(r)])katex.renderToString(eq,{throwOnError:true});
 });

@@ -37,14 +37,16 @@ export const chartUi = {
 } as const;
 
 export const inclinedPlaneUi = {
+ endVelocity: 'end speed (from rest)',
+ speedInvalid: 'The speed contradicts the plane geometry or friction. Check the supplied values.',
   length: 'Plane length', height: 'Height difference',
   geometryInvalid: 'Inconsistent geometry. Use h = L sin α, with L > 0 and 0 ≤ h ≤ L. Clear a value to calculate it.',
   noStart: 'No end speed from rest: this model does not predict downhill motion with these friction and slope values. Static friction is not modelled.',
   mass: 'Mass', angle: 'Inclination angle', friction: 'Kinetic friction coefficient', gravity: 'Gravitational acceleration',
   assumptions: 'Rigid body on a straight plane, no air resistance or applied forces. Positive direction is downhill. With friction, the body is already sliding downhill; kinetic friction acts uphill. Static friction and the onset of motion are not modelled.',
   braking: 'A negative acceleration means a downhill-moving body slows down. It does not predict motion uphill or determine whether a body starts sliding from rest.',
-  defaults: 'Blank μₖ assumes no friction (0). Blank g uses 9.81 m/s². End speed uses v₀ = 0 and constant acceleration along L; with friction it assumes downhill sliding begins. Two of L, h and α determine the third.',
-  invalid: 'Enter valid numbers. Mass, plane length and g must be positive, height must be non-negative, μₖ must be non-negative, and the angle must be between 0 and π/2 rad (0–90°).',
+  defaults: 'Blank μₖ assumes 0; blank g assumes 9.81 m/s². Speed refers to the end of L, from rest. Geometry, acceleration and speed do not require mass; mass is only needed for forces. Enter known values and leave quantities to calculate blank.',
+  invalid: 'Enter valid numbers. Mass, plane length and g must be positive, height and end speed must be non-negative, μₖ must be non-negative, and the angle must be between 0 and π/2 rad (0–90°).',
   range: 'These values exceed the supported numerical range.',
   angleHighlight: 'The angle is highlighted because its input field is focused.',
   lengthHighlight: 'The full slope length L is highlighted because its input field is focused.',
@@ -186,6 +188,7 @@ export const reflectionUi = {
 } as const;
 
 export const resourceUi = {
+  solution: 'Solution',
  incomplete:'Enter the model inputs to calculate the results.',
  incompleteRelation:'Leave one model quantity empty; enter the others to calculate it.',
  invalid:'Check the highlighted inputs against the stated model domains.',
@@ -228,4 +231,42 @@ export const kinematicsUi={
  diagramInterval:'Diagram interval',timeSolution:'Time solution',
  velocity:'final velocity',displacement:'position change',flight:'time to ground',peakTime:'time of maximum height',peakHeight:'maximum height after launch',impactVelocity:'vertical impact velocity',range:'horizontal displacement',vyImpact:'vertical impact velocity',speedImpact:'impact speed',
  charts:'Motion diagrams',positionDescription:'Position over the selected elapsed-time interval, calculated from the same constant-acceleration model.',velocityDescription:'Signed velocity over the selected elapsed-time interval.',heightDescription:'Height above ground until first contact; no continuation below ground.',horizontalDescription:'Signed horizontal coordinate until first ground contact.',trajectoryDescription:'Trajectory in the x–y plane until first ground contact. A negative horizontal velocity carries the body to the left.',schematic:'Schematic preview without numerical scales.'
+} as const;
+
+export const opticsDiagramUi = {
+  'mirror-focus':'Spherical mirror: focus and centre of curvature',
+  'lens-power':'Thin lens: converging and diverging rays',
+  'optical-medium':'Light propagation in vacuum and in a medium',
+  'parallel-plate':'Parallel plate: refraction and lateral displacement',
+  'prism-deviation':'Prism: refraction at both faces',
+  description:'Blue arrows show light propagation. Dashed lines show normals or geometric ray extensions.',
+  schematic:'Schematic example; no input values are represented.',
+  calculated:'Geometry follows the calculated angles, refractive index or focal-length sign; lengths are normalised.',
+  legend:'Dashed lines: normals or ray extensions.',
+  focusLegend:'F: focus; C: centre of curvature; S: mirror vertex; O: lens centre.'
+};
+
+export const pulleyUi = {
+ title:'Ideal pulley system',load:'Load',
+ description:'One continuous rope passes around fixed guides and the moving load block. Numbered vertical segments support the load. The free rope end is pulled down while the load rises.',
+ schematic:'Schematic preview; no measured forces or travel are shown.',
+ calculated:'Rope layout follows the calculated number of supporting segments.',
+ compact:'Simplified layout for more than eight supporting segments; the exact count is shown below.',
+ legend:'n counts supporting rope segments, not wheels. Fixed guides can redirect the pull.',
+ forces:'F: pulling force; F_G: load weight. Force arrows share a normalised scale.',
+ travel:'s: rope pulled downward; h: load rise. Direction arrows are schematic; s = n·h.'
+};
+
+export const keplerUi={
+ view:'Ellipse view',section:'3D cone section',orbit:'Orbital plane',resetView:'Reset view',
+ viewport:'Rotatable ellipse construction',phase:'Orbital phase t/T',
+ controls:'Drag to rotate, or focus the drawing and use the arrow keys. Home resets the view.',
+ phaseHelp:'The slider advances time uniformly. The orbiting point moves faster near the attracting focus.',
+ description3d:'A plane cuts a double cone. The intersection projects onto the orbital ellipse in the horizontal plane; F₁ and F₂ mark its foci.',
+ description2d:'An elliptical orbit with the attracting focus F₁, the radius vector and an orbiting point positioned by Kepler’s equation.',
+ schematic:'Schematic orbit, normalised by its semi-major axis; no numerical coordinate scale.',
+ calculated:'Ellipse shape follows the validated calculator values; the drawing is normalised by a.',
+ constructionNote:'The cone and inclined section are a geometric construction. The orbit shown is their horizontal projection, not motion over the cone.',
+ areaHelp:'The shaded sectors start near periapsis and apoapsis. Their areas follow A₁:A₂; their time intervals have the same ratio. Equal intervals produce equal areas. Orbit size and eccentricity are illustrative.',
+ desmos:'Open original Desmos model'
 } as const;

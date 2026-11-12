@@ -4,10 +4,29 @@
  * Reference: https://ssd.jpl.nasa.gov/astro_par.html
  */
 export const unitGroups = {
+  areaRate: { si:'m²/s',units:[{symbol:'m²/s',factor:1}] },
+  angularVelocity: { si: 'rad/s', units: [{ symbol: 'rad/s', factor: 1 }] },
+  angularAcceleration: { si: 'rad/s²', units: [{ symbol: 'rad/s²', factor: 1 }] },
+  torque: { si: 'N m', units: [{ symbol: 'N m', factor: 1 }] },
+  viscosity: { si: 'Pa s', units: [{ symbol: 'Pa s', factor: 1 }] },
+  volumeFlow: { si: 'm³/s', units: [{ symbol: 'm³/s', factor: 1 }, { symbol: 'L/s', factor: .001 }, { symbol: 'L/min', factor: .001/60 }] },
+  massFlow: { si: 'kg/s', units: [{ symbol: 'kg/s', factor: 1 }, { symbol: 'kg/h', factor: 1/3600 }] },
+  molarMass: { si: 'kg/mol', units: [{ symbol: 'kg/mol', factor: 1 }, { symbol: 'g/mol', factor: .001 }] },
+  surfaceTension: { si: 'N/m', units: [{ symbol: 'N/m', factor: 1 }, { symbol: 'J/m²', factor: 1 }] },
+  thermalConductivity: { si: 'W/(m K)', units: [{ symbol: 'W/(m K)', factor: 1 }] },
+  heatTransferCoefficient: { si: 'W/(m² K)', units: [{ symbol: 'W/(m² K)', factor: 1 }] },
+  luminousIntensity: { si: 'cd', units: [{ symbol: 'cd', factor: 1 }] },
+  luminousFlux: { si: 'lm', units: [{ symbol: 'lm', factor: 1 }] },
+  luminousEnergy: { si: 'lm s', units: [{ symbol: 'lm s', factor: 1 }] },
+  illuminance: { si: 'lx', units: [{ symbol: 'lx', factor: 1 }] },
+  luminance: { si: 'cd/m²', units: [{ symbol: 'cd/m²', factor: 1 }] },
+  solidAngle: { si: 'sr', units: [{ symbol: 'sr', factor: 1 }] },
+  powerLevel: { si: 'dBm', units: [{ symbol: 'dBm', factor: 1 }] },
+
   pressure: { si: 'Pa', units: [{ symbol: 'Pa', factor: 1 }, { symbol: 'bar', factor: 100000 }, { symbol: 'atm', factor: 101325 }] },
   volume: { si: 'm³', units: [{ symbol: 'm³', factor: 1 }, { symbol: 'L', factor: 0.001 }] },
   amount: { si: 'mol', units: [{ symbol: 'mol', factor: 1 }] },
-  temperature: { si: 'K', units: [{ symbol: 'K', factor: 1 }, { symbol: '°C', factor: 1, offset: 273.15 }, { symbol: '°F', factor: 5 / 9, offset: 459.67 }] },
+  temperature: { si: 'K', units: [{ symbol: 'K', factor: 1 }, { symbol: '°C', factor: 1, offset: 273.15 }, { symbol: '°F', factor: 5 / 9, offset: 459.67 }, { symbol: '°Ra', factor: 5 / 9, factorLatex: String.raw`\frac{5}{9}` }, { symbol: '°Ré', factor: 5 / 4, offset: 218.52, factorLatex: String.raw`\frac{5}{4}` }] },
   temperatureDifference: { si: 'K', units: [{ symbol: 'K', factor: 1 }, { symbol: '°C', factor: 1 }] },
   density: { si: 'kg/m³', units: [{ symbol: 'kg/m³', factor: 1 }, { symbol: 'g/cm³', factor: 1000 }] },
   heatCapacity: { si: 'J/K', units: [{ symbol: 'J/K', factor: 1 }] },
@@ -55,6 +74,10 @@ export const unitGroups = {
   ] }
 } as const;
 export type QuantityKind = keyof typeof unitGroups;
+/** Input defaults are separate from the SI units used internally. */
+export function defaultInputUnit(kind: QuantityKind): string {
+  return kind === 'angle' ? '°' : unitGroups[kind].si;
+}
 export function getUnit(kind: QuantityKind, symbol: string) {
   const unit = unitGroups[kind].units.find(unit => unit.symbol === symbol);
   if (!unit) throw new RangeError(`Unsupported ${kind} unit: ${symbol}`);
@@ -63,6 +86,12 @@ export function getUnit(kind: QuantityKind, symbol: string) {
 
 /** English SI names used in theory; conversion factors remain in unitGroups. */
 export const unitNames: Partial<Record<QuantityKind, string>> = {
+  areaRate:'square meters per second',
+  angularVelocity:'radians per second',angularAcceleration:'radians per second squared',torque:'newton meter',
+  viscosity:'pascal second',volumeFlow:'cubic meters per second',massFlow:'kilograms per second',molarMass:'kilograms per mole',
+  surfaceTension:'newtons per meter',thermalConductivity:'watts per meter kelvin',heatTransferCoefficient:'watts per square meter kelvin',
+  luminousIntensity:'candela',luminousFlux:'lumen',luminousEnergy:'lumen second',illuminance:'lux',luminance:'candelas per square meter',solidAngle:'steradian',powerLevel:'decibels referenced to one milliwatt',
+
   temperature: 'kelvin', temperatureDifference: 'kelvin interval', density: 'kilograms per cubic meter',
   heatCapacity: 'joules per kelvin', specificHeat: 'joules per kilogram kelvin', specificEnergy: 'joules per kilogram',
   expansionCoefficient: 'inverse kelvin', thermalResistance: 'kelvins per watt', intensity: 'watts per square meter', opticalPower: 'inverse meter (diopter)', mass: 'kilogram',

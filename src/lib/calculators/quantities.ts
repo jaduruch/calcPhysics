@@ -43,7 +43,7 @@ export function parseQuantityInUnit(raw: string, kind: QuantityKind, unit: strin
   const definition = getUnit(kind, unit);
   const parsed = parseQuantity(raw);
   if (parsed.status !== 'valid') return parsed;
-  if ('offset' in definition && parsed.prefix) return { status: 'invalid' };
+  if (('offset' in definition || kind==='powerLevel') && parsed.prefix) return { status: 'invalid' };
   const value = toSI(parsed.value, kind, unit);
   if (!Number.isFinite(value) || (!('offset' in definition) && parsed.value !== 0 && value === 0)) return { status: 'invalid' };
   return { ...parsed, value };
@@ -64,12 +64,12 @@ export function changeQuantityUnit(raw: string, kind: QuantityKind, from: string
  */
 export function formatMeasurement(value:number,unit:string,engineering=true):{number:string;prefix:Prefix} {
  if(!Number.isFinite(value))throw new RangeError('A finite value is required');
- return engineering&&!/^(?:m[²³]|kg(?:$|\/)|1\/|°[CF])/.test(unit)?formatQuantity(value):{number:value.toPrecision(3),prefix:''};
+ return engineering&&!/^(?:m[²³]|kg(?:$|\/)|1\/|°(?:[CF]|Ra|Ré))/.test(unit)?formatQuantity(value):{number:value.toPrecision(3),prefix:''};
 }
 /** Shared three-significant-digit LaTeX measurement, with optional engineering prefixes. */
 export function quantityLatex(value: number, unit: string, engineering = true): string {
   const formatted = formatMeasurement(value,unit,engineering);
   const number = formatted.number.replace(/e\+?(-?\d+)/i, String.raw`\times 10^{$1}`);
   const prefix = formatted.prefix === 'u' ? String.raw`\mu ` : formatted.prefix;
-  return `${number}${unit ? `\\,\\mathrm{${prefix}${unit.replace('²', '^{2}').replace('³', '^{3}')}}` : ''}`;
+  return `${number}${unit ? `\\,\\mathrm{${prefix}${unit.replace('°Ré', String.raw`{}^\circ Re`).replace('²', '^{2}').replace('³', '^{3}')}}` : ''}`;
 }

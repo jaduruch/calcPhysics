@@ -1,56 +1,38 @@
 import type { InclineResult } from '../physics/mechanics/inclined-plane.ts';
-import { getUnit, unitGroups, type QuantityKind } from '../physics/units.ts';
-import { formatQuantity, type ParsedQuantity, type Prefix } from './quantities.ts';
-
-export const inclineFields = ['mass', 'angle', 'friction', 'gravity', 'length', 'height'] as const;
-export type InclineField = (typeof inclineFields)[number];
-export const inclineKinds: Record<InclineField, QuantityKind> = { mass: 'mass', angle: 'angle', friction: 'dimensionless', gravity: 'acceleration', length: 'length', height: 'length' };
-export const inclineDefaults: Record<InclineField, string> = Object.fromEntries(inclineFields.map(key => [key, unitGroups[inclineKinds[key]].si])) as Record<InclineField, string>;
-const symbols = { mass: 'm', angle: String.raw`\alpha`, friction: String.raw`\mu_k`, gravity: 'g', length: 'L', height: 'h' };
-function number(value: string) { return value.replace(/e\+?(-?\d+)/i, String.raw`\times 10^{$1}`); }
-function quantity(value: number, unit: string, prefix: Prefix = '') {
-  const prefixLatex = prefix === 'u' ? '\\mu' : prefix ? `\\mathrm{${prefix}}` : '';
-  const suffix = unit === '1' ? '' : unit === '°' ? `\\,${prefixLatex}{}^{\\circ}` : `\\,${prefix === 'u' ? '\\mu' : ''}\\mathrm{${prefix === 'u' ? '' : prefix}${unit.replace('²', '^{2}')}}`;
-  return `${number(value.toPrecision(3))}${suffix}`;
+import { getUnit, defaultInputUnit, unitGroups, type QuantityKind } from '../physics/units.ts';
+import { quantityLatex, prefixes, type ParsedQuantity } from './quantities.ts';
+import { resourceFormula, resourceQuantity } from './resource-equations.ts';
+import type { ResourceField } from '../content/resource-catalog.ts';
+export const inclineFields=['mass','angle','length','height','endVelocity','friction','gravity'] as const;
+export type InclineField=(typeof inclineFields)[number];
+export const inclineKinds:Record<InclineField,QuantityKind>={mass:'mass',angle:'angle',friction:'dimensionless',gravity:'acceleration',length:'length',height:'length',endVelocity:'velocity'};
+export const inclineDefaults=Object.fromEntries(inclineFields.map(key=>[key,defaultInputUnit(inclineKinds[key])])) as Record<InclineField,string>;
+const symbols={mass:'m',angle:String.raw`\alpha`,friction:String.raw`\mu_k`,gravity:'g',length:'L',height:'h',endVelocity:String.raw`v_{end}`};
+const fields:ResourceField[]=[...inclineFields.map(id=>({id,name:id,kind:inclineKinds[id],symbol:symbols[id]})),...(['weight','normal','parallel','frictionForce','net','acceleration'] as const).map(id=>({id,name:id,kind:id==='acceleration'?'acceleration' as const:'force' as const,symbol:({weight:'F_g',normal:'F_N',parallel:String.raw`F_{\parallel}`,frictionForce:'F_f',net:'F_{net}',acceleration:'a'})[id]}))];
+export function inclineEquations(result:InclineResult):string[]{
+ if(result.status!=='success')return [];
+ const values=Object.fromEntries(Object.entries(result).filter((entry):entry is [string,number]=>typeof entry[1]==='number'));
+ if(result.enteredEndVelocity!==undefined)values.endVelocity=result.enteredEndVelocity;
+ const equation=(id:string,formula:string)=>{const f=fields.find(f=>f.id===id)!;return `${f.symbol}=${resourceFormula(formula,fields)}=${resourceFormula(formula,fields,values)}\\approx ${resourceQuantity(values[id],f.kind)}`;};
+ const expressions:string[]=[];
+ for(const step of result.steps){
+  const formula=step.method==='geometry'?({height:String.raw`[[length]]\cdot\sin[[angle]]`,length:String.raw`\frac{[[height]]}{\sin[[angle]]}`,angle:String.raw`\arcsin\!\left(\frac{[[height]]}{[[length]]}\right)`})[step.field]:step.method==='energy'?String.raw`\frac{[[endVelocity]]^2}{2\cdot[[gravity]]}`:step.method==='speed-angle'?String.raw`\frac{[[endVelocity]]^2}{2\cdot[[gravity]]\cdot(\sin[[angle]]-[[friction]]\cdot\cos[[angle]])}`:step.method==='speed-length'?String.raw`\arctan[[friction]]+\arcsin\!\left(\frac{[[endVelocity]]^2}{2\cdot[[gravity]]\cdot[[length]]\cdot\sqrt{1+[[friction]]^2}}\right)`:String.raw`\sqrt{[[height]]^2+\left(\frac{[[height]]-\frac{[[endVelocity]]^2}{2\cdot[[gravity]]}}{[[friction]]}\right)^2}`;
+  // Entered speed is retained for the inverse rechenweg; never substituted from display values.
+  expressions.push(equation(step.field,formula));
+ }
+ if(result.weight!==undefined)expressions.push(equation('weight',String.raw`[[mass]]\cdot[[gravity]]`));
+ if(result.normal!==undefined)expressions.push(equation('normal',String.raw`[[mass]]\cdot[[gravity]]\cdot\cos[[angle]]`));
+ if(result.parallel!==undefined)expressions.push(equation('parallel',String.raw`[[mass]]\cdot[[gravity]]\cdot\sin[[angle]]`));
+ if(result.frictionForce!==undefined)expressions.push(equation('frictionForce',String.raw`[[friction]]\cdot[[normal]]`));
+ if(result.net!==undefined)expressions.push(equation('net',String.raw`[[parallel]]-[[frictionForce]]`));
+ if(result.acceleration!==undefined)expressions.push(equation('acceleration',String.raw`[[gravity]]\cdot(\sin[[angle]]-[[friction]]\cdot\cos[[angle]])`));
+ if(result.velocityCalculated)expressions.push(equation('endVelocity',result.acceleration!==undefined&&result.length!==undefined?String.raw`\sqrt{2\cdot[[acceleration]]\cdot[[length]]}`:String.raw`\sqrt{2\cdot[[gravity]]\cdot[[height]]}`));
+ return expressions;
 }
-function final(value: number, unit: string) {
-  const formatted = formatQuantity(value);
-  return quantity(Number(formatted.number), unit, formatted.prefix);
-}
-export function inclineEquations(result: InclineResult): string[] {
-  if (result.status !== 'success') return [];
-  const r = result;
-  const m = `\\left(${quantity(r.mass, 'kg')}\\right)`;
-  const g = `\\left(${quantity(r.gravity, 'm/s²')}\\right)`;
-  const a = `\\left(${quantity(r.angle, 'rad')}\\right)`;
-  const mu = quantity(r.friction, '1');
-  const normal = `\\left(${quantity(r.normal, 'N')}\\right)`;
-  const parallel = `\\left(${quantity(r.parallel, 'N')}\\right)`;
-  const friction = `\\left(${quantity(r.frictionForce, 'N')}\\right)`;
-  const extra: string[] = [];
-  if (r.geometryTarget === 'height') extra.push(`h = L \\sin\\alpha = ${quantity(r.length!, 'm')} \\sin${a} \\approx ${final(r.height!, 'm')}`);
-  if (r.geometryTarget === 'length') extra.push(`L = \\frac{h}{\\sin\\alpha} = \\frac{${quantity(r.height!, 'm')}}{\\sin${a}} \\approx ${final(r.length!, 'm')}`);
-  if (r.geometryTarget === 'angle') extra.push(`\\alpha = \\arcsin\\left(\\frac{h}{L}\\right) = \\arcsin\\left(\\frac{${quantity(r.height!, 'm')}}{${quantity(r.length!, 'm')}}\\right) \\approx ${final(r.angle, 'rad')}`);
-
-  return [
-    ...extra,
-    `F_g = m g = ${m} \\cdot ${g} \\approx ${final(r.weight, 'N')}`,
-    `F_N = m g \\cos(\\alpha) = ${m} \\cdot ${g} \\cos${a} \\approx ${final(r.normal, 'N')}`,
-    `F_{\\parallel} = m g \\sin(\\alpha) = ${m} \\cdot ${g} \\sin${a} \\approx ${final(r.parallel, 'N')}`,
-    `F_f = \\mu_k F_N = ${mu} \\cdot ${normal} \\approx ${final(r.frictionForce, 'N')}`,
-    `F_{net} = F_{\\parallel} - F_f = ${parallel} - ${friction} \\approx ${final(r.net, 'N')}`,
-    `a = g(\\sin\\alpha - \\mu_k\\cos\\alpha) = ${g} \\left(\\sin${a} - ${mu} \\cos${a}\\right) \\approx ${final(r.acceleration, 'm/s²')}`,
-    ...(r.endVelocity === undefined ? [] : [`v_{end} = \\sqrt{2 a L} = \\sqrt{2 \\cdot ${quantity(r.acceleration, 'm/s²')} \\cdot ${quantity(r.length!, 'm')}} \\approx ${final(r.endVelocity, 'm/s')}`])
-  ];
-}
-export function inclineConversions(result: InclineResult, parsed: Record<InclineField, ParsedQuantity>, units: Record<InclineField, string>): string[] {
-  if (result.status !== 'success') return [];
-  return inclineFields.flatMap(field => {
-    const input = parsed[field];
-    if (input.status !== 'valid' || units[field] === inclineDefaults[field]) return [];
-    const definition = getUnit(inclineKinds[field], units[field]);
-    const factor = 'factorLatex' in definition ? definition.factorLatex : number(definition.factor.toString());
-    const original = quantity(Number(input.number), units[field], input.prefix);
-    return [`${symbols[field]} = ${original} \\cdot \\frac{${factor}\\,\\mathrm{${inclineDefaults[field]}}}{1\\,\\mathrm{${units[field]}}} \\approx ${quantity(input.value, inclineDefaults[field])}`];
-  });
+export function inclineConversions(result:InclineResult,parsed:Record<InclineField,ParsedQuantity>,units:Record<InclineField,string>):string[]{
+ if(result.status!=='success')return [];
+ return inclineFields.flatMap(field=>{const input=parsed[field];if(!input||input.status!=='valid'||units[field]===unitGroups[inclineKinds[field]].si)return [];
+ const exact=(value:number)=>String(value).replace(/e\+?(-?\d+)/i,String.raw`\times 10^{$1}`);
+ const unit=getUnit(inclineKinds[field],units[field]),factor='factorLatex' in unit?unit.factorLatex:exact(unit.factor);
+ return [`${symbols[field]}=${quantityLatex(Number(input.number),units[field],false)}${input.prefix?`\\cdot ${exact(prefixes.find(prefix=>prefix.symbol===input.prefix)!.factor)}`:''}\\cdot\\frac{${factor}\\,\\mathrm{${unitGroups[inclineKinds[field]].si}}}{1\\,\\mathrm{${units[field]}}}\\approx ${resourceQuantity(input.value,inclineKinds[field])}`];});
 }

@@ -1,3 +1,5 @@
+import {keplerPhysics} from '../mechanics/kepler.ts';
+import { formulaBookPhysics } from './formula-book.ts';
 import { divide, product, ModelFailure, type ResourcePhysics, type Values } from './solver.ts';
 function mixTemperature(v: Values): Values {
  const a=Math.log(v.m1)+Math.log(v.c1), b=Math.log(v.m2)+Math.log(v.c2), scale=Math.max(a,b);
@@ -22,6 +24,8 @@ function prism(v: Values): Values {
  return {r1,r2,e,delta:v.n===1?0:v.i+e-v.A};
 }
 export const resourcePhysics: Record<string, ResourcePhysics> = {
+...formulaBookPhysics,
+...keplerPhysics,
 "contact-pressure":{domains:{"p": "nonnegative", "F": "nonnegative", "A": "positive"},primary:["p", "F", "A"],inverse:{"p":v=>divide(v.F,v.A),"F":v=>product(v.p,v.A),"A":v=>divide(v.F,v.p)},},
 "hydraulic-press":{domains:{"F1": "nonnegative", "A1": "positive", "F2": "nonnegative", "A2": "positive"},primary:["F1", "A1", "F2", "A2"],inverse:{"F1":v=>divide(product(v.F2,v.A1),v.A2),"A1":v=>divide(product(v.F1,v.A2),v.F2),"F2":v=>divide(product(v.F1,v.A2),v.A1),"A2":v=>divide(product(v.F2,v.A1),v.F1)},derive:v=>({p:divide(v.F1,v.A1)}),},
 "hydrostatic-pressure":{domains:{"p": "nonnegative", "rho": "positive", "h": "nonnegative", "g": "positive"},primary:["p", "rho", "h"],inverse:{"p":v=>product(v.rho,v.g,v.h),"rho":v=>divide(v.p,product(v.g,v.h)),"h":v=>divide(v.p,product(v.rho,v.g))},defaults:{"g": 9.81},},
@@ -29,7 +33,7 @@ export const resourcePhysics: Record<string, ResourcePhysics> = {
 "volume-flow":{domains:{"V": "nonnegative", "A": "positive", "v": "nonnegative", "t": "nonnegative"},primary:["V", "A", "v", "t"],inverse:{"V":v=>product(v.A,v.v,v.t),"A":v=>divide(v.V,product(v.v,v.t)),"v":v=>divide(v.V,product(v.A,v.t)),"t":v=>divide(v.V,product(v.A,v.v))},},
 "continuity":{domains:{"A1": "positive", "v1": "nonnegative", "A2": "positive", "v2": "nonnegative"},primary:["v1", "A1", "A2", "v2"],inverse:{"A1":v=>divide(product(v.A2,v.v2),v.v1),"v1":v=>divide(product(v.A2,v.v2),v.A1),"A2":v=>divide(product(v.A1,v.v1),v.v2),"v2":v=>divide(product(v.A1,v.v1),v.A2)},},
 "boyle-law":{domains:{"p1": "positive", "V1": "positive", "p2": "positive", "V2": "positive"},primary:["p1", "V1", "p2", "V2"],inverse:{"p1":v=>divide(product(v.p2,v.V2),v.V1),"V1":v=>divide(product(v.p2,v.V2),v.p1),"p2":v=>divide(product(v.p1,v.V1),v.V2),"V2":v=>divide(product(v.p1,v.V1),v.p2)},},
-"temperature-scales":{domains:{"T": "nonnegative"},derive:v=>({TC:v.T,TF:v.T}),},
+"temperature-scales":{domains:{"T": "nonnegative"},derive:v=>({TC:v.T,TF:v.T,TRa:v.T,TRe:v.T}),},
 "linear-expansion":{domains:{"dl": "real", "l0": "positive", "alpha": "real", "dT": "real"},primary:["dl", "l0", "alpha", "dT"],inverse:{"dl":v=>product(1,v.l0,v.alpha,v.dT),"l0":v=>divide(v.dl,product(1,v.alpha,v.dT)),"alpha":v=>divide(v.dl,product(1,v.l0,v.dT)),"dT":v=>divide(v.dl,product(1,v.l0,v.alpha))},derive:v=>({final:v.l0+v.dl}),valid:v=>v.l0+v.dl>0,},
 "area-expansion":{domains:{"dA": "real", "A0": "positive", "alpha": "real", "dT": "real"},primary:["dA", "A0", "alpha", "dT"],inverse:{"dA":v=>product(2,v.A0,v.alpha,v.dT),"A0":v=>divide(v.dA,product(2,v.alpha,v.dT)),"alpha":v=>divide(v.dA,product(2,v.A0,v.dT)),"dT":v=>divide(v.dA,product(2,v.A0,v.alpha))},derive:v=>({final:v.A0+v.dA}),valid:v=>v.A0+v.dA>0,},
 "solid-volume-expansion":{domains:{"dV": "real", "V0": "positive", "alpha": "real", "dT": "real"},primary:["dV", "V0", "alpha", "dT"],inverse:{"dV":v=>product(3,v.V0,v.alpha,v.dT),"V0":v=>divide(v.dV,product(3,v.alpha,v.dT)),"alpha":v=>divide(v.dV,product(3,v.V0,v.dT)),"dT":v=>divide(v.dV,product(3,v.V0,v.alpha))},derive:v=>({final:v.V0+v.dV}),valid:v=>v.V0+v.dV>0,},

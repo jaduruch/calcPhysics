@@ -20,3 +20,6 @@ export const electricalUi = dictionary(en.electricalUi, de.electricalUi);
 export const qubitUi = dictionary(en.qubitUi, de.qubitUi);
 export const dopplerUi = dictionary(en.dopplerUi, de.dopplerUi);
 export const reflectionUi = dictionary(en.reflectionUi, de.reflectionUi);
+export const opticsDiagramUi = dictionary(en.opticsDiagramUi, de.opticsDiagramUi);
+export const pulleyUi = dictionary(en.pulleyUi, de.pulleyUi);
+export const keplerUi=dictionary(en.keplerUi,de.keplerUi);

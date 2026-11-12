@@ -22,6 +22,10 @@ Mit dem zweiten Modell abgeschlossen: Uniform-Motion-Bindung von `ModelCard` gel
 
 Die Erweiterung vom 10.11.2026 ergänzt die Formelthemen aus Physik1/Physik2 mit 15 Unterseiten und 32 neuen Rechnerdefinitionen sowie einer Snell-Karte über den bestehenden Solver. Details und bewusst ausgelassene qualitative Lernziele stehen in [RESOURCE_CONTENT.md](RESOURCE_CONTENT.md). Dies ersetzt für diese Modelle die bisherige spätere Planung; es ist kein Veröffentlichungsauftrag.
 
+Die Erweiterung vom 11.11.2026 setzt zusätzlich alle Formelbeziehungen des Formelbuch-Physikkapitels um, mit expliziten inversen Zielgrössen, vier weiteren Unterthemen und fünf Temperaturskalen. Abdeckung und Korrekturen: [FORMULA_BOOK.md](FORMULA_BOOK.md). Der Implementierungsauftrag beinhaltet keine Produktionsveröffentlichung.
+
+Die Erweiterung vom 12.11.2026 ergänzt Mechanics → Kepler’s Laws mit drei inversen Rechnern und einer interaktiven SVG-Kegelschnittkonstruktion aus dem bereitgestellten Desmos-Modell. Details: [KEPLER.md](KEPLER.md).
+
 ## Phase 1 – Technische und gestalterische Grundlage
 
 Nach Implementierungsauftrag SvelteKit und TypeScript einrichten, kompatible Versionen pinnen, Lockdatei und Node-Version dokumentieren. CSS-Tokens, Hell-/Dunkel-Schalter mit initialer Systemübernahme, Navigation, Übersichts-/Themenseitenvorlagen und KaTeX integrieren. Themenregistry als gemeinsame Quelle für Routen und Navigation etablieren. Englische Inhalte und URLs ohne Sprachpräfix verwenden; UI-Texte in einem englischen Wörterbuch führen und `/de/` für die spätere Erweiterung reservieren.

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { electricalDefinitions, electricalDisplaySymbol, resistorNetworkDefinition, capacitorNetworkDefinition, inductorNetworkDefinition, rlAcDefinition, type ElectricalDefinition } from '#lib/content/electricity.ts';
   import { solveElectrical, electricalPhysics, inDomain, type ElectricalModelId, type ElectricalPhysics } from '#lib/physics/electricity.ts';
-  import { unitGroups, getUnit, type QuantityKind } from '#lib/physics/units.ts';
+  import { unitGroups, defaultInputUnit, getUnit, type QuantityKind } from '#lib/physics/units.ts';
   import { parseQuantityInUnit } from '#lib/calculators/quantities.ts';
   import { electricalEquations, electricalSymbol, electricalQuantity } from '#lib/calculators/electrical-equations.ts';
   import { electricalCurves } from '#lib/visualization/electrical.ts';
@@ -50,7 +50,7 @@
   let raw = $state<Record<string, string>>({});
   let activeQuantity = $state<string | null>(null);
   let selectedUnits = $state<Record<string, string>>({});
-  const unit = (id: string, kind: QuantityKind) => selectedUnits[id] ?? unitGroups[kind].si;
+  const unit = (id: string, kind: QuantityKind) => selectedUnits[id] ?? defaultInputUnit(kind);
   const parsed = $derived(Object.fromEntries(definition.inputs.map(field => [field.id, parseQuantityInUnit(raw[field.id] ?? '', field.kind, unit(field.id, field.kind))])));
   const physics = $derived(electricalPhysics[calculationId] as ElectricalPhysics);
   const invalid = $derived(definition.inputs.filter(field => {

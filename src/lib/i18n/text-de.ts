@@ -1,5 +1,26 @@
 /** Explicit editorial translations; identifiers, equations and unit symbols are untouched. */
 export const germanText: Record<string, string> = {
+ "Kepler’s Laws":"Keplersche Gesetze",
+ "Explore elliptical orbits, equal swept areas and orbital periods with inverse calculators and a rotating 3D cone-section model.":"Untersuche Ellipsenbahnen, den Flächensatz und Umlaufzeiten mit inversen Rechnern und einem drehbaren 3D-Kegelschnittmodell.",
+ "First Law — Elliptical Orbits":"Erstes Gesetz – Ellipsenbahnen", "Second Law — Equal Areas in Equal Times":"Zweites Gesetz – Flächensatz", "Third Law — Orbital Period":"Drittes Gesetz – Umlaufzeit",
+ "semi-major axis":"grosse Halbachse", "semi-minor axis":"kleine Halbachse", "orbital eccentricity":"Bahnexzentrizität", "centre-to-focus distance":"Abstand Mittelpunkt–Brennpunkt", "semi-latus rectum":"Halbparameter", "periapsis distance":"Periapsisabstand", "apoapsis distance":"Apoapsisabstand", "ellipse area":"Ellipsenfläche", "first swept area":"erste überstrichene Fläche", "first elapsed interval":"erstes Zeitintervall", "second swept area":"zweite überstrichene Fläche", "second elapsed interval":"zweites Zeitintervall", "constant areal velocity":"konstante Flächengeschwindigkeit", "orbital period":"Umlaufzeit", "semi-major axis of relative orbit":"grosse Halbachse der Relativbahn", "total mass of both bodies":"Gesamtmasse beider Körper",
+
+ "Calculate forces, gravity, kinetic friction and ideal pulleys. On an inclined plane, solve geometry, acceleration and speed without mass; add mass for force components.":"Berechne Kräfte, Gravitation, Gleitreibung und ideale Flaschenzüge. Bei der schiefen Ebene sind Geometrie, Beschleunigung und Geschwindigkeit ohne Masse bestimmbar; für Kraftbeträge die Masse ergänzen.",
+ "Force, Mass & Acceleration":"Kraft, Masse und Beschleunigung", "Ideal Pulleys":"Ideale Flaschenzüge",
+ "Geometry & speed":"Geometrie und Geschwindigkeit", "Normal force":"Normalkraft", "Downhill gravity component":"Hangabtriebskraft", "Uniform raising":"Gleichförmiges Heben", "Downhill force":"Kraft hangabwärts", "Acceleration & friction":"Beschleunigung und Reibung", "Net force":"Resultierende Kraft", "Weight":"Gewichtskraft", "Force transmission":"Kraftübertragung", "Rope & load travel":"Seilweg und Hubhöhe",
+
+  "Kelvin, Celsius, Fahrenheit, Rankine and Réaumur temperature scales and temperature intervals.":"Temperaturskalen Kelvin, Celsius, Fahrenheit, Rankine und Réaumur sowie Temperaturdifferenzen.",
+  "Rotation":"Rotation",
+  "Work, Energy & Power":"Arbeit, Energie und Leistung",
+  "Light & Photometry":"Licht und Fotometrie",
+  "Fiber Optics":"Faseroptik",
+  "Angular displacement, circular motion, constant angular acceleration and inverse relations.":"Drehwinkel, Kreisbewegung, konstante Winkelbeschleunigung und Umstellungen.",
+  "Work, kinetic and potential energy, frictional dissipation and translational, rotational and electrical power.":"Arbeit, kinetische und potenzielle Energie, Reibungsverluste sowie mechanische und elektrische Leistung.",
+  "Luminous intensity, flux, energy, illuminance, luminance and solid angles.":"Lichtstärke, Lichtstrom, Lichtmenge, Beleuchtungsstärke, Leuchtdichte und Raumwinkel.",
+  "Optical power transmission ratios, signed decibel gain and absolute power levels in dBm.":"Optische Leistungsverhältnisse, Verstärkung in Dezibel und absolute Leistungspegel in dBm.",
+  "Rankine temperature":"Rankine-Temperatur",
+  "Réaumur temperature":"Réaumur-Temperatur",
+
 
   "final velocity": "Endgeschwindigkeit",
   "Displacement": "Ortsänderung",

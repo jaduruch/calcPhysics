@@ -1,12 +1,18 @@
+import {keplerDefinitions} from './kepler.ts';
+import { formulaBookDefinitions } from './formula-book.ts';
+import type {ModelDefinition} from './model-types.ts';
 import type { QuantityKind } from '../physics/units.ts';
 export interface ResourceField { id: string; name: string; kind: QuantityKind; symbol: string }
 export interface ResourceOutput extends ResourceField { formula: string; unit?: string | null }
 export interface ResourceDefinition {
  id: string; topic: string; title: string; fields: readonly ResourceField[];
  rules: Readonly<Record<string,string>>; outputs: readonly ResourceOutput[];
+ theory?:Partial<Pick<ModelDefinition,'formulas'|'variables'|'notes'|'references'>>;
  assumption: string; source: string; pages: readonly number[]; reference?: string | null;
 }
 export const resourceDefinitions: readonly ResourceDefinition[] = [
+  ...formulaBookDefinitions,
+  ...keplerDefinitions,
   {
     "id": "contact-pressure",
     "topic": "fluid-statics",
@@ -323,7 +329,7 @@ export const resourceDefinitions: readonly ResourceDefinition[] = [
       }
     ],
     "rules": {},
-    "assumption": "Kelvin is absolute temperature; Celsius and Fahrenheit have offset origins. Zero kelvin is the lower domain boundary. Prefixes on °C and °F inputs are rejected; use a plain number. Temperature intervals are handled separately.",
+    "assumption": "Kelvin and Rankine are absolute scales; Celsius, Fahrenheit and Réaumur have offset origins. Choose any of the five scales at the input. Zero kelvin is the lower boundary. Exact offsets 273.15 K and 459.67 °Ra replace rounded or incorrect values in the source. Prefixes on offset-scale inputs are rejected. Temperature intervals are handled separately.",
     "source": "Physik1",
     "pages": [
       5,
@@ -345,7 +351,9 @@ export const resourceDefinitions: readonly ResourceDefinition[] = [
         "formula": "\\left(\\frac{9}{5}\\cdot\\frac{[[T]]}{\\mathrm{K}}-459.67\\right)\\,{}^\\circ\\mathrm{F}",
         "symbol": "t_F",
         "unit": "°F"
-      }
+      },
+      {"id":"TRa","name":"Rankine temperature","kind":"temperature","formula":"\\frac{9}{5}\\cdot\\frac{[[T]]}{\\mathrm{K}}\\,{}^\\circ\\mathrm{Ra}","symbol":"T_{Ra}","unit":"°Ra"},
+      {"id":"TRe","name":"Réaumur temperature","kind":"temperature","formula":"\\frac45\\cdot\\left(\\frac{[[T]]}{\\mathrm{K}}-273.15\\right)\\,{}^\\circ\\mathrm{Re}","symbol":"t_{Re}","unit":"°Ré"}
     ],
     "reference": null
   },

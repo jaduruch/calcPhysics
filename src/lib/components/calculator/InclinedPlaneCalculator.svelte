@@ -8,13 +8,13 @@
   import QuantityField from './QuantityField.svelte';
   import EquationBlock from './EquationBlock.svelte';
   import InclinedPlaneSketch from './InclinedPlaneSketch.svelte';
-  const definitions = [
-    { key: 'mass', symbol: 'm', name: text.mass }, { key: 'angle', symbol: 'α', name: text.angle },
-    { key: 'length', symbol: 'L', name: text.length }, { key: 'height', symbol: 'h', name: text.height },
-    { key: 'friction', symbol: 'μₖ', name: text.friction }, { key: 'gravity', symbol: 'g', name: text.gravity }
-  ] as const;
+  const definitions = $derived([
+    { key:'length',symbol:'L',name:text.length },{key:'height',symbol:'h',name:text.height},
+    {key:'angle',symbol:'α',name:text.angle},{key:'endVelocity',symbol:'vₑₙd',name:text.endVelocity},
+    {key:'mass',symbol:'m',name:text.mass},{key:'friction',symbol:'μₖ',name:text.friction},{key:'gravity',symbol:'g',name:text.gravity}
+  ] as const);
   let focusedField = $state<InclineField | null>(null);
-  let raw = $state<Record<InclineField, string>>({ mass: '', angle: '', friction: '', gravity: '', length: '', height: '' });
+  let raw = $state<Record<InclineField, string>>({ mass: '', angle: '', friction: '', gravity: '', length: '', height: '', endVelocity: '' });
   let units = $state({ ...inclineDefaults });
   const parsed = $derived(Object.fromEntries(inclineFields.map(field => [field, parseQuantityInUnit(raw[field], inclineKinds[field], units[field])])) as Record<InclineField, ReturnType<typeof parseQuantityInUnit>>);
   const invalid = $derived(inclineFields.filter(field => parsed[field].status === 'invalid'));
@@ -29,7 +29,7 @@
   function changeUnit(field: InclineField, unit: string) {
     units[field] = unit;
   }
-  function reset() { raw = { mass: '', angle: '', friction: '', gravity: '', length: '', height: '' }; units = { ...inclineDefaults }; }
+  function reset() { raw = { mass: '', angle: '', friction: '', gravity: '', length: '', height: '', endVelocity: '' }; units = { ...inclineDefaults }; }
 </script>
 <CalculatorShell>
   <div class="input-grid">
@@ -42,13 +42,13 @@
   <p class="assumption" id="incline-assumptions">{text.assumptions}</p>
   <div id="incline-status" aria-live="polite" aria-atomic="true">
     {#if result.status === 'parse-error'}<p class="status error">{calculatorUi.invalidNumber}</p>
-    {:else if result.status === 'invalid'}<p class="status error">{result.code === 'geometry' ? text.geometryInvalid : result.code === 'domain' ? text.invalid : text.range}</p>
+    {:else if result.status === 'invalid'}<p class="status error">{result.code === 'geometry' ? text.geometryInvalid : result.code === 'speed' ? text.speedInvalid : result.code === 'domain' ? text.invalid : text.range}</p>
     {:else if result.status === 'success'}
       {#if conversions.length}<EquationBlock label={calculatorUi.unitConversion} equations={conversions} conversion />{/if}
       <EquationBlock label="" {equations} />
       {#if result.motion === 'no-start'}<p class="assumption">{text.noStart}</p>{/if}
-      {#if result.acceleration < 0}<p class="assumption">{text.braking}</p>{/if}
+      {#if result.acceleration !== undefined && result.acceleration < 0}<p class="assumption">{text.braking}</p>{/if}
     {/if}
   </div>
-  <InclinedPlaneSketch highlightAngle={focusedField === 'angle'} highlightLength={focusedField === 'length'} highlightHeight={focusedField === 'height'} result={result.status === 'success' ? result : null} enteredAngle={parsed.angle.status === 'valid' ? parsed.angle.value : undefined} enteredFriction={parsed.friction.status === 'valid' ? parsed.friction.value : undefined} />
+  <InclinedPlaneSketch highlightAngle={focusedField === 'angle'} highlightLength={focusedField === 'length'} highlightHeight={focusedField === 'height'} result={result.status === 'success' ? result : null} enteredAngle={result.status==='success'?result.angle:parsed.angle.status==='valid'?parsed.angle.value:undefined} enteredFriction={parsed.friction.status === 'valid' ? parsed.friction.value : undefined} />
 </CalculatorShell>

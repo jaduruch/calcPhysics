@@ -4,7 +4,7 @@
   import { inclinedPlaneUi as text } from '#lib/i18n/runtime.ts';
   let { result, enteredAngle, enteredFriction, highlightAngle = false, highlightLength = false, highlightHeight = false }: { highlightAngle?: boolean; highlightLength?: boolean; highlightHeight?: boolean; result: InclineResult | null; enteredAngle?: number; enteredFriction?: number } = $props();
   const id = $props.id();
-  const data = $derived(result?.status === 'success' ? result : null);
+  const data = $derived(result?.status === 'success' && result.normal!==undefined ? result : null);
   const sketch = $derived(inclinedPlaneSketch(data, enteredAngle, enteredFriction));
   const { angle, cos, sin, base, end, centre, arrows } = $derived(sketch);
   const angleLabel = $derived(sketch.angleKnown ? `α = ${Number((angle * 180 / Math.PI).toPrecision(3))}°` : 'α');

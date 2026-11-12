@@ -20,9 +20,14 @@ export interface Topic {
   seo?: { title: string; description: string };
 }
 export const topics: readonly Topic[] = [
+  {id:'keplers-laws',parentId:'mechanics',path:'/mechanics/keplers-laws',title:'Kepler’s Laws',description:'Explore elliptical orbits, equal swept areas and orbital periods with inverse calculators and a rotating 3D cone-section model.',symbol:'01.7',published:true},
+  {id:'rotation',parentId:'mechanics',path:'/mechanics/rotation',title:'Rotation',description:'Angular displacement, circular motion, constant angular acceleration and inverse relations.',symbol:'01.5',published:true},
+  {id:'work-energy',parentId:'mechanics',path:'/mechanics/work-and-energy',title:'Work, Energy & Power',description:'Work, kinetic and potential energy, frictional dissipation and translational, rotational and electrical power.',symbol:'01.6',published:true},
+  {id:'photometry',parentId:'optics',path:'/optics/photometry',title:'Light & Photometry',description:'Luminous intensity, flux, energy, illuminance, luminance and solid angles.',symbol:'05.6',published:true},
+  {id:'fiber-optics',parentId:'optics',path:'/optics/fiber-optics',title:'Fiber Optics',description:'Optical power transmission ratios, signed decibel gain and absolute power levels in dBm.',symbol:'05.7',published:true},
   {"id": "fluid-statics", "parentId": "mechanics", "path": "/mechanics/fluid-statics", "title": "Fluid Statics", "description": "Pressure, hydraulic force transmission, hydrostatic pressure and density.", "symbol": "01.3", "published": true},
   {"id": "fluid-flow", "parentId": "mechanics", "path": "/mechanics/fluid-flow", "title": "Fluid Flow", "description": "Transported volume and the continuity equation for steady incompressible flow.", "symbol": "01.4", "published": true},
-  {"id": "temperature", "parentId": "thermodynamics", "path": "/thermodynamics/temperature", "title": "Temperature", "description": "Absolute temperatures, Celsius and Fahrenheit scales, and temperature intervals.", "symbol": "02.2", "published": true},
+  {"id": "temperature", "parentId": "thermodynamics", "path": "/thermodynamics/temperature", "title": "Temperature", "description": "Kelvin, Celsius, Fahrenheit, Rankine and Réaumur temperature scales and temperature intervals.", "symbol": "02.2", "published": true},
   {"id": "thermal-expansion", "parentId": "thermodynamics", "path": "/thermodynamics/thermal-expansion", "title": "Thermal Expansion", "description": "Linear, area and volume expansion, and density changes at fixed mass.", "symbol": "02.3", "published": true},
   {"id": "heat-and-calorimetry", "parentId": "thermodynamics", "path": "/thermodynamics/heat-and-calorimetry", "title": "Heat & Calorimetry", "description": "Heat capacity, sensible heat and thermal equilibrium of two bodies.", "symbol": "02.4", "published": true},
   {"id": "fuels-and-heating", "parentId": "thermodynamics", "path": "/thermodynamics/fuels-and-heating", "title": "Fuels & Heating", "description": "Mass-specific heating value and the energy released by fuel mass or volume.", "symbol": "02.5", "published": true},
@@ -56,11 +61,11 @@ export const topics: readonly Topic[] = [
   { id: 'modern-physics', parentId: null, path: '/modern-physics', title: 'Modern Physics', description: 'Explore quantum phenomena, starting with single-qubit states, quantum gates and the Bloch sphere.', symbol: '06', published: true },
   { id: 'quantum', parentId: 'modern-physics', path: '/modern-physics/quantum', title: 'Quantum', description: 'Simulate a single qubit with quantum gates, explore complex amplitudes and measurement probabilities, and follow state rotations on an interactive 3D Bloch sphere.', symbol: '06.1', published: true, seo: { title: 'Qubit Simulator & 3D Bloch Sphere | calcPhysics', description: 'Explore X, Y, Z, square-root, Hadamard, rotation and U gates with a single-qubit simulator, state amplitudes, probabilities and an animated 3D Bloch sphere.' } },
   { id: 'kinematics', parentId: 'mechanics', path: '/mechanics/kinematics', title: 'Kinematics', seo: { title: 'Uniform Motion Calculator, Acceleration & Throws | calcPhysics', description: 'Calculate uniform and accelerated motion, vertical, horizontal and oblique throws with SI conversions, calculation steps and motion diagrams.' }, description: 'Explore uniform and uniformly accelerated motion, vertical, horizontal and oblique throws. Calculate positions, velocities, flight times and trajectories with unit conversions and motion diagrams.', symbol: '01.1', published: true },
-  { id: 'dynamics', parentId: 'mechanics', path: '/mechanics/dynamics', title: 'Dynamics', description: 'Use the inclined plane calculator to find slope geometry, force components, acceleration and end speed from rest. Include optional kinetic friction for downhill sliding. Static friction and the onset of sliding are not modelled.', symbol: '01.2', published: true, seo: { title: 'Inclined Plane Calculator & Dynamics Theory | calcPhysics', description: 'Calculate weight, normal force, downhill force, kinetic friction and acceleration on an inclined plane. Includes SI conversions, formulas and a force diagram.' } }
+  { id: 'dynamics', parentId: 'mechanics', path: '/mechanics/dynamics', title: 'Dynamics', description: 'Calculate forces, gravity, kinetic friction and ideal pulleys. On an inclined plane, solve geometry, acceleration and speed without mass; add mass for force components.', symbol: '01.2', published: true, seo: { title: 'Inclined Plane Calculator & Dynamics Theory | calcPhysics', description: 'Calculate weight, normal force, downhill force, kinetic friction and acceleration on an inclined plane. Includes SI conversions, formulas and a force diagram.' } }
 ];
 export const models: readonly ModelDefinition[] = [
   ...electricalModels,
-  ...resourceModels,
+  ...resourceModels.filter(model=>!model.id.startsWith('book-')),
   qubitModel,
   dopplerModel,
   totalReflectionModel,
@@ -101,14 +106,17 @@ export const models: readonly ModelDefinition[] = [
       { name: 'mass', symbol: 'm', unit: 'kg', unitName: 'kilogram' },
       { name: 'plane length', symbol: 'L', unit: 'm', unitName: 'meter' },
       { name: 'height difference', symbol: 'h', unit: 'm', unitName: 'meter' },
-      { name: 'end speed (start from rest)', symbol: 'v', subscript: 'end', unit: 'm/s', unitName: 'meters per second' },
+      { name: 'end speed (input or calculated, start from rest)', symbol: 'v', subscript: 'end', unit: 'm/s', unitName: 'meters per second' },
       { name: 'inclination angle', symbol: 'α', unit: 'rad', unitName: 'radian (or degrees)' },
       { name: 'kinetic friction coefficient', symbol: 'μₖ', unit: '1', unitName: 'dimensionless' },
       { name: 'gravitational acceleration', symbol: 'g', unit: 'm/s²', unitName: 'meters per second squared' }
     ],
     formulas: [
       { label: 'Geometry', expression: String.raw`h = L \sin\alpha` },
-      { label: 'End speed from rest', expression: String.raw`v_{end} = \sqrt{2aL}` },
+      { label: 'End speed from rest', expression: String.raw`v_{end}=\sqrt{2aL},\quad v_{end}=\sqrt{2gh}\ (\mu_k=0)` },
+      {label:'Height from speed (no friction)',expression:String.raw`h=\frac{v_{end}^2}{2g}`},
+      {label:'Length from speed',expression:String.raw`L=\frac{v_{end}^2}{2g(\sin\alpha-\mu_k\cos\alpha)}`},
+      {label:'Angle from speed and length',expression:String.raw`\alpha=\arctan\mu_k+\arcsin\!\left(\frac{v_{end}^2}{2gL\sqrt{1+\mu_k^2}}\right)`},
       { label: 'Weight', expression: String.raw`F_g = m g` },
       { label: 'Normal force', expression: String.raw`F_N = m g \cos(\alpha)` },
       { label: 'Downhill force', expression: String.raw`F_{\parallel} = m g \sin(\alpha)` },
@@ -116,10 +124,11 @@ export const models: readonly ModelDefinition[] = [
       { label: 'Net force', expression: String.raw`F_{net} = F_{\parallel} - F_f` },
       { label: 'Acceleration', expression: String.raw`a = g(\sin(\alpha) - \mu_k\cos(\alpha))` }
     ],
-    notes: [{ text: inclinedPlaneUi.assumptions }, { text: inclinedPlaneUi.braking }],
+    notes: [{text:inclinedPlaneUi.defaults}, { text: inclinedPlaneUi.assumptions }, { text: inclinedPlaneUi.braking }],
     references: [{ title: inclinedPlaneUi.source, url: 'https://openstax.org/books/university-physics-volume-1/pages/6-2-friction' }]
   },
-  ...kinematicModels
+  ...kinematicModels,
+  ...resourceModels.filter(model=>model.id.startsWith('book-'))
 ];
 export function childrenOf(parentId: string | null) {
   const children = topics.filter(topic => topic.parentId === parentId);

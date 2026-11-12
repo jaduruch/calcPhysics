@@ -1,5 +1,7 @@
 # Inhalte aus den privaten Physik-Unterlagen
 
+Das vollständige Physikkapitel des Formelbuchs (S. 44–72) ist zusätzlich umgesetzt: 138 neue Beziehungen mit 496 expliziten Umstellungen, ergänzt um die bereits vorhandenen Rechner. Seitenweise Abdeckung, Quellkorrekturen und Prüfvertrag stehen in [FORMULA_BOOK.md](FORMULA_BOOK.md).
+
 Stand: 10.11.2026. Auftrag: Physik1 und Physik2 vollständig sichten und Formelthemen als vollständige Modellkarten mit Rechnern einbauen. Alle 12 bzw. 14 PDF-Seiten wurden lokal gerendert, visuell geprüft und zusätzlich per OCR erschlossen. Original-PDFs, Renderbilder und OCR bleiben ausserhalb des Repositories; keine privaten Dateipfade oder Dokumentdownloads werden in der Website angeboten.
 
 ## Auswahl und Abdeckung
@@ -56,3 +58,9 @@ Der gemeinsame ResourceCalculator verwendet ModelCard, QuantityField, Calculator
 ## Formelbuch, Seite 49 (11.11.2026)
 
 Die bestehende Karte Uniformly Accelerated Motion wurde auf sechs Eingabe-/Zielgrössen erweitert: s₀, s, v₀, v₁, a und t. Die gesamte Seite «Gleichmässige Bewegung», mit und ohne Anfangsgeschwindigkeit, wurde lokal als Text und gerendertes Seitenbild geprüft. Alle dortigen Formelketten für Ortsänderung, Anfangs-/Endgeschwindigkeit, Zeit und Beschleunigung sind abgedeckt. Die Quelle verwendet s für Ortsänderung; die Plattform verwendet Δs = s − s₀. Positive Wurzelzweige der Quelle wurden für gerichtete Geschwindigkeiten um zulässige negative Zweige ergänzt und mit den übrigen Angaben sowie t ≥ 0 geprüft. Original, Seitenbilder und private Dateipfade bleiben ausserhalb des Repositories und werden nicht als Website-Download angeboten.
+
+## Optikskizzen (11.11.2026)
+
+Die fünf Resource-Optikmodelle besitzen eigene responsive SVG-Skizzen: Kugelspiegel mit F/C und virtuellen Verlängerungen bei negativem f, Sammel-/Streulinse, Lichtausbreitung im Medium, planparallele Platte mit seitlichem Versatz und Prisma mit zwei Flächenloten sowie reflektiertem Strahl bei Totalreflexion. Orientierung: Formelbuch S. 63–64 und Physik2 PDF-S. 3–8; die Abbildungen wurden gesichtet und nicht kopiert. Snellius und Totalreflexion verwenden weiterhin die bestehende gemeinsame Strahlenskizze.
+
+`visualization/resource-optics.ts` bildet ausschliesslich validierte Solverwerte auf normierte Geometrie ab. Ohne gültiges Ergebnis erscheint eine ausdrücklich schematische Vorschau aus demselben Solver. Spiegel-/Linsenskizzen zeigen das Vorzeichen und das Fokusverhältnis, keinen absoluten Längenmassstab. Die SVG-Darstellung und lokalisierte Beschriftungen liegen gemeinsam in `ResourceOpticsDiagram.svelte` und den i18n-Quellen; es entstehen keine kopierten Modellseiten.

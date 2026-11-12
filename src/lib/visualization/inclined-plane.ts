@@ -1,6 +1,7 @@
 import { solveInclinedPlane, type InclineResult } from '../physics/mechanics/inclined-plane.ts';
 
 export type InclineSuccess = Extract<InclineResult, { status: 'success' }>;
+type ForceState = InclineSuccess & {weight:number;normal:number;parallel:number;frictionForce:number};
 export interface SketchPoint { x: number; y: number }
 export interface ForceArrow {
   id: 'weight' | 'normal' | 'parallel' | 'friction';
@@ -21,9 +22,10 @@ export function inclinedPlaneSketch(result: InclineSuccess | null, enteredAngle?
   const validAngle = enteredAngle !== undefined && Number.isFinite(enteredAngle) && enteredAngle >= 0 && enteredAngle <= Math.PI / 2;
   const angle = result?.angle ?? (validAngle ? enteredAngle : Math.PI / 6);
   const friction = enteredFriction !== undefined && Number.isFinite(enteredFriction) && enteredFriction >= 0 ? enteredFriction : 0;
-  const preview = result ?? solveInclinedPlane({ mass: 1, gravity: 1, angle, friction });
+  const measured=result?.weight!==undefined&&result.normal!==undefined&&result.parallel!==undefined&&result.frictionForce!==undefined?result as ForceState:null;
+  const preview = measured ?? solveInclinedPlane({ mass: 1, gravity: 1, angle, friction });
   // A pathological, overflowing preview coefficient must never break the rendering.
-  const forces = preview.status === 'success' ? preview : solveInclinedPlane({ mass: 1, gravity: 1, angle, friction: 0 }) as InclineSuccess;
+  const forces = preview.status === 'success' && preview.normal!==undefined ? preview as ForceState : solveInclinedPlane({ mass: 1, gravity: 1, angle, friction: 0 }) as ForceState;
   const cos = angle === Math.PI / 2 ? 0 : Math.cos(angle);
   const sin = Math.sin(angle);
   const base = { x: 85, y: 265 };
@@ -55,5 +57,5 @@ export function inclinedPlaneSketch(result: InclineSuccess | null, enteredAngle?
       }
     };
   });
-  return { angle, cos, sin, base, end, centre, arrows, schematic: !result, angleKnown: !!result || validAngle };
+  return { angle, cos, sin, base, end, centre, arrows, schematic: !measured, angleKnown: result?.angle!==undefined || validAngle };
 }

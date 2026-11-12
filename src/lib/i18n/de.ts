@@ -24,6 +24,7 @@ export const idealGasUi = {
  p: 'Absolutdruck', V: 'Volumen', n: 'Stoffmenge', T: 'absolute Temperatur', assumptions: 'Ideales Gas im Gleichgewicht; alle Grössen müssen positiv sein. Absolutdruck und Temperatur in Kelvin verwenden. Realgaseffekte und Phasenübergänge sind ausgeschlossen.', invalid: 'Endliche positive Werte innerhalb des Zahlenbereichs eingeben.', conflict: 'Die vier Werte widersprechen dem idealen Gasgesetz.', consistent: 'Die vier Werte erfüllen das ideale Gasgesetz.', incomplete: 'Gib drei Grössen ein, um die vierte zu berechnen.'
 };
 export const resourceUi = {
+  solution: 'Lösung',
  incomplete: 'Gib die Eingangsgrössen des Modells ein.', incompleteRelation: 'Lass eine Modellgrösse frei und gib die anderen ein, um sie zu berechnen.', invalid: 'Prüfe die markierten Eingaben anhand der angegebenen Definitionsbereiche.', conflict: 'Diese Eingaben widersprechen der Modellgleichung.', underdetermined: 'Diese Eingaben bestimmen keinen eindeutigen Wert (0 geteilt durch 0).', 'no-solution': 'Im angegebenen Definitionsbereich existiert keine Lösung.', numerical: 'Das Ergebnis liegt ausserhalb des endlichen Zahlenbereichs.', consistent: 'Die eingegebenen Werte erfüllen die Modellgleichung.', defaultValue: 'Standard:', prismReflection: 'Totalreflexion an der zweiten Prismenfläche: kein austretender gebrochener Strahl und keine Gesamtablenkung eines durchgehenden Strahls.'
 };
 export const kinematicsUi = {
@@ -45,12 +46,14 @@ export const kinematicsUi = {
  incompleteAccelerated: 'Gib vier Grössen ein; bei leerem s₀ genügen drei. Sind s₀ und v₀ leer, genügen zwei Angaben aus s, a und t; beide Anfangswerte werden als null angenommen.', incompleteProjectile: 'Gib die Abwurfbedingungen ein; ohne Angabe für g gilt 9,81 m/s².', domain: 'Endliche Werte eingeben. Zeit und Abwurfhöhe müssen nichtnegativ sein; g muss positiv sein.', numerical: 'Die Bewegung liegt ausserhalb des endlichen Zahlenbereichs.', 'too-many': 'Lass eine Grösse frei, um die Berechnung auszuwählen.', 'no-solution': 'Für nichtnegative Zeit existiert keine Lösung.', underdetermined: 'Diese Eingaben bestimmen keine eindeutige Lösung.', parseError: 'Gib gültige endliche Zahlen in die ausgefüllten Felder ein.', initialAssumption: 'Für das leere Anfangsort-Feld wird s₀ = 0 m verwendet.', defaultValue: 'Standard:', multipleTimes: 'Es gibt zwei physikalisch zulässige Lösungen. Wähle das Bewegungsintervall für die Diagramme.', diagramInterval: 'Diagrammintervall', timeSolution: 'Zeitlösung', velocity: 'Endgeschwindigkeit', displacement: 'Ortsänderung', flight: 'Zeit bis zum Boden', peakTime: 'Zeit der maximalen Höhe', peakHeight: 'maximale Höhe nach dem Start', impactVelocity: 'vertikale Aufprallgeschwindigkeit', range: 'horizontale Verschiebung', vyImpact: 'vertikale Aufprallgeschwindigkeit', speedImpact: 'Betrag der Aufprallgeschwindigkeit', charts: 'Bewegungsdiagramme', positionDescription: 'Ort im gewählten Zeitintervall, berechnet mit demselben Modell konstanter Beschleunigung.', velocityDescription: 'Vorzeichenbehaftete Geschwindigkeit im gewählten Zeitintervall.', heightDescription: 'Höhe über dem Boden bis zum ersten Kontakt; keine Fortsetzung unter dem Boden.', horizontalDescription: 'Vorzeichenbehafteter horizontaler Ort bis zum ersten Bodenkontakt.', trajectoryDescription: 'Flugbahn in der x–y-Ebene bis zum ersten Bodenkontakt. Negative horizontale Geschwindigkeit führt nach links.', schematic: 'Schematische Vorschau ohne Zahlenskalen.'
 };
 export const inclinedPlaneUi = {
+ endVelocity: 'Endgeschwindigkeit (aus Ruhe)',
+ speedInvalid: 'Die Geschwindigkeit widerspricht der Geometrie oder Reibung. Prüfe die eingegebenen Werte.',
  length: 'Länge der Ebene', height: 'Höhenunterschied', mass: 'Masse', angle: 'Neigungswinkel', friction: 'Gleitreibungskoeffizient', gravity: 'Fallbeschleunigung',
  geometryInvalid: 'Widersprüchliche Geometrie. Es gilt h = L sin α mit L > 0 und 0 ≤ h ≤ L. Lösche einen Wert, um ihn zu berechnen.', noStart: 'Keine Endgeschwindigkeit aus Ruhe: Das Modell sagt mit diesen Reibungs- und Neigungswerten keine Bewegung hangabwärts voraus. Haftreibung wird nicht modelliert.',
  assumptions: 'Starrer Körper auf einer geraden Ebene, ohne Luftwiderstand oder äussere Antriebskräfte. Positiv ist hangabwärts. Bei Reibung gleitet der Körper bereits hangabwärts; Gleitreibung wirkt bergauf. Haftreibung und das Losrutschen werden nicht modelliert.',
  braking: 'Negative Beschleunigung bedeutet, dass ein hangabwärts gleitender Körper langsamer wird. Sie sagt weder eine Bewegung bergauf noch das Losrutschen aus Ruhe voraus.',
- defaults: 'Ohne μₖ gilt keine Reibung (0). Ohne g gilt 9,81 m/s². Die Endgeschwindigkeit verwendet v₀ = 0 und konstante Beschleunigung entlang L; bei Reibung wird beginnendes Gleiten hangabwärts vorausgesetzt. Zwei Angaben von L, h und α bestimmen die dritte.',
- invalid: 'Gültige Zahlen eingeben. Masse, Ebenenlänge und g müssen positiv sein; Höhe und μₖ nichtnegativ. Der Winkel muss zwischen 0 und π/2 rad (0–90°) liegen.', range: 'Diese Werte überschreiten den unterstützten Zahlenbereich.',
+ defaults: 'Ohne μₖ gilt 0, ohne g gilt 9,81 m/s². Die Geschwindigkeit gehört zum Ende von L, aus Ruhe. Geometrie, Beschleunigung und Geschwindigkeit benötigen keine Masse; nur Kräfte benötigen sie. Bekannte Werte eingeben und gesuchte Grössen frei lassen.',
+ invalid: 'Gültige Zahlen eingeben. Masse, Ebenenlänge und g müssen positiv sein; Höhe, Endgeschwindigkeit und μₖ nichtnegativ. Der Winkel muss zwischen 0 und π/2 rad (0–90°) liegen.', range: 'Diese Werte überschreiten den unterstützten Zahlenbereich.',
  angleHighlight: 'Der Winkel ist hervorgehoben, weil sein Eingabefeld fokussiert ist.', lengthHighlight: 'Die Ebenenlänge L ist hervorgehoben, weil ihr Eingabefeld fokussiert ist.', heightHighlight: 'Der Höhenunterschied h ist hervorgehoben, weil sein Eingabefeld fokussiert ist.', sketch: 'Schiefe Ebene – Kräfteskizze', schematic: 'Schematische Vorschau: Winkel und Reibung bestimmen Geometrie und Kräfteverhältnisse. Kräftebeträge erscheinen bei gültiger Berechnung.', sketchDescription: 'Die Gewichtskraft wirkt senkrecht nach unten, die Normalkraft senkrecht zur Fläche, die Hangkomponente entlang der Ebene und die Gleitreibung bergauf. Die Hangkomponente ist keine zusätzliche unabhängige Kraft.', diagramNote: 'Der Winkel ist massstäblich. Die Kraftpfeile verwenden einen gemeinsamen, automatisch angepassten Massstab. Die Hangkomponente ist gestrichelt gezeichnet.', source: 'Theoriequelle: OpenStax, University Physics, Friction and the Inclined Plane.'
 };
 export const electricalUi = {
@@ -68,4 +71,42 @@ export const dopplerUi = {
 };
 export const reflectionUi = {
  n1: 'Brechungsindex des Einfallsmediums', n2: 'Brechungsindex des zweiten Mediums', angle: 'Einfallswinkel', criticalAngle: 'Grenzwinkel', reflectedAngle: 'Reflexionswinkel', transmittedAngle: 'Brechungswinkel', incomplete: 'Gib beide Brechungsindizes ein, um zu prüfen, ob Totalreflexion möglich ist.', addAngle: 'Gib einen Einfallswinkel ein, um die Strahlwege zu bestimmen.', noCritical: 'In dieser Richtung existiert kein Grenzwinkel für Totalreflexion, da n₁ ≤ n₂.', 'total-reflection': 'Totalreflexion: θ₁ > θc. Kein propagierender gebrochener Strahl tritt in Medium 2 ein.', critical: 'Am Grenzwinkel gilt θ₂ = 90°. Der Grenzstrahl verläuft entlang der Grenzfläche.', refraction: 'Brechung: Das Snelliussche Gesetz erlaubt einen gebrochenen Strahl.', matched: 'Gleiche Brechungsindizes: Der Strahl läuft im idealen Modell gerade und ohne Reflexion weiter.', domain: 'Brechungsindizes müssen endlich und positiv sein. Für den Einfallswinkel gilt 0 ≤ θ₁ < 90° (π/2 rad).', numerical: 'Das Ergebnis liegt ausserhalb des endlichen Zahlenbereichs.', parseError: 'Gib gültige endliche Zahlen in die ausgefüllten Felder ein.', convention: 'Licht tritt von Medium 1 in Medium 2 ein. Alle Winkel werden zum Lot gemessen.', medium1: 'Medium 1', medium2: 'Medium 2', normal: 'Lot', incident: 'Einfallend', reflected: 'Reflektiert', transmitted: 'Gebrochen', diagramTitle: 'Brechung und Totalreflexion', schematic: 'Schematische Vorschau; gib beide Indizes und einen Einfallswinkel für deine Strahlwege ein.', calculated: 'Strahlgeometrie aus den berechneten Winkeln; die Linienhelligkeit stellt keine Lichtintensität dar.'
+};
+
+export const opticsDiagramUi = {
+  'mirror-focus':'Kugelspiegel: Brennpunkt und Krümmungsmittelpunkt',
+  'lens-power':'Dünne Linse: sammelnde und zerstreuende Strahlen',
+  'optical-medium':'Lichtausbreitung im Vakuum und in einem Medium',
+  'parallel-plate':'Planparallele Platte: Brechung und seitlicher Versatz',
+  'prism-deviation':'Prisma: Brechung an beiden Flächen',
+  description:'Blaue Pfeile zeigen die Lichtausbreitung. Gestrichelte Linien zeigen Lote oder geometrische Strahlverlängerungen.',
+  schematic:'Schematisches Beispiel ohne Darstellung von Eingabewerten.',
+  calculated:'Die Geometrie folgt den berechneten Winkeln, dem Brechungsindex oder dem Vorzeichen der Brennweite; Längen sind normiert.',
+  legend:'Gestrichelt: Lote oder Strahlverlängerungen.',
+  focusLegend:'F: Brennpunkt; C: Krümmungsmittelpunkt; S: Spiegelscheitel; O: Linsenmitte.'
+};
+
+export const pulleyUi = {
+ title:'Idealer Flaschenzug',load:'Last',
+ description:'Ein durchgehendes Seil läuft um feste Umlenkrollen und den beweglichen Lastblock. Nummerierte senkrechte Seilabschnitte tragen die Last. Das freie Seilende wird nach unten gezogen, während die Last steigt.',
+ schematic:'Schematische Vorschau ohne gemessene Kräfte oder Wege.',
+ calculated:'Die Seilführung folgt der berechneten Anzahl tragender Seilabschnitte.',
+ compact:'Vereinfachte Seilführung bei mehr als acht tragenden Seilabschnitten; die genaue Anzahl steht darunter.',
+ legend:'n zählt tragende Seilabschnitte, nicht Rollen. Feste Rollen können die Zugrichtung umlenken.',
+ forces:'F: Zugkraft; F_G: Gewichtskraft der Last. Die Kraftpfeile haben einen gemeinsamen normierten Massstab.',
+ travel:'s: nach unten gezogener Seilweg; h: Hubhöhe. Richtungspfeile sind schematisch; s = n·h.'
+};
+
+export const keplerUi={
+ view:'Ellipsenansicht',section:'3D-Kegelschnitt',orbit:'Bahnebene',resetView:'Ansicht zurücksetzen',
+ viewport:'Drehbare Ellipsenkonstruktion',phase:'Bahnphase t/T',
+ controls:'Zum Drehen ziehen oder die fokussierte Zeichnung mit den Pfeiltasten bedienen. Home setzt die Ansicht zurück.',
+ phaseHelp:'Der Regler verschiebt die Zeit gleichmässig. In der Nähe des anziehenden Brennpunkts bewegt sich der Bahnpunkt schneller.',
+ description3d:'Eine Ebene schneidet einen Doppelkegel. Die Schnittkurve wird auf die Ellipse in der horizontalen Bahnebene projiziert; F₁ und F₂ markieren ihre Brennpunkte.',
+ description2d:'Ellipsenbahn mit anziehendem Brennpunkt F₁, Fahrstrahl und einem über die Keplergleichung bestimmten Bahnpunkt.',
+ schematic:'Schematische Bahn, auf die grosse Halbachse normiert; keine numerische Koordinatenskala.',
+ calculated:'Die Ellipsenform folgt den validierten Rechnerwerten; die Zeichnung ist auf a normiert.',
+ constructionNote:'Kegel und schräger Schnitt sind eine geometrische Konstruktion. Die dargestellte Bahn ist ihre horizontale Projektion, keine Bewegung auf dem Kegel.',
+ areaHelp:'Die Flächensektoren beginnen in der Nähe von Periapsis und Apoapsis. Ihre Flächen folgen A₁:A₂; die Zeitintervalle haben dasselbe Verhältnis. Gleiche Intervalle ergeben gleiche Flächen. Bahngrösse und Exzentrizität sind schematisch.',
+ desmos:'Desmos-Originalmodell öffnen'
 };

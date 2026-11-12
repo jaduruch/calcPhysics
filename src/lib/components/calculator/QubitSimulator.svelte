@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { defaultInputUnit } from '#lib/physics/units.ts';
   import { onMount, type Component } from 'svelte';
   import { applyGate, blochAngles, blochVector, gateTrajectory, probability, zeroQubit, type Gate, type GateId, type Qubit, type Vector3 } from '#lib/physics/quantum/qubit.ts';
   import { qubitGates } from '#lib/content/quantum.ts';
@@ -17,7 +18,7 @@
   let progress = $state(1);
   let trajectory = $state<readonly Vector3[]>([]);
   let raw = $state<Record<AngleKey, string>>({ gamma: '', theta: '', phi: '', lambda: '' });
-  let units = $state<Record<AngleKey, string>>({ gamma: 'rad', theta: 'rad', phi: 'rad', lambda: 'rad' });
+  let units = $state<Record<AngleKey, string>>({ gamma: defaultInputUnit('angle'), theta: defaultInputUnit('angle'), phi: defaultInputUnit('angle'), lambda: defaultInputUnit('angle') });
   let reducedMotion = $state(false);
   let mounted = $state(false);
   let viewError = $state(false);
