@@ -1,3 +1,4 @@
+import {hookePhysics} from '../mechanics/hooke.ts';
 import {keplerPhysics} from '../mechanics/kepler.ts';
 import { formulaBookPhysics } from './formula-book.ts';
 import { divide, product, ModelFailure, type ResourcePhysics, type Values } from './solver.ts';
@@ -26,6 +27,7 @@ function prism(v: Values): Values {
 export const resourcePhysics: Record<string, ResourcePhysics> = {
 ...formulaBookPhysics,
 ...keplerPhysics,
+'hookes-law':hookePhysics,
 "contact-pressure":{domains:{"p": "nonnegative", "F": "nonnegative", "A": "positive"},primary:["p", "F", "A"],inverse:{"p":v=>divide(v.F,v.A),"F":v=>product(v.p,v.A),"A":v=>divide(v.F,v.p)},},
 "hydraulic-press":{domains:{"F1": "nonnegative", "A1": "positive", "F2": "nonnegative", "A2": "positive"},primary:["F1", "A1", "F2", "A2"],inverse:{"F1":v=>divide(product(v.F2,v.A1),v.A2),"A1":v=>divide(product(v.F1,v.A2),v.F2),"F2":v=>divide(product(v.F1,v.A2),v.A1),"A2":v=>divide(product(v.F2,v.A1),v.F1)},derive:v=>({p:divide(v.F1,v.A1)}),},
 "hydrostatic-pressure":{domains:{"p": "nonnegative", "rho": "positive", "h": "nonnegative", "g": "positive"},primary:["p", "rho", "h"],inverse:{"p":v=>product(v.rho,v.g,v.h),"rho":v=>divide(v.p,product(v.g,v.h)),"h":v=>divide(v.p,product(v.rho,v.g))},defaults:{"g": 9.81},},

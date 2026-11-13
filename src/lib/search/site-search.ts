@@ -1,3 +1,6 @@
+import {disclaimer} from '../content/disclaimer.ts';
+import {about} from '../content/about.ts';
+import {calculatorHelp} from '../content/calculator-help.ts';
 import { models, topics } from '../content/topics.ts';
 import { groupTopicModels } from '../content/model-groups.ts';
 import { baseUnits, namedUnits, commonUnits, physicalConstants } from '../content/si-reference.ts';
@@ -39,7 +42,7 @@ export function createSiteSearchIndex(locale: Locale): SearchEntry[] {
     content: normalizeSearch(bilingual(content)), formulas: normalizeSearch(formulas.join(' '))
   });
   const result = published.map(topic => entry(`topic:${topic.id}`, hierarchy(topic.id), languagePath(topic.path, locale),
-    [topic.title, topic.navigationTitle ?? ''], [topic.description, topic.seo?.description ?? '']));
+    [topic.title, topic.navigationTitle ?? ''], [topic.description, topic.seo?.description ?? '', ...(topic.id==='calculator-help'?calculatorHelp.steps:topic.id==='about'?about.paragraphs:topic.id==='disclaimer'?disclaimer.sections.flatMap(section=>[section.title,section.text]):[])]));
   for (const model of models) {
     const topic = byId.get(model.topicId);
     if (!topic) continue;

@@ -1,3 +1,4 @@
+import {hookeDefinition} from './hooke.ts';
 import {keplerDefinitions} from './kepler.ts';
 import { formulaBookDefinitions } from './formula-book.ts';
 import type {ModelDefinition} from './model-types.ts';
@@ -13,6 +14,7 @@ export interface ResourceDefinition {
 export const resourceDefinitions: readonly ResourceDefinition[] = [
   ...formulaBookDefinitions,
   ...keplerDefinitions,
+  hookeDefinition,
   {
     "id": "contact-pressure",
     "topic": "fluid-statics",

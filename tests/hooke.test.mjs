@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {hookePhysics} from '../src/lib/physics/mechanics/hooke.ts';
+import {solveResourceModel} from '../src/lib/physics/resources/solver.ts';
+import {hookeSketch} from '../src/lib/visualization/hooke.ts';
+import {hookeDefinition} from '../src/lib/content/hooke.ts';
+import {resourceEquations} from '../src/lib/calculators/resource-equations.ts';
+import katex from 'katex';
+const solve=v=>solveResourceModel(hookePhysics,v);
+test('Hooke law: every inverse for extension and compression, strict display',()=>{for(const x of [-.025,.025,0]){const full={F:-200*x,k:200,x};for(const key of ['F','k','x']){const input={...full};delete input[key];const r=solve(input);if(x===0&&key==='k'){assert.equal(r.status,'underdetermined');continue;}assert.equal(r.status,'success');assert.ok(Math.abs(r.values[key]-full[key])<1e-12);for(const e of resourceEquations(hookeDefinition,r,{}).equations)katex.renderToString(e.expression,{throwOnError:true});assert.equal(input[key],undefined);}}});
+test('Hooke law: zero, conflicts, domains, numeric limits, incomplete',()=>{assert.equal(solve({F:5,x:.2}).status,'no-solution');assert.equal(solve({k:200,x:.1,F:20}).status,'conflict');assert.equal(solve({F:0,x:.1}).status,'no-solution');assert.equal(solve({k:0,x:1}).status,'invalid');assert.equal(solve({k:NaN}).status,'invalid');assert.equal(solve({k:1e308,x:100}).status,'numerical');assert.equal(solve({k:100}).status,'incomplete');});
+test('Hooke sketch preserves known deformation and zero has no force arrow',()=>{for(const x of [-1,0,1]){const r=solve({k:100,x});assert.equal(r.status,'success');const s=hookeSketch(r.values);assert.ok(Number.isFinite(s.end));assert.equal(Math.sign(s.end-230),Math.sign(x));if(x===0)assert.equal(s.forceEnd,undefined);else assert.equal(Math.sign(s.forceEnd-s.end),-Math.sign(x));}assert.equal(hookeSketch({}).forceEnd,undefined);assert.ok(hookeSketch({x:1}).end>230);});

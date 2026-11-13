@@ -5,7 +5,8 @@
   import {unitGroups,fromSI,defaultInputUnit} from '#lib/physics/units.ts';
   import {parseQuantityInUnit} from '#lib/calculators/quantities.ts';
   import {resourceEquations,resourceDisplaySymbol} from '#lib/calculators/resource-equations.ts';
-  import {resourceUi as text,calculatorUi} from '#lib/i18n/runtime.ts';
+  import {resourceUi as text,calculatorUi,text as translate} from '#lib/i18n/runtime.ts';
+  import HookeDiagram from './HookeDiagram.svelte';
   import KeplerDiagram from './KeplerDiagram.svelte';
   import PulleyDiagram from './PulleyDiagram.svelte';
   import ResourceOpticsDiagram from './ResourceOpticsDiagram.svelte';
@@ -16,6 +17,7 @@
   let {modelId}:{modelId:string}=$props();
   const definition=$derived(resourceDefinitions.find(item=>item.id===modelId)!);
   const physics=$derived(resourcePhysics[modelId]);
+  let focused=$state<string|null>(null);
   let raw=$state<Record<string,string>>({});
   let selectedUnits=$state<Record<string,string>>({});
   const unit=(key:string)=>selectedUnits[key]??defaultInputUnit(definition.fields.find(field=>field.id===key)!.kind);
@@ -33,6 +35,7 @@
     return solution;
   });
   const equations=$derived(result.status==='success'?(result.solutions??[result.values]).map(values=>resourceEquations(definition,{...result,values},selectedUnits)):[]);
+  const hookeValues=$derived.by(()=>{if(modelId!=='hookes-law')return {};if(result.status==='success')return result.values;const values:Values={};for(const key of ['k','x']){const item=parsed[key];if(item?.status==='valid'&&!invalid.includes(key))values[key]=item.value;}if(result.status==='incomplete'){const item=parsed.F;if(item?.status==='valid'&&!invalid.includes('F'))values.F=item.value;}return values;});
   function changeUnit(key:string,next:string){selectedUnits[key]=next;}
   function reset(){raw={};selectedUnits={};}
   const statusId=$derived(`${modelId}-status`);
@@ -40,7 +43,9 @@
 <CalculatorShell>
   <div class="input-grid">
     {#each definition.fields as field}
+      <div onfocusin={()=>{if(modelId==='hookes-law')focused=field.id;}} onfocusout={event=>{if(modelId==='hookes-law'&&(!(event.relatedTarget instanceof Node)||!event.currentTarget.contains(event.relatedTarget)))focused=null;}}>
       <QuantityField id={`${modelId}-${field.id}`} symbol={resourceDisplaySymbol(field.symbol)} name={field.name} kind={field.kind} raw={raw[field.id]??''} unit={unit(field.id)} invalid={invalid.includes(field.id)} state={physics.defaults?.[field.id]!==undefined&&!(raw[field.id]??'').trim()?`${text.defaultValue} ${physics.defaults[field.id]} ${unitGroups[field.kind].si}`:''} describedby={statusId} onvalue={value=>raw[field.id]=value} onunit={next=>changeUnit(field.id,next)} />
+      </div>
     {/each}
   </div>
   <CalculatorTools onreset={reset}/>
@@ -64,5 +69,6 @@
   {#if modelId==='kepler-ellipse'||modelId==='kepler-areas'}
     <KeplerDiagram {modelId} result={result.status==='success'?result:null} enteredE={parsed.e?.status==='valid'&&parsed.e.value>=0&&parsed.e.value<1?parsed.e.value:undefined}/>
   {/if}
-  <p class="assumption">{definition.assumption}</p>
+  {#if modelId==='hookes-law'}<HookeDiagram values={hookeValues} {focused}/>{/if}
+  <p class="assumption">{translate(definition.assumption)}</p>
 </CalculatorShell>

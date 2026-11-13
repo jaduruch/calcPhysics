@@ -12,6 +12,7 @@ export const unitGroups = {
   volumeFlow: { si: 'm³/s', units: [{ symbol: 'm³/s', factor: 1 }, { symbol: 'L/s', factor: .001 }, { symbol: 'L/min', factor: .001/60 }] },
   massFlow: { si: 'kg/s', units: [{ symbol: 'kg/s', factor: 1 }, { symbol: 'kg/h', factor: 1/3600 }] },
   molarMass: { si: 'kg/mol', units: [{ symbol: 'kg/mol', factor: 1 }, { symbol: 'g/mol', factor: .001 }] },
+  springConstant: { si: 'N/m', units: [{symbol:'N/m',factor:1},{symbol:'N/mm',factor:1000}] },
   surfaceTension: { si: 'N/m', units: [{ symbol: 'N/m', factor: 1 }, { symbol: 'J/m²', factor: 1 }] },
   thermalConductivity: { si: 'W/(m K)', units: [{ symbol: 'W/(m K)', factor: 1 }] },
   heatTransferCoefficient: { si: 'W/(m² K)', units: [{ symbol: 'W/(m² K)', factor: 1 }] },
@@ -89,7 +90,7 @@ export const unitNames: Partial<Record<QuantityKind, string>> = {
   areaRate:'square meters per second',
   angularVelocity:'radians per second',angularAcceleration:'radians per second squared',torque:'newton meter',
   viscosity:'pascal second',volumeFlow:'cubic meters per second',massFlow:'kilograms per second',molarMass:'kilograms per mole',
-  surfaceTension:'newtons per meter',thermalConductivity:'watts per meter kelvin',heatTransferCoefficient:'watts per square meter kelvin',
+  springConstant:'newtons per meter',surfaceTension:'newtons per meter',thermalConductivity:'watts per meter kelvin',heatTransferCoefficient:'watts per square meter kelvin',
   luminousIntensity:'candela',luminousFlux:'lumen',luminousEnergy:'lumen second',illuminance:'lux',luminance:'candelas per square meter',solidAngle:'steradian',powerLevel:'decibels referenced to one milliwatt',
 
   temperature: 'kelvin', temperatureDifference: 'kelvin interval', density: 'kilograms per cubic meter',

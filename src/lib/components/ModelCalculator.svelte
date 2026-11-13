@@ -9,6 +9,7 @@
   import DopplerCalculator from './calculator/DopplerCalculator.svelte';
   import TotalReflectionCalculator from './calculator/TotalReflectionCalculator.svelte';
   import ResourceCalculator from './calculator/ResourceCalculator.svelte';
+  import SpringCalculator from './calculator/SpringCalculator.svelte';
   import ObliqueThrowCalculator from './calculator/ObliqueThrowCalculator.svelte';
   import KinematicsCalculator from './calculator/KinematicsCalculator.svelte';
   import type { KinematicsModelId } from '#lib/content/kinematics.ts';
@@ -16,4 +17,4 @@
   let { model }: { model: ModelDefinition } = $props();
   const Calculator = $derived(model.calculator === 'kinematics' || model.calculator === 'electrical' || model.calculator === 'resource' ? null : calculators[model.calculator]);
 </script>
-{#if model.id === 'oblique-throw'}<ObliqueThrowCalculator/>{:else if model.calculator === 'kinematics'}<KinematicsCalculator modelId={model.id as KinematicsModelId}/>{:else if model.calculator === 'resource'}<ResourceCalculator modelId={model.id}/>{:else if model.calculator === 'electrical'}<ElectricalCalculator modelId={model.id as ElectricalModelId} />{:else if Calculator}<Calculator />{/if}
+{#if model.id === 'spring-oscillator'||model.id==='circular-spring-oscillator'}<SpringCalculator modelId={model.id}/>{:else if model.id === 'oblique-throw'}<ObliqueThrowCalculator/>{:else if model.calculator === 'kinematics'}<KinematicsCalculator modelId={model.id as KinematicsModelId}/>{:else if model.calculator === 'resource'}<ResourceCalculator modelId={model.id}/>{:else if model.calculator === 'electrical'}<ElectricalCalculator modelId={model.id as ElectricalModelId} />{:else if Calculator}<Calculator />{/if}

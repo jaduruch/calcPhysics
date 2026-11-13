@@ -1,3 +1,7 @@
+import {disclaimer} from './disclaimer.ts';
+import {about} from './about.ts';
+import {calculatorHelp} from './calculator-help.ts';
+import {springOscillatorModel,circularSpringModel} from './spring-models.ts';
 import { kinematicModels } from './kinematics.ts';
 import { resourceModels } from './resource-models.ts';
 import { totalReflectionModel } from './optics.ts';
@@ -17,9 +21,14 @@ export interface Topic {
   references?: readonly { title: string; url: string }[];
   symbol: string;
   published: boolean;
+  kind?: 'guide' | 'info';
   seo?: { title: string; description: string };
 }
 export const topics: readonly Topic[] = [
+  {id:'disclaimer',parentId:null,path:'/disclaimer',title:disclaimer.title,description:disclaimer.description,symbol:'i',published:true,kind:'info',seo:{title:'Disclaimer | calcPhysics',description:disclaimer.description}},
+  {id:'about',parentId:null,path:'/about',title:about.title,description:about.description,symbol:'i',published:true,kind:'info',seo:{title:'About calcPhysics',description:about.description}},
+  {id:'calculator-help',parentId:null,path:'/calculator-help',title:calculatorHelp.title,navigationTitle:'Input help',description:calculatorHelp.description,symbol:'?',published:true,kind:'guide',seo:{title:'Calculator Input Help | calcPhysics',description:calculatorHelp.description}},
+  {id:'hookes-law',parentId:'mechanics',path:'/mechanics/hookes-law',title:'Hooke’s Law',description:'Calculate spring restoring force, spring constant and signed extension or compression with Hooke’s law.',symbol:'01.8',published:true},
   {id:'keplers-laws',parentId:'mechanics',path:'/mechanics/keplers-laws',title:'Kepler’s Laws',description:'Explore elliptical orbits, equal swept areas and orbital periods with inverse calculators and a rotating 3D cone-section model.',symbol:'01.7',published:true},
   {id:'rotation',parentId:'mechanics',path:'/mechanics/rotation',title:'Rotation',description:'Angular displacement, circular motion, constant angular acceleration and inverse relations.',symbol:'01.5',published:true},
   {id:'work-energy',parentId:'mechanics',path:'/mechanics/work-and-energy',title:'Work, Energy & Power',description:'Work, kinetic and potential energy, frictional dissipation and translational, rotational and electrical power.',symbol:'01.6',published:true},
@@ -66,6 +75,7 @@ export const topics: readonly Topic[] = [
 export const models: readonly ModelDefinition[] = [
   ...electricalModels,
   ...resourceModels.filter(model=>!model.id.startsWith('book-')),
+  springOscillatorModel,circularSpringModel,
   qubitModel,
   dopplerModel,
   totalReflectionModel,
@@ -103,6 +113,15 @@ export const models: readonly ModelDefinition[] = [
   {
     id: 'inclined-plane', topicId: 'dynamics', calculator: 'inclined-plane', title: 'Inclined Plane',
     variables: [
+      ...[
+        {name:'weight magnitude',symbol:'F_G',unit:'N'},
+        {name:'normal force magnitude',symbol:'F_N',unit:'N'},
+        {name:'downhill gravity component',symbol:String.raw`F_{\parallel}`,unit:'N'},
+        {name:'kinetic friction force',symbol:'F_f',unit:'N'},
+        {name:'net force',symbol:'F_{net}',unit:'N'},
+        {name:'required uphill force for uniform raising',symbol:'F_{up}',unit:'N'},
+        {name:'constant acceleration',symbol:'a',unit:'m/s²'}
+      ].map(field=>({...field,unitName:field.unit==='N'?'newton':'meters per second squared'})),
       { name: 'mass', symbol: 'm', unit: 'kg', unitName: 'kilogram' },
       { name: 'plane length', symbol: 'L', unit: 'm', unitName: 'meter' },
       { name: 'height difference', symbol: 'h', unit: 'm', unitName: 'meter' },
@@ -112,6 +131,7 @@ export const models: readonly ModelDefinition[] = [
       { name: 'gravitational acceleration', symbol: 'g', unit: 'm/s²', unitName: 'meters per second squared' }
     ],
     formulas: [
+      {label:'Raising Force Along a Rough Incline',expression:String.raw`F_{up}=F_G(\sin\alpha+\mu_k\cos\alpha)`},
       { label: 'Geometry', expression: String.raw`h = L \sin\alpha` },
       { label: 'End speed from rest', expression: String.raw`v_{end}=\sqrt{2aL},\quad v_{end}=\sqrt{2gh}\ (\mu_k=0)` },
       {label:'Height from speed (no friction)',expression:String.raw`h=\frac{v_{end}^2}{2g}`},
@@ -131,6 +151,6 @@ export const models: readonly ModelDefinition[] = [
   ...resourceModels.filter(model=>model.id.startsWith('book-'))
 ];
 export function childrenOf(parentId: string | null) {
-  const children = topics.filter(topic => topic.parentId === parentId);
+  const children = topics.filter(topic => topic.parentId === parentId && !topic.kind);
   return parentId === null ? children : children.sort((a, b) => a.symbol.localeCompare(b.symbol, 'en', { numeric: true }));
 }

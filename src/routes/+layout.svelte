@@ -2,7 +2,6 @@
   import '#lib/styles/app.css';
   import '#lib/styles/calculator.css';
   import 'katex/dist/katex.min.css';
-  import { browser } from '$app/env';
   import { onMount } from 'svelte';
   import { afterNavigate } from '$app/navigation';
   import { ui, text, localPath, isGerman } from '#lib/i18n/runtime.ts';
@@ -10,7 +9,8 @@
   import ThemeToggle from '#lib/components/ThemeToggle.svelte';
   import { page } from '$app/state';
   import { childrenOf } from '#lib/content/topics.ts';
-  import { basePath, languagePath } from '#lib/i18n/locale.ts';
+  import SiteFooter from '#lib/components/SiteFooter.svelte';
+  import { basePath } from '#lib/i18n/locale.ts';
   const currentPath = $derived(basePath(page.url.pathname));
   $effect(() => { document.documentElement.lang = isGerman() ? 'de' : 'en'; });
   const mainTopics = childrenOf(null).filter(topic => topic.published);
@@ -62,8 +62,4 @@
   </details>
 </div></header>
 <main id="main" tabindex="-1">{@render children()}</main>
-<footer><a class="brand footer-brand" href={localPath("/")}>calc<span>Physics</span></a><nav class="footer-language" aria-label={isGerman() ? 'Sprache' : 'Language'}>
-  <a href={`${languagePath(page.url.pathname, 'en')}${browser ? page.url.search + page.url.hash : ''}`} lang="en" hreflang="en" aria-current={!isGerman() ? 'true' : undefined}>English</a>
-  <span aria-hidden="true">/</span>
-  <a href={`${languagePath(page.url.pathname, 'de')}${browser ? page.url.search + page.url.hash : ''}`} lang="de" hreflang="de" aria-current={isGerman() ? 'true' : undefined}>Deutsch</a>
-</nav></footer>
+<SiteFooter />

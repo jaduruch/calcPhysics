@@ -1,3 +1,4 @@
+import {evaluateArithmetic} from './arithmetic.ts';
 import { getUnit, toSI, fromSI, type QuantityKind } from '../physics/units.ts';
 
 export const prefixes = [
@@ -9,19 +10,28 @@ export const prefixes = [
   { symbol: 'T', factor: 1e12 }
 ] as const;
 export type Prefix = (typeof prefixes)[number]['symbol'];
-export type ParsedQuantity = { status: 'empty' | 'invalid' } | { status: 'valid'; value: number; number: string; prefix: Prefix };
+export type ParsedQuantity = { status: 'empty' | 'invalid' } | { status: 'valid'; value: number; number: string; prefix: Prefix; expression?: string; hasExplicitPrefix?: boolean };
 export function parseQuantity(raw: string, fallbackPrefix: Prefix = ''): ParsedQuantity {
+  if(raw.length>4096)return {status:'invalid'};
   const text = raw.trim();
   if (!text) return { status: 'empty' };
   const match = text.match(/^([+-]?(?:\d+(?:[.,]\d*)?|[.,]\d+)(?:[eE][+-]?\d+)?)\s*([pnumcdkMGTµμ]?)$/);
-  if (!match) return { status: 'invalid' };
-  const numberText = match[1].replace(',', '.');
-  const suffix = match[2].replace(/[µμ]/, 'u');
-  const prefix = (suffix || fallbackPrefix) as Prefix;
-  const number = Number(numberText);
-  const value = number * prefixes.find(item => item.symbol === prefix)!.factor;
-  if (!Number.isFinite(value) || (number !== 0 && value === 0) || (number === 0 && /[1-9]/.test(numberText.split(/[eE]/)[0]))) return { status: 'invalid' };
-  return { status: 'valid', value, number: numberText, prefix };
+  const parseLiteral=(numberText:string,prefix:Prefix):number=>{
+    const number=Number(numberText),value=number*prefixes.find(item=>item.symbol===prefix)!.factor;
+    if(!Number.isFinite(value)||(number!==0&&value===0)||(number===0&&/[1-9]/.test(numberText.split(/[eE]/)[0])))throw new RangeError('Invalid numeric literal');
+    return value;
+  };
+  if(match){
+    const numberText=match[1].replace(',','.'),prefix=(match[2].replace(/[µμ]/,'u')||fallbackPrefix) as Prefix;
+    try{return {status:'valid',value:parseLiteral(numberText,prefix),number:numberText,prefix};}catch{return {status:'invalid'};}
+  }
+  const expression=evaluateArithmetic(text,(number,prefix)=>parseLiteral(number,prefix as Prefix));
+  if(!expression)return {status:'invalid'};
+  const prefix=expression.hasPrefix?'':fallbackPrefix;
+  const value=expression.value*prefixes.find(item=>item.symbol===prefix)!.factor;
+  if(!Number.isFinite(value)||(expression.value!==0&&value===0))return {status:'invalid'};
+  // Existing equation adapters receive an evaluated scalar, never expression text as a number.
+  return {status:'valid',value,number:String(expression.value),prefix,expression:raw,hasExplicitPrefix:expression.hasPrefix};
 }
 /** Engineering prefixes by default. Round only for display, retaining trailing significant zeroes. */
 export function formatQuantity(value: number): { number: string; prefix: Prefix } {
@@ -43,7 +53,7 @@ export function parseQuantityInUnit(raw: string, kind: QuantityKind, unit: strin
   const definition = getUnit(kind, unit);
   const parsed = parseQuantity(raw);
   if (parsed.status !== 'valid') return parsed;
-  if (('offset' in definition || kind==='powerLevel') && parsed.prefix) return { status: 'invalid' };
+  if (('offset' in definition || kind==='powerLevel') && (parsed.prefix||parsed.hasExplicitPrefix)) return { status: 'invalid' };
   const value = toSI(parsed.value, kind, unit);
   if (!Number.isFinite(value) || (!('offset' in definition) && parsed.value !== 0 && value === 0)) return { status: 'invalid' };
   return { ...parsed, value };

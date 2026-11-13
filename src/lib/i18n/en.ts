@@ -15,8 +15,9 @@ export const ui = {
 } as const;
 
 export const calculatorUi = {
+  help: 'Input help',
   initialPosition: 'Initial position', position: 'Position', velocity: 'Velocity', time: 'Time',
-  invalidNumber: 'Enter a number with an optional prefix: p, n, u, m, c, d, k, M, G or T. Example: 1.5k. Prefixes are case-sensitive.',
+  invalidNumber: 'Enter a number or an expression using (), +, -, *, / and ^. Prefixes p, n, u, m, c, d, k, M, G and T are case-sensitive. Example: (1k + 2m) / 2.',
   'non-finite': 'These values exceed the supported numerical range.',
   'negative-time': 'Elapsed time must be zero or positive.',
   'too-many': 'Leave one field empty to calculate its value.',
@@ -24,7 +25,7 @@ export const calculatorUi = {
   underdetermined: 'These values do not determine a unique result (division by zero).',
   unitConversion: 'Convert to SI units',
   unitFor: 'Unit for', calculated: 'Calculated', assumed: 'Assumed: 0',
-  precision: 'Type prefixes directly: 1.5k, 250m or 20u. Results: 3 significant figures.',
+  precision: 'Numbers or expressions: (), +, -, *, /, ^. Prefixes: 1.5k, 250m, 20u. Results: 3 significant figures.',
   reset: 'Reset', assumption: 'Initial position assumed: s₀ = 0 m.', working: 'Calculation steps'
 } as const;
 
@@ -37,6 +38,7 @@ export const chartUi = {
 } as const;
 
 export const inclinedPlaneUi = {
+ combinedAssumptions: 'The raising force describes uniform upward sliding and is separate from the downhill net force. End speed assumes a start from rest; negative acceleration describes braking only. Blank friction and gravity are assumed only after evaluating the known values.',
  endVelocity: 'end speed (from rest)',
  speedInvalid: 'The speed contradicts the plane geometry or friction. Check the supplied values.',
   length: 'Plane length', height: 'Height difference',

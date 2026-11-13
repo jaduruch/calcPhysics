@@ -8,6 +8,10 @@ Stand 13.11.2026: Home führt alle Hauptthemen; Mechanics enthält Kinematics mi
 
 Erweiterung aus den privaten Unterlagen Physik1/Physik2: 15 zusätzliche Unterthemen und 32 fachlich geprüfte Rechnerdefinitionen sowie Snell’s Law mit bestehendem Solver. Auswahl, genaue Abdeckung und Quellengrenzen: `docs/RESOURCE_CONTENT.md`. Die PDFs und Render-/OCR-Dateien bleiben ausserhalb des Repositories. Das vollständige Physikkapitel des Formelbuchs (S. 44–72) ergänzt 138 zusätzliche Beziehungen mit 496 expliziten inversen Zielgrössen; Rotation, Work, Energy & Power, Light & Photometry und Fiber Optics sind eigene Unterthemen. Abdeckung und fachliche Korrekturen: `docs/FORMULA_BOOK.md`.
 
+## Sprache und Ton
+
+Sachlich und direkt schreiben. Keine Werbung, Slogans, Selbstvermarktung, LinkedIn-artigen Profiltexte oder pauschalen Vertrauensfloskeln. Keine dekorativen Aussagen wie „Physics, formulas and calculation models — developed from electronics experience and physics studies.“ ergänzen. Footer auf Marke, Navigation und nötige Hinweise beschränken. Persönliche Angaben auf der About-Seite konkret und überprüfbar nennen, ohne sie werblich auszuschmücken. Diese Vorgabe gilt für Englisch und Deutsch sowie für neue und überarbeitete Produkttexte.
+
 ## Verbindliche Grundlagen
 
 - [Verbindlicher Modellseitenstandard und zentrale Änderungsstellen](docs/MODEL_PAGE_STANDARD.md)
@@ -52,7 +56,7 @@ Diese Anforderungen gelten für neue und geänderte Rechner. Sie beschreiben den
 - SvelteKit und TypeScript im Strict-Modus; zentrale CSS-Tokens statt paralleler Styling-Systeme.
 - Visuelle Referenz ist die bereitgestellte `Qubit_Demo/main/portal.html`: exakte Hell-/Dunkel-Flächenfarben und blaue Akzente gemäss `docs/DESIGN_SYSTEM.md`. Formeln weiterhin mit KaTeX, nicht mit manuellen HTML-/CSS-Brüchen.
 - Physik und numerische Verfahren als reine TypeScript-Funktionen ohne Svelte, DOM, KaTeX oder Diagrammbibliotheken. Kein veränderlicher globaler Rechnerzustand.
-- Eingaben an der Grenze parsen, validieren und nach SI konvertieren. Winkeleingaben starten standardmässig mit Grad (°); Radiant (rad) bleibt im Einheiten-Dropdown verfügbar. Die zentrale Eingabevoreinstellung ist von der internen SI-Einheit rad getrennt. Intern ungerundet rechnen; erst zur Ausgabe formatieren.
+- Eingaben an der Grenze zentral parsen, validieren und nach SI konvertieren. Zahlenfelder akzeptieren auch begrenzte skalare Ausdrücke mit `() + - * / ^` und Präfixen je Zahl; `1k + 1m` bedeutet `1000.001`. Rohtexte bleiben erhalten. Die gewählte Einheit gilt für den ausgewerteten Ausdruck; keine modellabhängigen Ausdrucksparser und kein `eval`. Winkeleingaben starten standardmässig mit Grad (°); Radiant (rad) bleibt im Einheiten-Dropdown verfügbar. Die zentrale Eingabevoreinstellung ist von der internen SI-Einheit rad getrennt. Intern ungerundet rechnen; erst zur Ausgabe formatieren.
 - Messwerte in Formeln und Resultaten mit geeigneten SI-Massvorsätzen und drei signifikanten Stellen darstellen. Angezeigte Rundungen niemals zurück in Solver oder Diagramme führen. Numerische Einsetzungen nur mathematisch nötig klammern und implizite Produkte mit `\cdot` eindeutig setzen.
 - Jede Formel hat dokumentierte Voraussetzungen, Definitionsbereiche, Einheiten und fachliche Tests. Nichtendliche Zahlen niemals als gültige Ergebnisse ausgeben.
 - Formelumstellungen und fachliche Abhängigkeiten explizit in reinen Funktionen implementieren. Kein `eval`, keine willkürliche Skriptausführung und kein allgemeines CAS.

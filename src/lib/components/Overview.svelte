@@ -5,6 +5,9 @@
   import {groupTopicModels} from '#lib/content/model-groups.ts';
   import ModelHost from './ModelHost.svelte';
   import SiteSearch from './SiteSearch.svelte';
+  import Disclaimer from './Disclaimer.svelte';
+  import About from './About.svelte';
+  import CalculatorHelp from './CalculatorHelp.svelte';
   import SiReference from './SiReference.svelte';
   let { topic = null }: { topic?: Topic | null } = $props();
   const children = $derived(childrenOf(topic?.id ?? null));
@@ -20,14 +23,20 @@
   {#if topic}<li><span aria-current="page">{text(topic.title)}</span></li>{/if}</ol>
 </nav>
 <section class="intro" aria-labelledby="page-title">
-  {#if topic}<p class="eyebrow">{ui.subjectLabel}</p>{/if}
+  {#if topic && !topic.kind}<p class="eyebrow">{ui.subjectLabel}</p>{/if}
   <h1 id="page-title">{topic ? text(topic.title) : ui.homeTitle}</h1>
   <p class="lead">{topic ? text(topic.description) : ui.homeDescription}</p>
   {#each topic?.references ?? [] as reference}<p><a href={reference.url}>{reference.title}</a></p>{/each}
 </section>
-{#if isGerman()}<p class="translation-notice" lang="de">Die deutsche Fassung wird schrittweise ergänzt. Noch nicht übersetzte Fachtexte und Rechnerbeschriftungen erscheinen auf Englisch.</p>{/if}
+{#if isGerman()&&!topic?.kind}<p class="translation-notice" lang="de">Die deutsche Fassung wird schrittweise ergänzt. Noch nicht übersetzte Fachtexte und Rechnerbeschriftungen erscheinen auf Englisch.</p>{/if}
 {#if !topic}<SiteSearch />{/if}
-{#if topic?.id === 'si-reference'}
+{#if topic?.id === 'disclaimer'}
+  <Disclaimer />
+{:else if topic?.id === 'about'}
+  <About />
+{:else if topic?.id === 'calculator-help'}
+  <CalculatorHelp />
+{:else if topic?.id === 'si-reference'}
   <SiReference />
 {:else if topicModels.length > 0}
   <div>

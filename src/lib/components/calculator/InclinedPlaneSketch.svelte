@@ -2,7 +2,7 @@
   import type { InclineResult } from '#lib/physics/mechanics/inclined-plane.ts';
   import { inclinedPlaneSketch } from '#lib/visualization/inclined-plane.ts';
   import { inclinedPlaneUi as text } from '#lib/i18n/runtime.ts';
-  let { result, enteredAngle, enteredFriction, highlightAngle = false, highlightLength = false, highlightHeight = false }: { highlightAngle?: boolean; highlightLength?: boolean; highlightHeight?: boolean; result: InclineResult | null; enteredAngle?: number; enteredFriction?: number } = $props();
+  let { result, enteredAngle, enteredFriction, highlightAngle = false, highlightLength = false, highlightHeight = false, focusedField = null }: { focusedField?: string|null; highlightAngle?: boolean; highlightLength?: boolean; highlightHeight?: boolean; result: InclineResult | null; enteredAngle?: number; enteredFriction?: number } = $props();
   const id = $props.id();
   const data = $derived(result?.status === 'success' && result.normal!==undefined ? result : null);
   const sketch = $derived(inclinedPlaneSketch(data, enteredAngle, enteredFriction));
@@ -11,9 +11,10 @@
 </script>
 <figure>
   <figcaption>{text.sketch}</figcaption>
-  <svg style:width="calc(420px * var(--graphic-scale))" style:max-width="100%" viewBox="0 0 420 320" role="img" aria-labelledby={`${id}-title ${id}-description`}>
+  <svg class:has-focus={focusedField!==null} style:width="calc(420px * var(--graphic-scale))" style:max-width="100%" viewBox="0 0 420 320" role="img" aria-labelledby={`${id}-title ${id}-description`}>
     <title id={`${id}-title`}>{text.sketch}</title><desc id={`${id}-description`}>{text.sketchDescription}{!data ? ` ${text.schematic}` : ''}{highlightAngle ? ` ${text.angleHighlight}` : ''}{highlightLength ? ` ${text.lengthHighlight}` : ''}{highlightHeight ? ` ${text.heightHighlight}` : ''}</desc>
 
+    <g class:muted={focusedField!==null && !['angle','length','height'].includes(focusedField)}>
     <path class="plane-fill" d={`M${base.x} ${base.y} L${end.x} ${end.y} L${end.x} ${base.y} Z`} />
     <line class="ground" x1="60" y1={base.y} x2="350" y2={base.y} />
     <line class="plane" class:highlighted={highlightLength} data-angle-rad={angle} x1={base.x} y1={base.y} x2={end.x} y2={end.y} />
@@ -31,18 +32,24 @@
       <path class="angle" d={`M${base.x + 38} ${base.y} A38 38 0 0 0 ${base.x + 38 * cos} ${base.y - 38 * sin}`} />
       <text class="angle-label" x={base.x + 47 * Math.cos(angle / 2)} y={base.y - 47 * Math.sin(angle / 2) - 3}>{angleLabel}</text>
     </g>
+    </g>
     <rect class="block" x={centre.x - 22} y={centre.y - 16} width="44" height="32" rx="4" transform={`rotate(${-angle * 180 / Math.PI} ${centre.x} ${centre.y})`} />
     {#each arrows as arrow}
       {#if arrow.length > 0}
+      <g class:muted={focusedField!==null && !(['mass','gravity'].includes(focusedField) || focusedField===arrow.id || focusedField==='frictionForce'&&arrow.id==='friction' || focusedField==='friction'&&arrow.id==='friction' || ['net','acceleration','raising'].includes(focusedField))}>
         <line class="force" data-force={arrow.id} data-magnitude={data ? arrow.magnitude : undefined} class:component={arrow.component} x1={centre.x} y1={centre.y} x2={arrow.shaftEnd.x} y2={arrow.shaftEnd.y} style:stroke-width={arrow.shaftWidth} />
         <polygon class="arrowhead" points={arrow.head.map(point => `${point.x},${point.y}`).join(' ')} />
         <text class="force-label" x={arrow.labelPosition.x} y={arrow.labelPosition.y} text-anchor="middle">{arrow.label}</text>
+      </g>
       {/if}
     {/each}
   </svg>
   <p>{data ? text.diagramNote : text.schematic}</p>
 </figure>
 <style>
+  .muted :global(line), .muted :global(path), .muted :global(rect) { stroke: var(--color-diagram-muted) !important; }
+  .muted :global(text), .muted :global(polygon) { fill: var(--color-diagram-muted) !important; }
+  .muted :global(.angle-area) { fill: transparent !important; }
   figure { max-width: 30rem; margin: 24px 0 0; padding: 16px; border-radius: var(--control-radius); background: var(--color-control); }
   figcaption { font-size: .875rem; font-weight: 600; }
   svg { display: block; width: 100%; height: auto; }
