@@ -1,6 +1,7 @@
+import {obliqueFields} from './oblique-throw.ts';
 import type {ModelDefinition} from './model-types.ts';
 import type {QuantityKind} from '../physics/units.ts';
-import {kinematicsUi as text,calculatorUi} from '../i18n/en.ts';
+import {kinematicsUi as text,calculatorUi,obliqueUi} from '../i18n/en.ts';
 export type KinematicsModelId='accelerated-motion'|'vertical-throw'|'horizontal-throw'|'oblique-throw';
 export interface KinematicField {id:string;symbol:string;name:string;kind:QuantityKind;defaultValue?:number}
 export const kinematicFields:Record<KinematicsModelId,readonly KinematicField[]>={
@@ -58,8 +59,8 @@ export const kinematicModels:readonly ModelDefinition[]=[
  variables:[{name:'launch height',symbol:'h',unit:'m',unitName:'meter'},{name:'signed horizontal velocity',symbol:'vₓ',unit:'m/s',unitName:'meters per second'},{name:'gravitational acceleration magnitude',symbol:'g',unit:'m/s²',unitName:'meters per second squared'}],
  formulas:[{label:'Horizontal coordinate',expression:String.raw`x(t)=v_xt`},{label:'Height',expression:String.raw`y(t)=h-\frac12gt^2`},{label:'Flight time',expression:String.raw`t_f=\sqrt{\frac{2h}{g}}`},{label:'Horizontal displacement',expression:String.raw`R=v_xt_f`},{label:'Trajectory (vₓ ≠ 0)',expression:String.raw`y(x)=h-\frac{g}{2v_x^2}x^2`},{label:'Impact speed',expression:String.raw`v_{impact}=\sqrt{v_x^2+(gt_f)^2}`}],
  notes:[{text:text.projectileAssumptions},{text:text.horizontalConvention},{text:'Requires algebra and square roots. Horizontal and vertical motions are independent. The initial vertical velocity is exactly zero; this is a horizontal launch, not an arbitrary oblique throw. At vₓ = 0 the trajectory is a vertical drop, and at h = 0 the flight duration and horizontal displacement are zero. Blank g assumes 9.81 m/s².'}],references:[{title:'OpenStax — Projectile Motion',url:'https://openstax.org/books/university-physics-volume-1/pages/4-3-projectile-motion'}]},
- {id:'oblique-throw',topicId:'kinematics',calculator:'kinematics',title:'Oblique Throw',
- variables:[{name:text.launchHeight,symbol:'y₀',unit:'m',unitName:'meter'},{name:text.launchSpeed,symbol:'v₀',unit:'m/s',unitName:'meters per second'},{name:text.launchAngle,symbol:'α',unit:'rad',unitName:'radian'},{name:text.gravity,symbol:'g',unit:'m/s²',unitName:'meters per second squared'}],
+ {id:'oblique-throw',topicId:'kinematics',calculator:'kinematics',title:'Projectile Motion',searchTerms:['Oblique Throw','Schiefer Wurf'],
+ variables:obliqueFields.map(field=>({name:field.name,symbol:field.symbol,unit:field.kind==='time'?'s':field.kind==='angle'?'rad':field.kind==='velocity'?'m/s':field.kind==='acceleration'?'m/s²':'m',unitName:field.kind==='time'?'second':field.kind==='angle'?'radian':field.kind==='velocity'?'meters per second':field.kind==='acceleration'?'meters per second squared':'meter'})),
  formulas:[
   {label:'Velocity components',expression:String.raw`v_x=v_0\cos\alpha,\quad v_{y0}=v_0\sin\alpha`},
   {label:'Horizontal coordinate',expression:String.raw`x(t)=v_xt`},
@@ -67,10 +68,12 @@ export const kinematicModels:readonly ModelDefinition[]=[
   {label:'Vertical velocity',expression:String.raw`v_y(t)=v_{y0}-gt`},
   {label:'Time to ground',expression:String.raw`t_f=\frac{v_{y0}+\sqrt{v_{y0}^2+2gy_0}}{g}`},
   {label:'Horizontal displacement',expression:String.raw`R=v_xt_f`},
-  {label:'Highest point after launch',expression:String.raw`t_{peak}=\max(0,v_{y0}/g),\quad y_{peak}=y_0+v_{y0}t_{peak}-\frac12gt_{peak}^2`},
+  {label:'Highest point after launch',expression:String.raw`t_{peak}=v_{y0}/g,\quad y_{peak}=y_0+v_{y0}t_{peak}-\frac12gt_{peak}^2\quad(\alpha\ge0)`},
   {label:'Trajectory (vₓ ≠ 0)',expression:String.raw`y(x)=y_0+\frac{v_{y0}}{v_x}x-\frac{g}{2v_x^2}x^2`},
-  {label:'Impact speed',expression:String.raw`v_{impact}=\sqrt{v_x^2+v_{y,impact}^2},\quad v_{y,impact}=-\sqrt{v_{y0}^2+2gy_0}`}
+  {label:'Impact speed',expression:String.raw`v_{impact}=\sqrt{v_x^2+v_{y,impact}^2},\quad v_{y,impact}=-\sqrt{v_{y0}^2+2gy_0}`},
+  {label:'Maximum rise above launch',expression:String.raw`h=y_{peak}-y_0=\frac{v_{y0}^2}{2g}\quad(\alpha\ge0)`},
+  {label:'Equal-height range and flight time',expression:String.raw`R=\frac{v_0^2\sin(2\alpha)}{g},\qquad t_f=\frac{2v_0\sin\alpha}{g}\quad(y_0=0,\ v_{y0}>0)`}
  ],
- notes:[{text:text.projectileAssumptions},{text:text.obliqueConvention},{text:text.obliqueDomain},{text:text.obliqueTheory}],
+ notes:[{text:text.projectileAssumptions},{text:text.obliqueConvention},{text:obliqueUi.theory}],
  references:[{title:'OpenStax — Projectile Motion',url:'https://openstax.org/books/university-physics-volume-1/pages/4-3-projectile-motion'}]}
 ];

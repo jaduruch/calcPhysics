@@ -100,8 +100,10 @@ export function kinematicsEquations(id:KinematicsModelId,result:Extract<Kinemati
    equations.push(output('vx',String.raw`v_0\cdot\cos\alpha`,`${q('v0')}\\cdot\\cos\\left(${q('alpha')}\\right)`,text.horizontalVelocity,'v_x','m/s'));
    equations.push(output('vy0',String.raw`v_0\cdot\sin\alpha`,`${q('v0')}\\cdot\\sin\\left(${q('alpha')}\\right)`,text.initialVerticalVelocity,'v_{y0}','m/s'));
    equations.push(output('flight',String.raw`\frac{v_{y0}+\sqrt{v_{y0}^2+2gy_0}}{g}`,`\\frac{${q('vy0')}+\\sqrt{${square('vy0')}+2\\cdot${q('g')}\\cdot${q('y0')}}}{${q('g')}}`,text.flight,'t_f','s'));
+   if(v.alpha>=0){
    equations.push(output('peakTime',String.raw`\max(0,v_{y0}/g)`,`\\max\\left(0\\,\\mathrm{s},\\frac{${q('vy0')}}{${q('g')}}\\right)`,text.peakTime,'t_{peak}','s'));
    equations.push(output('peakHeight',String.raw`y_0+v_{y0}\cdot t_{peak}-\frac12g\cdot t_{peak}^2`,`${q('y0')}+${q('vy0')}\\cdot${q('peakTime')}-\\frac12\\cdot${q('g')}\\cdot${square('peakTime')}`,text.peakHeight,'y_{peak}','m'));
+   }
    equations.push(output('range',String.raw`v_x\cdot t_f`,`${q('vx')}\\cdot${q('flight')}`,text.range,'R','m'));
    equations.push(output('vyImpact',String.raw`-\sqrt{v_{y0}^2+2gy_0}`,`-\\sqrt{${square('vy0')}+2\\cdot${q('g')}\\cdot${q('y0')}}`,text.vyImpact,'v_{y,impact}','m/s'));
    equations.push(output('speedImpact',String.raw`\sqrt{v_x^2+v_{y,impact}^2}`,`\\sqrt{${square('vx')}+${square('vyImpact')}}`,text.speedImpact,'v_{impact}','m/s'));

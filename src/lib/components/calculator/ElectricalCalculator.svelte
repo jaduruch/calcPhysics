@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { electricalDefinitions, electricalDisplaySymbol, resistorNetworkDefinition, capacitorNetworkDefinition, inductorNetworkDefinition, rlAcDefinition, type ElectricalDefinition } from '#lib/content/electricity.ts';
+  import { electricalDefinitions, transformerDefinition, electricalDisplaySymbol, resistorNetworkDefinition, capacitorNetworkDefinition, inductorNetworkDefinition, rlAcDefinition, type ElectricalDefinition } from '#lib/content/electricity.ts';
   import { solveElectrical, electricalPhysics, inDomain, type ElectricalModelId, type ElectricalPhysics } from '#lib/physics/electricity.ts';
   import { unitGroups, defaultInputUnit, getUnit, type QuantityKind } from '#lib/physics/units.ts';
   import { parseQuantityInUnit } from '#lib/calculators/quantities.ts';
   import { electricalEquations, electricalSymbol, electricalQuantity } from '#lib/calculators/electrical-equations.ts';
   import { electricalCurves } from '#lib/visualization/electrical.ts';
-  import { electricalUi as text } from '#lib/i18n/runtime.ts';
+  import { electricalUi as text, text as translate } from '#lib/i18n/runtime.ts';
   import CalculatorShell from './CalculatorShell.svelte';
   import QuantityField from './QuantityField.svelte';
   import CalculatorTools from './CalculatorTools.svelte';
@@ -26,6 +26,8 @@
   import MotionChart from './MotionChart.svelte';
   import UnitSelect from '../ui/UnitSelect.svelte';
   let { modelId }: { modelId: ElectricalModelId } = $props();
+  const isTransformer = $derived(modelId === 'transformer');
+  let realTransformer = $state(false);
   const isDivider = $derived(modelId === 'voltage-divider');
   const isResistorNetwork = $derived(modelId === 'resistance-series');
   const isCapacitorNetwork = $derived(modelId === 'capacitance-series');
@@ -46,23 +48,24 @@
   let discharging = $state(false);
   let starToDelta = $state(false);
   const calculationId = $derived(isDivider && loaded ? 'loaded-divider' : isResistorNetwork && parallel ? 'resistance-parallel' : isCapacitorNetwork && parallel ? 'capacitance-parallel' : isInductorNetwork && parallel ? 'inductance-parallel' : isRcAc && parallel ? 'rc-parallel-ac' : isRlAc && parallel ? 'rl-parallel-ac' : isRcTransient && discharging ? 'rc-discharge' : isRlTransient && discharging ? 'rl-discharge' : isStarDelta && starToDelta ? 'star-delta' : modelId);
-  const definition = $derived(isResistorNetwork ? resistorNetworkDefinition(parallel ? 'resistance-parallel' : 'resistance-series', componentCount) : isCapacitorNetwork ? capacitorNetworkDefinition(parallel ? 'capacitance-parallel' : 'capacitance-series', componentCount) : isInductorNetwork ? inductorNetworkDefinition(parallel ? 'inductance-parallel' : 'inductance-series', componentCount) : isRlAc ? rlAcDefinition(parallel?'rl-parallel-ac':'rl-series-ac') : electricalDefinitions.find(model => model.id === calculationId)!);
+  const definition = $derived(isTransformer ? transformerDefinition(realTransformer) : isResistorNetwork ? resistorNetworkDefinition(parallel ? 'resistance-parallel' : 'resistance-series', componentCount) : isCapacitorNetwork ? capacitorNetworkDefinition(parallel ? 'capacitance-parallel' : 'capacitance-series', componentCount) : isInductorNetwork ? inductorNetworkDefinition(parallel ? 'inductance-parallel' : 'inductance-series', componentCount) : isRlAc ? rlAcDefinition(parallel?'rl-parallel-ac':'rl-series-ac') : electricalDefinitions.find(model => model.id === calculationId)!);
   let raw = $state<Record<string, string>>({});
   let activeQuantity = $state<string | null>(null);
   let selectedUnits = $state<Record<string, string>>({});
   const unit = (id: string, kind: QuantityKind) => selectedUnits[id] ?? defaultInputUnit(kind);
-  const parsed = $derived(Object.fromEntries(definition.inputs.map(field => [field.id, parseQuantityInUnit(raw[field.id] ?? '', field.kind, unit(field.id, field.kind))])));
+  const activeInputs = $derived(definition.inputs.filter(field => !(isTransformer && !realTransformer && field.id === 'eta')));
+  const parsed = $derived(Object.fromEntries(activeInputs.map(field => [field.id, parseQuantityInUnit(raw[field.id] ?? '', field.kind, unit(field.id, field.kind))])));
   const physics = $derived(electricalPhysics[calculationId] as ElectricalPhysics);
-  const invalid = $derived(definition.inputs.filter(field => {
+  const invalid = $derived(activeInputs.filter(field => {
     const value = parsed[field.id];
     return value.status === 'invalid' || (value.status === 'valid' && !inDomain(value.value, isNetwork ? 'positive' : physics.inputs[field.id]));
   }).map(field => field.id));
-  const result = $derived(invalid.length ? { status: 'invalid' as const, fields: invalid } : solveElectrical(calculationId, Object.fromEntries(Object.entries(parsed).flatMap(([id, value]) => value.status === 'valid' ? [[id, value.value]] : []))));
+  const result = $derived(invalid.length ? { status: 'invalid' as const, fields: invalid } : solveElectrical(calculationId, Object.fromEntries(Object.entries(parsed).flatMap(([id, value]) => value.status === 'valid' ? [[id, value.value]] : [])), isTransformer ? realTransformer ? 'real' : 'ideal' : undefined));
   const resultOutputs = $derived(result.status === 'success'
     ? (result.steps ? result.steps.flatMap(step => definition.outputs.filter(output => output.id === step.target && result.outputs[output.id] !== undefined)) : definition.outputs)
     : []);
   const equations = $derived(electricalEquations({ ...definition, outputs: resultOutputs }, result, selectedUnits));
-  const conversions = $derived(result.status === 'success' ? definition.inputs.flatMap(field => {
+  const conversions = $derived(result.status === 'success' ? activeInputs.flatMap(field => {
     const si = unitGroups[field.kind].si;
     const from = unit(field.id, field.kind);
     if (from === si) return [];
@@ -97,6 +100,9 @@
   }
 </script>
 <CalculatorShell>
+  {#if isTransformer}
+    <div class="calculator-mode"><ToggleSwitch checked={realTransformer} label={text.transformerMode} offLabel={text.ideal} onLabel={text.real} onchange={value => { realTransformer = value; activeQuantity = null; }} /></div>
+  {/if}
   {#if isDivider}
     <div class="calculator-mode"><ToggleSwitch checked={loaded} label={text.dividerLoad} offLabel={text.unloaded} onLabel={text.loaded} onchange={value => { loaded = value; activeQuantity = null; }} /></div>
   {/if}
@@ -119,12 +125,12 @@
     <div class="calculator-mode"><ToggleSwitch checked={starToDelta} label={text.starDeltaConversion} offLabel={text.deltaToStar} onLabel={text.starToDelta} onchange={value => { starToDelta = value; activeQuantity = null; }} /></div>
   {/if}
   <div class="input-grid" class:input-grid--single={isNetwork}>
-    {#each definition.inputs as field}
+    {#each activeInputs as field}
       <QuantityField id={`${modelId}-${field.id}`} symbol={inputSymbol(field.id)} name={inputName(field)} kind={field.kind} raw={raw[field.id] ?? ''} unit={unit(field.id, field.kind)} invalid={invalid.includes(field.id) || (result.status === 'no-solution' && result.fields.includes(field.id))} describedby={`${modelId}-assumptions`} pending={isNetwork && field.id !== `${networkPrefix}1` && !(raw[field.id] ?? '').trim()} onvalue={value => setValue(field.id, value)} onunit={next => changeUnit(field.id, next)} onfocuschange={focused => { if (modelId === 'ohms-law' || isDivider || isNetwork || isRcAc || isRlAc || isStarDelta) activeQuantity = focused ? field.id : null; }} />
     {/each}
   </div>
   <CalculatorTools onreset={() => { raw = {}; selectedUnits = {}; activeQuantity = null; componentCount = 2; }} />
-  <p class="assumption" id={`${modelId}-assumptions`}>{definition.assumption}</p>
+  <p class="assumption" id={`${modelId}-assumptions`}>{translate(definition.assumption)}</p>
   <div aria-live="polite" aria-atomic="true">
     {#if result.status !== 'success'}
       <p class="status" class:error={result.status !== 'incomplete'}>{result.status === 'invalid' ? text.invalid : result.status === 'out-of-range' ? text.range : result.status === 'no-solution' ? text.conflict : result.status === 'underdetermined' ? text.underdetermined : result.status === 'too-many-inputs' ? text.twoInputs : text.incomplete}</p>
@@ -136,7 +142,7 @@
       {#each resultOutputs as output, index}
         <div class="electrical-result">
           {#if unitGroups[output.kind].units.length > 1}
-            <label class="output-unit"><span>{output.name} — {text.output}</span><UnitSelect kind={output.kind} value={unit(output.id, output.kind)} label={`${text.output}: ${output.name}`} onchange={value => selectedUnits[output.id] = value} /></label>
+            <label class="output-unit"><span>{translate(output.name)} — {text.output}</span><UnitSelect kind={output.kind} value={unit(output.id, output.kind)} label={`${text.output}: ${translate(output.name)}`} onchange={value => selectedUnits[output.id] = value} /></label>
           {/if}
           <EquationBlock label={output.name} equations={[equations[index]]} />
         </div>

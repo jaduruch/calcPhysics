@@ -4,7 +4,7 @@ export const DEFAULT_PROJECTILE_GRAVITY=9.81;
  * for y0=0,v0<=0 the body starts in contact with ground and flight time is zero.
  * No drag, bounce, Earth curvature or variation of gravity.
  */
-export function solveVerticalThrow(input:{y0?:number;v0?:number;g?:number}):KinematicsResult {
+export function solveVerticalThrow(input:{y0?:number;v0?:number;g?:number},options:{includePeak?:boolean}={}):KinematicsResult {
   const y0=input.y0??0,g=input.g??DEFAULT_PROJECTILE_GRAVITY,v0=input.v0;
   const invalid=(['y0','v0','g'] as const).filter(key=>{
     const value=key==='y0'?y0:key==='g'?g:v0;
@@ -14,11 +14,11 @@ export function solveVerticalThrow(input:{y0?:number;v0?:number;g?:number}):Kine
   if(v0===undefined)return {status:'incomplete'};
   const impactMagnitude=Math.hypot(v0,Math.SQRT2*Math.sqrt(g)*Math.sqrt(y0));
   const flight=v0>0?v0/g+impactMagnitude/g:y0===0?0:y0/(impactMagnitude/2-v0/2);
-  const peakTime=v0>0?v0/g:0;
-  const peakHeight=y0+v0*peakTime/2;
+  const peakTime=options.includePeak===false?undefined:v0>0?v0/g:0;
+  const peakHeight=peakTime===undefined?undefined:y0+v0*peakTime/2;
   const impactVelocity=-impactMagnitude;
-  const scenario:MotionScenario={values:{y0,v0,g,flight,peakTime,peakHeight,impactVelocity},motion:{s0:y0,v0,a:-g},duration:flight,finalPosition:0,finalVelocity:impactVelocity,horizontalVelocity:null};
-  if(!finiteScenario(scenario)||(y0>0&&flight===0)||(v0>0&&peakTime===0))return {status:'invalid',code:'numerical',fields:[]};
+  const scenario:MotionScenario={values:{y0,v0,g,flight,...(peakTime===undefined?{}:{peakTime,peakHeight:peakHeight!}),impactVelocity},motion:{s0:y0,v0,a:-g},duration:flight,finalPosition:0,finalVelocity:impactVelocity,horizontalVelocity:null};
+  if(!finiteScenario(scenario)||(y0>0&&flight===0)||(options.includePeak!==false&&v0>0&&peakTime===0))return {status:'invalid',code:'numerical',fields:[]};
   return {status:'success',target:null,assumed:[...(input.y0===undefined?['y0']:[]),...(input.g===undefined?['g']:[])],scenarios:[scenario]};
 }
 /** Horizontal launch: x0=0, y0=h>=0, initial vertical velocity zero.
@@ -57,7 +57,7 @@ export function solveObliqueThrow(input:{y0?:number;v0?:number;alpha?:number;g?:
   const cosine=Math.abs(alpha)===Math.PI/2?0:alpha===0?1:Math.abs(alpha)===Math.PI?-1:Math.cos(alpha);
   const vx=v0*cosine,vy0=v0*sine;
   if(v0>0&&((cosine!==0&&vx===0)||(sine!==0&&vy0===0)))return {status:'invalid',code:'numerical',fields:[]};
-  const vertical=solveVerticalThrow({y0,v0:vy0,g});
+  const vertical=solveVerticalThrow({y0,v0:vy0,g},{includePeak:alpha>=0});
   if(vertical.status!=='success')return vertical;
   const base=vertical.scenarios[0],range=base.duration===0?0:vx*base.duration,speedImpact=Math.hypot(vx,base.finalVelocity);
   const scenario:MotionScenario={...base,horizontalVelocity:vx,values:{...base.values,v0,alpha,vx,vy0,range,vyImpact:base.finalVelocity,speedImpact}};

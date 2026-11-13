@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ModelDefinition } from '#lib/content/model-types.ts';
   import { ui, text } from '#lib/i18n/runtime.ts';
+  import QuantitySymbol from './ui/QuantitySymbol.svelte';
   import Formula from './Formula.svelte';
   let { model }: { model: ModelDefinition } = $props();
 </script>
@@ -11,7 +12,7 @@
           <dl class="variables-list">
             {#each model.variables as variable}
               <div class="variable-row">
-                <dt><span class="variable-symbol">{variable.symbol}{#if variable.subscript}<sub>{variable.subscript}</sub>{/if}</span><span class="variable-name">{text(variable.name)}</span></dt>
+                <dt><span class="variable-symbol"><QuantitySymbol symbol={variable.symbol} subscript={variable.subscript}/></span><span class="variable-name">{text(variable.name)}</span></dt>
                 <dd><strong>{variable.unit}</strong><span>{text(variable.unitName)}</span></dd>
               </div>
             {/each}
@@ -39,7 +40,6 @@
   .variable-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; padding: 8px 0; }
   .variable-row dt { display: flex; align-items: baseline; gap: 12px; }
   .variable-symbol { min-width: 24px; font-family: Georgia, serif; font-style: italic; font-size: 1.2rem; }
-  .variable-symbol sub { font-style: normal; font-size: .7em; }
   .variable-name { font-size: .875rem; text-transform: capitalize; }
   .variable-row dd { display: flex; flex-direction: column; margin: 0; font-size: .875rem; }
   .variable-row dd strong { font-weight: 500; }

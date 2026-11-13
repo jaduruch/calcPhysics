@@ -16,7 +16,8 @@ test('every published topic and original model is indexed once, including groupe
       const card = groupTopicModels(models.filter(item => item.topicId === model.topicId)).find(card => linkedModelIndex(card, entry.href.slice(entry.href.indexOf('#'))) !== null);
       assert.ok(card, `link must resolve to a card: ${model.id}`);
       const position = linkedModelIndex(card, entry.href.slice(entry.href.indexOf('#')));
-      assert.equal((card.variants?.[position]?.model ?? card).id, model.id);
+      if(card.integratedModels)assert.ok(card.integratedModels.some(source=>source.id===model.id));
+      else assert.equal((card.variants?.[position]?.model ?? card).id, model.id);
     }
   }
 });
@@ -53,4 +54,12 @@ test('model links tolerate unknown and malformed hashes', () => {
   const model = models.find(model => model.id === 'uniform-motion');
   assert.equal(linkedModelIndex(model, '#model-uniform-motion'), 0);
   for (const hash of ['', '#model-missing', '#%broken']) assert.equal(linkedModelIndex(model, hash), null);
+});
+
+test('former vertical, horizontal and oblique searches resolve to one renamed projectile calculator',()=>{
+ for(const query of ['Vertical Throw','Horizontal Throw','Oblique Throw','Senkrechter Wurf','Waagerechter Wurf','Schiefer Wurf']){
+  const answers=searchSite(en,query).filter(entry=>entry.href.endsWith('#model-oblique-throw'));
+  assert.equal(answers.length,1,query);assert.equal(answers[0].path.at(-1),'Projectile Motion');
+ }
+ const german=searchSite(de,'Wurfbewegung');assert.ok(german.some(entry=>entry.path.at(-1)==='Wurfbewegung'));
 });

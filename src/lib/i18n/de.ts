@@ -57,6 +57,7 @@ export const inclinedPlaneUi = {
  angleHighlight: 'Der Winkel ist hervorgehoben, weil sein Eingabefeld fokussiert ist.', lengthHighlight: 'Die Ebenenlänge L ist hervorgehoben, weil ihr Eingabefeld fokussiert ist.', heightHighlight: 'Der Höhenunterschied h ist hervorgehoben, weil sein Eingabefeld fokussiert ist.', sketch: 'Schiefe Ebene – Kräfteskizze', schematic: 'Schematische Vorschau: Winkel und Reibung bestimmen Geometrie und Kräfteverhältnisse. Kräftebeträge erscheinen bei gültiger Berechnung.', sketchDescription: 'Die Gewichtskraft wirkt senkrecht nach unten, die Normalkraft senkrecht zur Fläche, die Hangkomponente entlang der Ebene und die Gleitreibung bergauf. Die Hangkomponente ist keine zusätzliche unabhängige Kraft.', diagramNote: 'Der Winkel ist massstäblich. Die Kraftpfeile verwenden einen gemeinsamen, automatisch angepassten Massstab. Die Hangkomponente ist gestrichelt gezeichnet.', source: 'Theoriequelle: OpenStax, University Physics, Friction and the Inclined Plane.'
 };
 export const electricalUi = {
+ transformerMode: 'Transformatormodell', ideal: 'Ideal', real: 'Real', fixedEfficiency: 'Fest: η = 1 (100 %)',
  series: 'Reihe', parallel: 'Parallel', resistorConnection: 'Widerstandsschaltung', capacitorConnection: 'Kondensatorschaltung', inductorConnection: 'Spulenschaltung', rcConnection: 'RC-Schaltung', rlConnection: 'RL-Schaltung',
  charging: 'Aufladen', discharging: 'Entladen', rcProcess: 'RC-Vorgang', rlProcess: 'RL-Vorgang', stepResponse: 'Sprungantwort',
  starDeltaConversion: 'Netzumwandlung', deltaToStar: 'Dreieck → Stern', starToDelta: 'Stern → Dreieck', deltaNetwork: 'Dreieckschaltung', starNetwork: 'Sternschaltung',
@@ -112,3 +113,16 @@ export const keplerUi={
 };
 
 export const searchUi = { label: 'Seite durchsuchen', placeholder: 'Themen, Rechner, Formeln und Konstanten…', result: 'Treffer', results: 'Treffer', noResults: 'Keine Treffer gefunden.', more: 'Weitere Treffer anzeigen' } as const;
+
+export const obliqueUi = {
+ "noApex": "Bei negativen Abwurfwinkeln werden Scheitelzeit, Steighöhe und maximale Höhe nicht berechnet.",
+  "help": "Beliebige bekannte Grössen eingeben; alle eindeutig bestimmbaren Werte werden berechnet. Beobachtungszeit t und gesamte Flugzeit t_f sind unterschiedliche Grössen. Die Höhen y und y_peak beziehen sich auf den Boden; h ist die Steighöhe über dem Abwurfpunkt. Der Flug endet beim ersten Bodenkontakt.",
+  "invalid": "Die markierten Eingaben prüfen. Geschwindigkeitsbeträge, Höhen und Zeiten müssen nichtnegativ sein, g muss positiv sein, und −180° ≤ α ≤ 180°. Horizontale Positionen und Geschwindigkeitskomponenten sind vorzeichenbehaftet; die vertikale Aufprallgeschwindigkeit darf nicht positiv sein.",
+  "incomplete": "Unabhängige bekannte Grössen eingeben, etwa Geschwindigkeit und Winkel, beide Geschwindigkeitskomponenten oder Flugzeit und Wurfweite.",
+  "partial": "Die Angaben bestimmen Teilresultate. Unabhängige Abwurfdaten ergänzen, um die gesamte Flugbahn darzustellen.",
+  "conflict": "Diese Angaben beschreiben keinen konsistenten Flug vor dem ersten Bodenkontakt. Die eingegebenen Grössen prüfen.",
+  "solution": "Lösung",
+  "diagramSolution": "Lösung für die Flugbahn",
+  "assumptions": "Angenommen:",
+  "theory": "Ein Rechner beschreibt den schiefen, senkrechten und waagerechten Wurf. Fehlende Grössen werden mit expliziten Umstellungen bestimmt und gegen die ursprünglichen Bewegungsgleichungen geprüft. Mehrere Winkel oder Beobachtungszeiten bleiben erhalten, wenn sie alle Angaben erfüllen. Die Vorgaben y₀ = 0 m und g = 9,81 m/s² gelten erst nach der Auswertung der eingegebenen Daten; sie bleiben sichtbar und werden nie in Eingabefelder eingesetzt."
+} as const;

@@ -10,7 +10,7 @@ test('one voltage-divider card provides the theory for both circuit modes',()=>{
  assert.equal(electricalModels.filter(m=>m.id==='voltage-divider').length,1);
  assert.ok(!electricalModels.some(m=>m.id==='loaded-divider'));
  const card=electricalModels.find(m=>m.id==='voltage-divider');
- assert.ok(card.variables.some(v=>v.symbol==='RL'));
+ assert.ok(card.variables.some(v=>v.symbol==='R_L'));
  for(const formula of card.formulas)katex.renderToString(formula.expression,{throwOnError:true});
 });
 test('unloaded divider solves forward, inverse source/resistors and current inputs',()=>{

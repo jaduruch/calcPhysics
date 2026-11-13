@@ -58,6 +58,7 @@ export const inclinedPlaneUi = {
 } as const;
 
 export const electricalUi = {
+ transformerMode: 'Transformer model', ideal: 'Ideal', real: 'Real', fixedEfficiency: 'Fixed: η = 1 (100%)',
   seriesResistorDiagram: 'Resistors in series', parallelResistorDiagram: 'Resistors in parallel',
   seriesResistorDescription: 'Resistances R1 to Rn are connected in one path between the two terminals. Their resistances add. A dashed resistor represents an empty initial field.',
   parallelResistorDescription: 'Resistances R1 to Rn form separate branches connected to the same two terminals. Their conductances add. A dashed resistor represents an empty initial field.',
@@ -272,3 +273,16 @@ export const keplerUi={
 } as const;
 
 export const searchUi = { label: 'Search the site', placeholder: 'Topics, calculators, formulas and constants…', result: 'result', results: 'results', noResults: 'No results found.', more: 'Show more results' } as const;
+
+export const obliqueUi = {
+ "noApex": "For negative launch angles, apex time, rise and maximum height are not calculated.",
+  "help": "Enter any known quantities; all uniquely determined values are calculated. Observation time t is distinct from total flight time t_f. Heights y and y_peak are above ground; h is the rise above the launch point. Flight ends at the first ground contact.",
+  "invalid": "Check the marked inputs. Speed magnitudes, heights and times must be non-negative, g must be positive, and −180° ≤ α ≤ 180°. Horizontal positions and velocity components are signed; the vertical impact velocity must not be positive.",
+  "incomplete": "Enter independent known quantities, such as speed and angle, both velocity components, or flight time and range.",
+  "partial": "The known values determine partial results. Add independent launch data to show the complete trajectory.",
+  "conflict": "These inputs do not describe a consistent flight before the first ground contact. Check the given quantities.",
+  "solution": "Solution",
+  "diagramSolution": "Trajectory solution",
+  "assumptions": "Assumed:",
+  "theory": "One calculator covers oblique, vertical and horizontal projectile motion. Missing quantities are obtained from explicit inverses and checked against the original motion equations. Multiple angles or observation times are retained when they satisfy all given values. Defaults y₀ = 0 m and g = 9.81 m/s² are used only after inference from the supplied data; they remain visible and never populate input fields."
+} as const;

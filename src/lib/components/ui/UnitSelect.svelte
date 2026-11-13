@@ -1,7 +1,7 @@
 <script lang="ts">
   import { unitGroups, type QuantityKind } from '#lib/physics/units.ts';
-  let { kind, value, label, onchange }: {
-    kind: QuantityKind; value: string; label: string; onchange: (unit: string) => void;
+  let { kind, value, label, onchange, disabled = false }: {
+    disabled?: boolean; kind: QuantityKind; value: string; label: string; onchange: (unit: string) => void;
   } = $props();
   const id = $props.id();
   const options = $derived(unitGroups[kind].units);
@@ -11,7 +11,9 @@
   let container: HTMLDivElement;
   let search = '';
   let lastKey = 0;
+  $effect(() => { if (disabled) expanded = false; });
   function open() {
+    if (disabled) return;
     active = Math.max(0, options.findIndex(option => option.symbol === value));
     const rect = container.getBoundingClientRect();
     const height = options.length * 44 + 16;
@@ -53,7 +55,7 @@
 
 <svelte:window onpointerdown={outside} onresize={() => expanded = false} />
 <div class="unit-select" bind:this={container} onfocusout={event => { if (!container.contains(event.relatedTarget as Node | null)) expanded = false; }}>
-  <button class="trigger" type="button" role="combobox" aria-label={label} aria-expanded={expanded} aria-haspopup="listbox" aria-controls={`${id}-options`} aria-activedescendant={expanded ? `${id}-option-${active}` : undefined} onkeydown={keydown} onclick={() => { if (expanded) expanded = false; else open(); }}>
+  <button {disabled} class="trigger" type="button" role="combobox" aria-label={label} aria-expanded={expanded} aria-haspopup="listbox" aria-controls={`${id}-options`} aria-activedescendant={expanded ? `${id}-option-${active}` : undefined} onkeydown={keydown} onclick={() => { if (expanded) expanded = false; else open(); }}>
     <span>{value}</span>{#if options.length > 1}<span class="chevron" class:expanded aria-hidden="true"></span>{/if}
   </button>
   {#if expanded}

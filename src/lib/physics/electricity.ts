@@ -1,5 +1,5 @@
 import { solveResistorNetwork, solveCapacitorNetwork, solveInductorNetwork } from './resistor-network.ts';
-import { solveOhm, solveTransformer, solveInductor, solveRcAc, solveRlAc, solveRcTransient, solveRlTransient, solveCapacitorCalculations, solveSine, solveAmplitude, solvePwm, solveFilter, solveResonator, solveGain, filterDomains, resonatorDomains, gainDomains, sineDomains, amplitudeDomains, pwmDomains, rcAcDomains, rlAcDomains, rcTransientDomains, rlTransientDomains, capacitorCalculationDomains, inductorDomains, ohmDomains, transformerDomains, solveDivider, dividerDomains, loadedDividerDomains } from './electrical-relations.ts';
+import { solveOhm, solveTransformer, type TransformerMode, solveInductor, solveRcAc, solveRlAc, solveRcTransient, solveRlTransient, solveCapacitorCalculations, solveSine, solveAmplitude, solvePwm, solveFilter, solveResonator, solveGain, filterDomains, resonatorDomains, gainDomains, sineDomains, amplitudeDomains, pwmDomains, rcAcDomains, rlAcDomains, rcTransientDomains, rlTransientDomains, capacitorCalculationDomains, inductorDomains, ohmDomains, transformerDomains, solveDivider, dividerDomains, loadedDividerDomains } from './electrical-relations.ts';
 /** Explicit SI models adapted and reviewed from Elecalculate electrical engineering.
  * Each model's domains and assumptions are documented in content/electricity.ts.
  * Constants: NIST CODATA 2022, https://physics.nist.gov/cuu/Constants/ . */
@@ -64,7 +64,8 @@ export function inDomain(value: number, domain: Domain): boolean {
     : domain === 'efficiency' ? value > 0 && value <= 1
     : domain === 'powerAngle' ? value >= -Math.PI / 2 && value <= Math.PI / 2 : true);
 }
-export function solveElectrical(id: ElectricalModelId, values: Readonly<Record<string, number>>): ElectricalResult {
+export function solveElectrical(id: ElectricalModelId, values: Readonly<Record<string, number>>, transformerMode?: TransformerMode): ElectricalResult {
+  if (id === 'transformer' && transformerMode) return solveTransformer(values, transformerMode);
   const model: ElectricalPhysics = electricalPhysics[id];
   if(model.resolve) return model.resolve(values);
   const invalid = Object.entries(model.inputs).filter(([key, domain]) => values[key] !== undefined && !inDomain(values[key], domain)).map(([key]) => key);

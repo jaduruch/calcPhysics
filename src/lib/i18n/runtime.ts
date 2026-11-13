@@ -25,3 +25,5 @@ export const pulleyUi = dictionary(en.pulleyUi, de.pulleyUi);
 export const keplerUi=dictionary(en.keplerUi,de.keplerUi);
 
 export const searchUi = dictionary(en.searchUi, de.searchUi);
+
+export const obliqueUi = dictionary(en.obliqueUi, de.obliqueUi);

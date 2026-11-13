@@ -84,7 +84,26 @@ const transformerCoupled: Relation[] = [
   relation('R2',['eta','n','R1'],String.raw`\frac{R1}{eta n^2}`,v=>v.R1/v.eta/v.n/v.n),
   relation('n',['eta','R1','R2'],String.raw`\sqrt{\frac{R1}{eta R2}}`,v=>Math.sqrt(v.R1/v.eta/v.R2))
 ];
-export function solveTransformer(given: Values): ElectricalResult {
+export type TransformerMode = 'ideal' | 'real';
+const transformerIdeal: Relation[] = [
+  ...transformerBase.filter(rule => rule.target !== 'eta' && !rule.inputs.includes('eta')),
+  relation('P2',['P1'],'P1',v=>v.P1), relation('P1',['P2'],'P2',v=>v.P2),
+  relation('I2',['n','I1'],'n I1',v=>v.n*v.I1),
+  relation('I1',['n','I2'],String.raw`\frac{I2}{n}`,v=>v.I2/v.n),
+  relation('n',['I1','I2'],String.raw`\frac{I2}{I1}`,v=>v.I2/v.I1),
+  relation('R1',['n','R2'],'n^2 R2',v=>v.n*v.n*v.R2),
+  relation('R2',['n','R1'],String.raw`\frac{R1}{n^2}`,v=>v.R1/v.n/v.n),
+  relation('n',['R1','R2'],String.raw`\sqrt{\frac{R1}{R2}}`,v=>Math.sqrt(v.R1/v.R2))
+];
+export function solveTransformer(given: Values, mode?: TransformerMode): ElectricalResult {
+  if (mode === 'ideal') {
+    if (given.eta !== undefined && given.eta !== 1) return {status: inDomain(given.eta,'efficiency') ? 'no-solution' : 'invalid',fields:['eta']};
+    const result = resolve({...given,eta:1},transformerDomains,transformerIdeal,true);
+    return result.status === 'underdetermined' && Object.keys(given).length < 2 ? {status:'incomplete',fields:[]} : result;
+  }
+  if (mode === 'real') return resolve(given,transformerDomains,[...transformerBase,...transformerCoupled]);
+  // Preserve inference for existing direct API callers; the UI always supplies an explicit mode.
+
   const base=resolve(given,transformerDomains,transformerBase);
   if(base.status === 'invalid' || base.status === 'no-solution')return base;
   const values=base.status==='success'?base.values:given;

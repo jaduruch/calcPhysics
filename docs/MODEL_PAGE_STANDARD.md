@@ -21,6 +21,7 @@ Seit 03.11.2026 verwendet auch Inclined Plane unter Mechanics → Dynamics die g
 | Übersichten und Breadcrumb-Aufbau | [Overview.svelte](../src/lib/components/Overview.svelte) |
 | Modellkartenrahmen und Theorie-Layout | [ModelCard.svelte](../src/lib/components/ModelCard.svelte) |
 | Gemeinsamer Info-Button (ⓘ/✕) | [InfoButton.svelte](../src/lib/components/ui/InfoButton.svelte) |
+| Feldsymbole und Indizes (Eingaben/Theorie) | [QuantitySymbol.svelte](../src/lib/components/ui/QuantitySymbol.svelte), [quantity-symbol.ts](../src/lib/calculators/quantity-symbol.ts) |
 | KaTeX-Ausgabe | [Formula.svelte](../src/lib/components/Formula.svelte) |
 | Einheitenoptionen und SI-Konversionsfaktoren | [units.ts](../src/lib/physics/units.ts) |
 | Präfixe, Parsing, drei signifikante Ergebnisstellen | [quantities.ts](../src/lib/calculators/quantities.ts) |
@@ -148,7 +149,7 @@ Optics ist eine Übersicht mit der Unterseite `/optics/total-internal-reflection
 
 ## Kinematics: Acceleration and Throws
 
-Unter `/mechanics/kinematics` folgen auf Uniform Motion die Karten Uniformly Accelerated Motion, Vertical Throw und Horizontal Throw. `content/kinematics.ts` liefert Fachinhalte/Felder, `KinematicsCalculator` verwendet die gemeinsamen Felder, Tools und Gleichungsbausteine. Vier bekannte Grössen bestimmen die fünfte im Beschleunigungsmodell; bei drei Angaben und leerem s₀ gilt sichtbar s₀ = 0. Zwei zulässige Zeiten werden beide ausgegeben; der gemeinsame Tastatur-bedienbare Umschalter wählt das Diagrammintervall. Wurfmodelle verwenden Vorwärtsrechnung und sichtbare Standardannahmen (g = 9.81 m/s², beim vertikalen Modell y₀ = 0).
+Unter `/mechanics/kinematics` stehen Uniform Motion, Uniformly Accelerated Motion, Projectile Motion, Free Fall und Velocity Components. Vertical Motion und Horizontal Throw sind keine eigenen Karten mehr. `content/kinematics.ts` liefert Fachinhalte/Felder, `KinematicsCalculator` verwendet die gemeinsamen Felder, Tools und Gleichungsbausteine. Vier bekannte Grössen bestimmen die fünfte im Beschleunigungsmodell; bei drei Angaben und leerem s₀ gilt sichtbar s₀ = 0. Zwei zulässige Zeiten werden beide ausgegeben; der gemeinsame Tastatur-bedienbare Umschalter wählt das Diagrammintervall. Projectile Motion verwendet den gemeinsamen inversen Wurfrechner mit sichtbaren Standardannahmen und 17 Eingabemöglichkeiten. Es gibt keine Schnellwahl für Sonderfälle.
 
 `KinematicsCharts` nutzt `MotionChart` auch für die Bahnkurve y(x), mit optionalem vorzeichenbehaftetem x-Bereich. Das gemeinsame Diagrammraster liegt in `calculator.css` und wird auch von Uniform Motion verwendet. Ohne gültige Eingaben werden normierte Beispiele desselben Solvers ohne Zahlenachsen gezeigt. Nullintervalle bleiben ohne erfundene Kurve. Solver-Verträge und Grenzen stehen in den Physikstandards.
 
@@ -166,10 +167,18 @@ Drei normale Modellkarten nutzen ResourceCalculator und die gemeinsamen Felder/E
 
 `ModelHost` steuert die aktive Variante und deren Theorie; `ModelCalculator` ordnet nur die vorhandenen Rechner zu. `ModelVariantSwitch` nutzt bei zwei Varianten den bestehenden Serie-/Parallel-Slider (`ToggleSwitch`), bei mehreren Varianten eine kompakte, tastaturbedienbare Radioauswahl. Keine verschachtelten Dropdowns. Nur besuchte Rechner werden instanziiert; ihre manuellen Eingaben und Einheiten bleiben beim Wechsel erhalten. Verdeckte Rechner sind weder sichtbar noch per Tastatur erreichbar. `ModelTheory` teilt die Theoriegestaltung zwischen interaktiver Ansicht und der vollständigen Ansicht ohne JavaScript.
 
-Beispiele: Rotation 20 → 4 Karten, optische Abbildung 13 → 3, Wärmeausdehnung 12 → 3, Fluidstatik 13 → 5 und Kinematik 27 → 7. Dynamics umfasst vier Karten mit insgesamt 14 unveränderten Rechnerdefinitionen.
+Beispiele: Rotation 20 → 4 Karten, optische Abbildung 13 → 3, Wärmeausdehnung 12 → 3, Fluidstatik 13 → 5 und Kinematik 27 → 5. Dynamics umfasst vier Karten mit insgesamt 14 unveränderten Rechnerdefinitionen.
 
 ## Suche auf der Startseite
 
 Die Startseite bietet eine lokale Suche über alle veröffentlichten Themen, ursprünglichen Rechner samt zusammengefassten Varianten, Variablen, Formeln, Modellhinweise sowie die SI- und Konstantenreferenz. Der Index wird aus den vorhandenen Inhaltsquellen erstellt; keine zweite manuelle Rechnerliste und kein externer Suchdienst. Deutsche und englische Begriffe, Akzente und zusammengeschriebene Modellnamen werden berücksichtigt.
 
 Treffer erscheinen direkt unter dem Suchfeld als Linkpillen mit vollständigem Themenpfad. Zunächst zwölf anzeigen, weitere über den gemeinsamen Mehr-Treffer-Button erreichbar machen. Status und Leerzustand sind übersetzt und für Screenreader angekündigt. Links zu Rechnern nutzen stabile ursprüngliche IDs (`#model-…`); `ModelHost` öffnet die richtige Karte, aktiviert die gefundene Variante und fokussiert deren Zusammenfassung. Ein unbekannter oder ungültig kodierter Hash öffnet keine fremde Karte.
+
+Die Karte Projectile Motion (deutsch: Wurfbewegung) integriert die 18 bisherigen Quellen des schiefen, senkrechten und waagerechten Wurfs: eine Eingabefläche mit 17 Grössen und ein gemeinsamer inverser Solver. Sonderfälle werden durch normale Eingaben wie α = 0° oder 90° bestimmt; keine zusätzliche Schnellwahl. `integratedModels` bewahrt die ursprünglichen Inhalts-IDs für Suche und Direktlinks; alle öffnen dieselbe Karte. Die einzige verbleibende Auswahl betrifft tatsächlich unterschiedliche physikalische Lösungen für die Diagramme.
+
+## Indizes in Feldsymbolen
+
+`QuantityField` und `ModelTheory` nutzen gemeinsam `QuantitySymbol` für Inline-KaTeX. Tiefstellungen gelten für Zahlen und Wörter gleichermassen: `R_{12}`, `t_{f}`, `t_{peak}`, `y_{peak}`, `v_{impact}` und `v_{y,impact}`. Die Klammern gruppieren den gesamten Index. Vorhandene Unicode-Tiefstellungen und getrennte `subscript`-Metadaten werden zentral in dieselbe Notation überführt. Beschriftungen zeigen weder rohe Unterstriche noch TeX-Klammern; Indexmarkierungen dürfen nicht zur vermeintlichen Bereinigung entfernt werden.
+
+Die Metadaten dürfen TeX-Indexnotation enthalten; Eingabe-IDs, URLs und sprachneutrale Solver-Schlüssel ändern sich dadurch nicht. Keine modellabhängigen HTML-/CSS-Ersatzlösungen ergänzen. Symbole bleiben mit dem zugehörigen Eingabefeld verknüpft und werden mit HTML/MathML und `trust: false` ausgegeben.

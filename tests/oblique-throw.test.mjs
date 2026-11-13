@@ -26,10 +26,10 @@ test('cardinal, leftward and downward launches agree with existing special cases
  }
  for(const alpha of [Math.PI/2,-Math.PI/2]){
   const s=scenario({y0:10,v0:10,alpha,g:10});const vertical=solveVerticalThrow({y0:10,v0:alpha>0?10:-10,g:10}).scenarios[0];
-  assert.equal(s.values.vx,0);assert.equal(s.values.range,0);close(s.duration,vertical.duration);close(s.values.peakHeight,vertical.values.peakHeight);
+  assert.equal(s.values.vx,0);assert.equal(s.values.range,0);close(s.duration,vertical.duration);if(alpha>=0)close(s.values.peakHeight,vertical.values.peakHeight);else assert.equal(s.values.peakHeight,undefined);
  }
  const left=scenario({v0:20,alpha:3*Math.PI/4,g:10});close(left.values.range,-40);
- const down=scenario({y0:10,v0:10,alpha:-Math.PI/4,g:10});assert.ok(down.duration>0);assert.equal(down.values.peakTime,0);assert.equal(down.values.peakHeight,10);
+ const down=scenario({y0:10,v0:10,alpha:-Math.PI/4,g:10});assert.ok(down.duration>0);assert.equal(down.values.peakTime,undefined);assert.equal(down.values.peakHeight,undefined);
 });
 
 test('ground contact, rest, domains, incomplete and numeric extremes stay explicit',()=>{

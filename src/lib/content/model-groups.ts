@@ -1,10 +1,8 @@
 import type { ModelDefinition } from './model-types.ts';
 /** Editorial presentation only: solver IDs, domains and inverse equations are unchanged. */
-export const modelGroups: readonly { topic: string; title: string; members: readonly string[] }[] = [
-  {"topic": "kinematics", "title": "Vertical Motion", "members": ["vertical-throw", "book-vertical-position", "book-vertical-velocity", "book-projectile-energy", "book-maximum-height", "book-vertical-apex-time"]},
+export const modelGroups: readonly { topic: string; title: string; members: readonly string[]; integrated?: boolean }[] = [
   {"topic": "kinematics", "title": "Free Fall", "members": ["book-free-fall-height", "book-free-fall-speed", "book-average-fall-speed", "book-free-fall-speed-time"]},
-  {"topic": "kinematics", "title": "Horizontal Throw", "members": ["horizontal-throw", "book-horizontal-trajectory", "book-falling-direction", "book-horizontal-speed-time", "book-falling-direction-depth"]},
-  {"topic": "kinematics", "title": "Oblique Throw", "members": ["oblique-throw", "book-oblique-flight-time", "book-oblique-range", "book-oblique-apex-height", "book-oblique-trajectory", "book-oblique-vertical-velocity", "book-oblique-apex-time"]},
+  {"topic": "kinematics", "title": "Projectile Motion", "integrated": true, "members": ["oblique-throw", "book-oblique-flight-time", "book-oblique-range", "book-oblique-apex-height", "book-oblique-trajectory", "book-oblique-vertical-velocity", "book-oblique-apex-time", "vertical-throw", "book-vertical-position", "book-vertical-velocity", "book-projectile-energy", "book-maximum-height", "book-vertical-apex-time", "horizontal-throw", "book-horizontal-trajectory", "book-falling-direction", "book-horizontal-speed-time", "book-falling-direction-depth"]},
   {"topic": "kinematics", "title": "Velocity Components", "members": ["book-speed-components", "book-launch-cos", "book-launch-sin"]},
   {"topic": "dynamics", "title": "Forces & Friction", "members": ["book-force", "book-orthogonal-force", "book-kinetic-friction"]},
   {"topic": "dynamics", "title": "Weight & Gravitation", "members": ["book-weight", "book-gravitation"]},
@@ -67,6 +65,7 @@ export function groupTopicModels(models: readonly ModelDefinition[]): ModelDefin
     emitted.add(group.members[0]);
     const members = group.members.map(id => models.find(item => item.id === id)).filter((item): item is ModelDefinition => !!item);
     if (members.length < 2) return members;
+    if (group.integrated) return [{...members[0],integratedModels:members}];
     return [{ ...members[0], title: group.title, variants: members.map(member => ({ model: member, label: member.title })) }];
   });
 }
@@ -75,6 +74,7 @@ export function groupTopicModels(models: readonly ModelDefinition[]): ModelDefin
 export function linkedModelIndex(model: ModelDefinition, hash: string): number | null {
   let target: string;
   try { target = decodeURIComponent(hash.replace(/^#/, '')); } catch { return null; }
+  if(model.integratedModels?.some(source=>`model-${source.id}`===target))return 0;
   const variants = model.variants?.map(variant => variant.model) ?? [model];
   const index = variants.findIndex(variant => `model-${variant.id}` === target);
   return index < 0 ? null : index;

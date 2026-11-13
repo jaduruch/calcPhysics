@@ -44,10 +44,10 @@ export function createSiteSearchIndex(locale: Locale): SearchEntry[] {
     const topic = byId.get(model.topicId);
     if (!topic) continue;
     const card = groupTopicModels(models.filter(item => item.topicId === model.topicId))
-      .find(card => card.id === model.id || card.variants?.some(variant => variant.model.id === model.id));
-    result.push(entry(`model:${model.id}`, [...hierarchy(topic.id), model.title],
-      `${languagePath(topic.path, locale)}#model-${encodeURIComponent(model.id)}`,
-      [model.title, card?.title ?? ''], [
+      .find(card => card.id === model.id || card.variants?.some(variant => variant.model.id === model.id) || card.integratedModels?.some(source => source.id === model.id));
+    result.push(entry(`model:${model.id}`, [...hierarchy(topic.id), card?.integratedModels ? card.title : model.title],
+      `${languagePath(topic.path, locale)}#model-${encodeURIComponent(card?.integratedModels ? card.id : model.id)}`,
+      [model.title, ...(model.searchTerms??[]), card?.title ?? ''], [
         ...model.variables.flatMap(variable => [variable.name, variable.symbol, variable.unit, variable.unitName]),
         ...model.formulas.flatMap(formula => [formula.label, formula.expression]),
         ...(model.notes ?? []).flatMap(note => [note.text, note.expression ?? ''])
@@ -81,5 +81,5 @@ export function searchSite(index: readonly SearchEntry[], query: string): Search
       + (compact(entry.formulas).includes(compact(normalized)) ? 80 : 0)
       + terms.reduce((sum, term) => sum + (entry.title.includes(term) ? 20 : entry.hierarchy.includes(term) ? 5 : 1), 0);
     return [{ entry, score }];
-  }).sort((a, b) => b.score - a.score || a.entry.path.join('/').localeCompare(b.entry.path.join('/'))).map(match => match.entry);
+  }).sort((a, b) => b.score - a.score || a.entry.path.join('/').localeCompare(b.entry.path.join('/'))).map(match => match.entry).filter((entry,index,all)=>all.findIndex(other=>other.href===entry.href)===index);
 }

@@ -20,7 +20,7 @@ test('every calculator, theory and inverse remains available exactly once within
   for (const topic of new Set(models.map(model => model.topicId))) {
     const originals = models.filter(model => model.topicId === topic);
     const cards = groupTopicModels(originals);
-    const recovered = cards.flatMap(card => card.variants?.map(variant => variant.model) ?? [card]);
+    const recovered = cards.flatMap(card => card.integratedModels ?? card.variants?.map(variant => variant.model) ?? [card]);
     assert.deepEqual(recovered.map(model => model.id).sort(), originals.map(model => model.id).sort());
     assert.equal(new Set(cards.map(card => card.id)).size, cards.length);
     for (const model of recovered) assert.strictEqual(model, originals.find(original => original.id === model.id));
@@ -28,7 +28,7 @@ test('every calculator, theory and inverse remains available exactly once within
 });
 
 test('dense topics use coherent cards and existing combined networks remain intact', () => {
-  const counts = { kinematics: 7, dynamics: 4, rotation: 4, 'work-energy': 4, 'fluid-statics': 5, 'fluid-flow': 4, 'thermal-expansion': 3, 'optical-imaging': 3, photometry: 3, filters: 2 };
+  const counts = { kinematics: 5, dynamics: 4, rotation: 4, 'work-energy': 4, 'fluid-statics': 5, 'fluid-flow': 4, 'thermal-expansion': 3, 'optical-imaging': 3, photometry: 3, filters: 2 };
   for (const [topic, count] of Object.entries(counts)) assert.equal(groupTopicModels(models.filter(model => model.topicId === topic)).length, count, topic);
   const direct = models.filter(model => model.topicId === 'direct-current');
   assert.deepEqual(groupTopicModels(direct), direct);

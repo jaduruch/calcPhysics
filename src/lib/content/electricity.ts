@@ -1079,7 +1079,7 @@ const rawElectricalDefinitions: readonly ElectricalDefinition[] = [
         "formula": "\\frac{P_2}{P_1}"
       }
     ],
-    "assumption": "Enter known quantities on either side; all uniquely determined missing quantities are calculated. Ideal voltage ratio with a resistive load and lumped efficiency 0 < η ≤ 1. If efficiency cannot be inferred, η = 1 is assumed explicitly. No magnetising current, saturation or winding voltage drop. Two values need not determine every quantity."
+    "assumption": "Choose Ideal for lossless operation (η = 1), or Real to enter or infer efficiency (0 < η ≤ 1). Only uniquely determined quantities are calculated. Both modes use the ideal voltage ratio and a resistive load; Real represents losses through a lumped power efficiency, without magnetising current, saturation or winding voltage drop."
   },
   {
     "id": "magnetic-circuit",
@@ -2274,16 +2274,24 @@ const electricalCardDefinitions = [
   ...waveformCards,
   ...nonWaveformCards.slice(waveformStart)
 ];
+const transformerFormulas: ModelDefinition['formulas'] = [
+  {label:'voltage and turns ratio',expression:String.raw`n=\frac{N_1}{N_2}=\frac{U_1}{U_2}`},
+  {label:'Ideal: efficiency and power',expression:String.raw`\eta=1,\qquad P_2=P_1`},
+  {label:'Ideal: current and resistance',expression:String.raw`I_2=nI_1,\qquad R_1=n^2R_2`},
+  {label:'Real: efficiency and power',expression:String.raw`\eta=\frac{P_2}{P_1},\qquad P_2=\eta P_1,\quad 0<\eta\le1`},
+  {label:'Real: current and resistance',expression:String.raw`I_2=\eta nI_1,\qquad R_1=\eta n^2R_2`},
+  {label:'capacitance reflection',expression:String.raw`C_2=n^2C_1`}
+];
 export const electricalModels: readonly ModelDefinition[] = electricalCardDefinitions.map(definition => ({
   id: definition.id, topicId: definition.topic, title: definition.title, calculator: 'electrical',
   variables: [...new Map([...definition.inputs, ...definition.outputs].map(field => [field.id, field])).values()].map(field => ({ name: field.name, symbol: electricalDisplaySymbol(field.id), unit: unitGroups[field.kind].si, unitName: unitNames[field.kind] ?? unitGroups[field.kind].si })),
-  formulas: definition.id === 'inductor' ? inductorFormulas : definition.id === 'capacitor' ? capacitorCalculationFormulas : definition.id === 'delta-star' ? starDeltaFormulas : definition.id === 'rc-series-ac' ? rcAcFormulas : definition.id === 'rl-series-ac' ? rlAcFormulas : definition.id === 'rc-charge' ? rcTransientFormulas : definition.id === 'rl-charge' ? rlTransientFormulas : definition.id === 'series-rlc' ? seriesResonatorFormulas : definition.id === 'parallel-rlc' ? parallelResonatorFormulas : definition.id === 'voltage-gain' ? gainFormulas : waveformFormulas[definition.id] ?? definition.outputs.map(output => ({ label: output.name, expression: `${electricalSymbol(output.id)} = ${output.formula}` })),
+  formulas: definition.id === 'transformer' ? transformerFormulas : definition.id === 'inductor' ? inductorFormulas : definition.id === 'capacitor' ? capacitorCalculationFormulas : definition.id === 'delta-star' ? starDeltaFormulas : definition.id === 'rc-series-ac' ? rcAcFormulas : definition.id === 'rl-series-ac' ? rlAcFormulas : definition.id === 'rc-charge' ? rcTransientFormulas : definition.id === 'rl-charge' ? rlTransientFormulas : definition.id === 'series-rlc' ? seriesResonatorFormulas : definition.id === 'parallel-rlc' ? parallelResonatorFormulas : definition.id === 'voltage-gain' ? gainFormulas : waveformFormulas[definition.id] ?? definition.outputs.map(output => ({ label: output.name, expression: `${electricalSymbol(output.id)} = ${output.formula}` })),
   notes: [topicTheory[definition.id] ?? topicTheory[definition.topic], { text: definition.assumption }]
 }));
 
 export function electricalDisplaySymbol(id: string): string {
   const greek: Record<string, string> = { Phi: 'Φ', dPhi: 'ΔΦ', Theta: 'Θ', mu: 'μᵣ', er: 'εᵣ', phi: 'φ', eta: 'η', tau: 'τ', dI: 'ΔI', dt: 'Δt', cosPhi: 'cos(φ)', sinPhi: 'sin(φ)' };
-  return greek[id] ?? electricalSymbol(id).replace(/[{}_]/g, '');
+  return greek[id] ?? electricalSymbol(id);
 }
 
 export function rlAcDefinition(id: 'rl-series-ac'|'rl-parallel-ac'): ElectricalDefinition {
@@ -2308,4 +2316,16 @@ export function capacitorNetworkDefinition(id: 'capacitance-series' | 'capacitan
 export function inductorNetworkDefinition(id: 'inductance-series' | 'inductance-parallel', count: number): ElectricalDefinition {
   const base = electricalDefinitions.find(definition => definition.id === id)!;
   return { ...base, inputs: Array.from({ length: count }, (_, index) => ({ id: `L${index + 1}`, name: `inductance ${index + 1}`, kind: 'inductance' as const })) };
+}
+
+/** Mode-dependent display metadata; all arithmetic is performed by the explicit SI solver. */
+export function transformerDefinition(real: boolean): ElectricalDefinition {
+  const base = electricalDefinitions.find(definition => definition.id === 'transformer')!;
+  const idealFormulas: Record<string,string> = {
+    I1:String.raw`\frac{I_2}{n}`, I2:'n I_1', R1:'n^2 R_2', R2:String.raw`\frac{R_1}{n^2}`, eta:'1'
+  };
+  return {...base, outputs: base.outputs.map(output => real ? output : {...output,formula:idealFormulas[output.id]??output.formula}),
+    assumption: real
+      ? 'Real mode: resistive load and lumped efficiency 0 < η ≤ 1. Enter efficiency or infer it from independent quantities; no ideal efficiency is assumed. The voltage ratio remains ideal. Magnetising current, saturation and winding voltage drop are not modelled.'
+      : 'Ideal mode: lossless transformer, η = 1 and P₂ = P₁. Voltage follows the turns ratio, current the inverse turns ratio. Magnetising current, saturation and winding voltage drop are not modelled.'};
 }

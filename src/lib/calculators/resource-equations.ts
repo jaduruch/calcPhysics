@@ -5,7 +5,7 @@ import type { ResourceDefinition, ResourceField } from '../content/resource-cata
 import type { ResourceResult, Values } from '../physics/resources/solver.ts';
 export function resourceDisplaySymbol(symbol:string):string {
   const greek:Record<string,string>={rho:'ρ',alpha:'α',beta:'β',lambda:'λ',Delta:'Δ',delta:'δ',theta:'θ',ell:'ℓ',perp:'⊥',omega:'ω',varphi:'φ',mu:'μ',gamma:'γ',eta:'η',Phi:'Φ',Omega:'Ω'};
-  return symbol.replace(/\\dot\s*([A-Za-z])/g,'$1̇').replace(/\\mathrm\{([^}]+)\}/g,'$1').replace(/\\([a-zA-Z]+)/g,(_,key:string)=>greek[key]??key).replace(/_([012vkpGNR])/g,(_,key:string)=>({'0':'₀','1':'₁','2':'₂',v:'ᵥ',k:'ₖ',p:'ₚ',G:'ᵍ',N:'ₙ',R:'ᵣ'}[key]!)).replace(/_\{([^}]+)\}/g,'$1');
+  return symbol.replace(/\\dot\s*([A-Za-z])/g,'$1̇').replace(/\\mathrm\{([^}]+)\}/g,'$1').replace(/\\([a-zA-Z]+)/g,(_,key:string)=>greek[key]??`\\${key}`).replace(/_([012vkpGNR])(?![A-Za-z0-9])/g,(_,key:string)=>({'0':'₀','1':'₁','2':'₂',v:'ᵥ',k:'ₖ',p:'ₚ',G:'ᵍ',N:'ₙ',R:'ᵣ'}[key]!));
 }
 export function resourceQuantity(value: number, kind: QuantityKind, unit = unitGroups[kind].si as string): string {
   const converted = fromSI(value, kind, unit);
