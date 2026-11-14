@@ -19,17 +19,17 @@ export function eccentricAnomaly(mean:number,e:number):number{
  const turn=2*Math.PI,remainder=mean%turn,m=remainder<0?remainder+turn:remainder;
  if(e===0||m===0)return m;
  let lo=0,hi=Math.min(turn,m/(1-e));
- const meanAt=(E:number)=>{const square=E*E;const difference=E<.1?E*square*(1/6-square/120+square*square/5040-square**3/362880+square**4/39916800):E-Math.sin(E);return (1-e)*E+e*difference;};
+ const meanAt=(E:number)=>meanAnomalyFromE(E,e);
  for(let i=0;i<64;i++){const mid=(lo+hi)/2;if(meanAt(mid)<m)lo=mid;else hi=mid;}
  return (lo+hi)/2;
 }
-/** Same orientation as the supplied Desmos model: periapsis lies on -x. */
+/** Same orientation as the supplied Desmos model: periapsis lies on +x. */
 export function ellipsePoint(e:number,fraction:number){
  return ellipsePointAtE(e,eccentricAnomaly(2*Math.PI*fraction,e));
 }
 export function ellipsePointAtE(e:number,E:number){
  if(!Number.isFinite(e)||e<0||e>=1||!Number.isFinite(E))throw new ModelFailure('no-solution');
- const x=e-Math.cos(E),y=Math.sqrt((1-e)*(1+e))*Math.sin(E),r=1-e*Math.cos(E);
+ const x=Math.cos(E)-e,y=Math.sqrt((1-e)*(1+e))*Math.sin(E),r=1-e*Math.cos(E);
  return {x,y,z:r,E,r};
 }
 export function sweptArea(a:number,e:number,meanInterval:number):number{return ellipseGeometry(a,e).area*meanInterval/(2*Math.PI);}
@@ -38,3 +38,21 @@ export const keplerPhysics:Record<string,ResourcePhysics>={
  'kepler-areas':{domains:{A1:'positive',t1:'positive',A2:'positive',t2:'positive'},primary:['A1','t1','A2','t2'],inverse:{A1:v=>v.A2*divide(v.t1,v.t2),t1:v=>v.t2*divide(v.A1,v.A2),A2:v=>v.A1*divide(v.t2,v.t1),t2:v=>v.t1*divide(v.A2,v.A1)},derive:v=>({rate:divide(v.A1,v.t1)})},
  'kepler-period':{domains:{T:'positive',a:'positive',M:'positive'},primary:['T','a','M'],inverse:{T:v=>orbitalPeriod(v.a,v.M),a:v=>orbitalAxis(v.T,v.M),M:v=>orbitalMass(v.a,v.T)}}
 };
+
+/** Mean anomaly with a stable E-sin(E) term close to periapsis. */
+export function meanAnomalyFromE(E:number,e:number):number{
+ if(!Number.isFinite(E)||!Number.isFinite(e)||e<0||e>=1)throw new ModelFailure('no-solution');
+ const square=E*E;
+ const difference=Math.abs(E)<.1?E*square*(1/6-square/120+square*square/5040-square**3/362880+square**4/39916800):E-Math.sin(E);
+ return (1-e)*E+e*difference;
+}
+/** A timeline interval spans a fraction of a period; never assumes μ=1 or a physical mass. */
+export function orbitTimeInterval(e:number,phase:number,interval:number){
+ if(!Number.isFinite(phase)||!Number.isFinite(interval)||interval<0||interval>1)throw new ModelFailure('no-solution');
+ const turn=2*Math.PI,startPhase=phase-interval;
+ const current=ellipsePoint(e,phase),start=ellipsePoint(e,startPhase);
+ const E1=current.E+turn*Math.floor(phase),E0=start.E+turn*Math.floor(startPhase);
+ const angle=(p:{x:number;y:number})=>{const a=Math.atan2(p.y,p.x);return a<0?a+turn:a;};
+ return {current,start,startPhase,phase,interval,M1:turn*phase,M0:turn*startPhase,E1,E0,phi1:angle(current),phi0:angle(start),areaFraction:interval,
+  sector:interval===0?[]:[{x:0,y:0,z:0},...Array.from({length:129},(_,i)=>{const point=ellipsePoint(e,startPhase+interval*i/128);return {x:point.x,y:point.y,z:0};})]};
+}

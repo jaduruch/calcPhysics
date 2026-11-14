@@ -28,12 +28,12 @@ test('ellipse geometry, circular limit and excluded parabolic/hyperbolic cases',
 test('Kepler equation: circular and highly eccentric roots, modulo and residual',()=>{
  for(const e of [0,.624,.99,.999999999])for(const m of [0,1e-8,.1,1,Math.PI,6.1]){const E=eccentricAnomaly(m,e);near(E-e*Math.sin(E),m,2e-12);}
  near(eccentricAnomaly(2*Math.PI+1,.6),eccentricAnomaly(1,.6));
- const peri=ellipsePoint(.6,0),apo=ellipsePoint(.6,.5);near(peri.r,.4);near(apo.r,1.6);near(peri.x,-.4);near(apo.x,1.6);
+ const peri=ellipsePoint(.6,0),apo=ellipsePoint(.6,.5);near(peri.r,.4);near(apo.r,1.6);near(peri.x,.4);near(apo.x,-1.6);
 });
 test('Desmos cone/plane intersection projects to the same focus-centred ellipse',()=>{
  for(const e of [0,.624,.99])for(let i=0;i<=100;i++){
-  const p=ellipsePointAtE(e,2*Math.PI*i/100);near(p.x*p.x+p.y*p.y,p.z*p.z);near(p.z,e*p.x+(1-e)*(1+e));
-  near((p.x-e)**2+p.y*p.y/(1-e*e),1);near(Math.hypot(p.x,p.y)+Math.hypot(p.x-2*e,p.y),2);
+  const p=ellipsePointAtE(e,2*Math.PI*i/100);near(p.x*p.x+p.y*p.y,p.z*p.z);near(p.z,-e*p.x+(1-e)*(1+e));
+  near((p.x+e)**2+p.y*p.y/(1-e*e),1);near(Math.hypot(p.x,p.y)+Math.hypot(p.x+2*e,p.y),2);
  }
 });
 test('equal time intervals sweep equal areas and imply faster motion at periapsis',()=>{
@@ -59,4 +59,22 @@ test('high-eccentricity phase near periapsis preserves small positive anomalies'
  const independentMean=(1-e)*E+e*E*square*(1/6-square/120+square*square/5040);
  assert.ok(E>0);assert.ok(Math.abs(independentMean-m)<m*1e-12);
  const tiny=eccentricAnomaly(1e-100,.9);assert.ok(tiny>0);assert.ok(Math.abs(tiny-1e-99)<1e-111);
+});
+
+import {orbitTimeInterval,meanAnomalyFromE} from '../src/lib/physics/mechanics/kepler.ts';
+test('time interval spans wrap-around and complete periods with uniform swept-area fractions',()=>{
+ for(const e of [0,.533,.9,.999999])for(const phase of [0,.12,.99,1])for(const interval of [0,.12,.8,1]){
+  const time=orbitTimeInterval(e,phase,interval);near(time.startPhase,phase-interval);near(time.areaFraction,interval);near(meanAnomalyFromE(time.E1,e),time.M1);near(meanAnomalyFromE(time.E0,e),time.M0);
+  near(time.current.x,ellipsePoint(e,phase).x);near(time.start.y,ellipsePoint(e,phase-interval).y);
+  assert.ok([time.E1,time.E0,time.phi1,time.phi0,...time.sector.flatMap(p=>[p.x,p.y,p.z])].every(Number.isFinite));
+  assert.equal(time.sector.length,interval===0?0:130);
+ }
+ for(const interval of [-.1,1.1,Infinity])assert.throws(()=>orbitTimeInterval(.5,.2,interval));
+});
+test('updated positive-x construction matches the supplied graph and displays epsilon',()=>{
+ const epsilon=.533,p=3.15,a=p/(1-epsilon*epsilon),b=a*Math.sqrt(1-epsilon*epsilon);
+ const geometry=ellipseGeometry(a,epsilon);near(geometry.p,p);near(geometry.b,b);
+ for(const phase of [0,.13,.5,.9]){const point=ellipsePoint(epsilon,phase);near(a*point.z,-epsilon*a*point.x+p);near(Math.hypot(a*point.x,a*point.y),a*point.r);}
+ const model=models.find(m=>m.id==='kepler-ellipse');assert.equal(model.variables.find(v=>v.name==='orbital eccentricity').symbol,String.raw`\varepsilon`);
+ assert.ok(model.formulas.some(f=>f.expression.includes(String.raw`z=-\varepsilon x+p`)));
 });

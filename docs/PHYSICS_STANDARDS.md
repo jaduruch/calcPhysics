@@ -185,7 +185,7 @@ Die Gruppierung wird auf vollständige, eindeutige Erreichbarkeit aller ursprün
 
 ## Keplersche Gesetze
 
-Mechanics → Kepler’s Laws umfasst inverse Ellipsengeometrie, Flächensatz und Umlaufzeit im gebundenen Newtonschen Zweikörperproblem. a > 0, 0 ≤ e < 1, T > 0 und M_tot > 0; a bezeichnet die Halbachse der Relativbahn und M_tot beide Massen. Der Flächensatz ist auf den Brennpunkt bezogen. Die Desmos-inspirierte Kegelschnittkonstruktion und die physikalische Bahnebene werden ausdrücklich unterschieden. Der Zeitregler löst M = E−e sin E statt eine konstante Winkelgeschwindigkeit anzunehmen. Vollständige Voraussetzungen, Geometrie, Referenzen und Prüfvertrag: [KEPLER.md](KEPLER.md).
+Mechanics → Kepler’s Laws umfasst inverse Ellipsengeometrie, Flächensatz und Umlaufzeit im gebundenen Newtonschen Zweikörperproblem. a > 0, 0 ≤ ε < 1, T > 0 und M_tot > 0; a bezeichnet die Halbachse der Relativbahn und M_tot beide Massen. Der Flächensatz ist auf den Brennpunkt bezogen. Die Desmos-inspirierte Kegelschnittkonstruktion und die physikalische Bahnebene werden ausdrücklich unterschieden. Der Zeitregler löst M = E−ε sin E statt eine konstante Winkelgeschwindigkeit anzunehmen. Vollständige Voraussetzungen, Geometrie, Referenzen und Prüfvertrag: [KEPLER.md](KEPLER.md).
 
 ## Kombinierter Rechner: Schiefe Ebene (13.11.2026)
 

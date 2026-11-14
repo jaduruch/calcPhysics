@@ -39,13 +39,13 @@
   .variables-list { margin: 0; }
   .variable-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; padding: 8px 0; }
   .variable-row dt { display: flex; align-items: baseline; gap: 12px; }
-  .variable-symbol { min-width: 24px; font-family: Georgia, serif; font-style: italic; font-size: 1.2rem; }
-  .variable-name { font-size: .875rem; text-transform: capitalize; }
+  .variable-symbol { flex-shrink: 0; min-width: 24px; font-family: Georgia, serif; font-style: italic; font-size: 1.2rem; }
+  .variable-name { min-width: 0; overflow-wrap: anywhere; font-size: .875rem; text-transform: capitalize; }
   .variable-row dd { display: flex; flex-direction: column; margin: 0; font-size: .875rem; }
   .variable-row dd strong { font-weight: 500; }
   .variable-row dd > span { color: var(--color-text-muted); font-size: .75rem; }
   .formula-row { display: grid; grid-template-columns: 88px minmax(0, 1fr); align-items: center; gap: 8px; min-height: 52px; }
-  .formula-label { color: var(--color-text-muted); font-size: .875rem; }
+  .formula-label { overflow-wrap: anywhere; color: var(--color-text-muted); font-size: .875rem; }
   .theory-content :global(.formula) { min-width: 0; background: transparent; border-radius: 0; padding: 0; margin: 8px 0; }
   .theory-content :global(.katex-display) { text-align: left; }
   @media (max-width: 56rem) { .theory-layout { grid-template-columns: 1fr; gap: 20px; } }

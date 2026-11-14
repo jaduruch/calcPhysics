@@ -9,6 +9,7 @@ export function resourceDisplaySymbol(symbol:string):string {
 }
 export function resourceQuantity(value: number, kind: QuantityKind, unit = unitGroups[kind].si as string): string {
   const converted = fromSI(value, kind, unit);
+  if(kind === 'momentum' && unit === unitGroups.momentum.si) return quantityLatex(value,'N s');
   const dimensionless = kind === 'dimensionless';
   if (kind === 'mass' && unit === 'kg' && Math.abs(value) < Number.MAX_VALUE/1000) return quantityLatex(value*1000,'g');
   const engineering = !['dimensionless','temperature','density','area','volume','angle','expansionCoefficient','opticalPower','decibel','powerLevel','solidAngle'].includes(kind) && unit === unitGroups[kind].si;
@@ -18,7 +19,7 @@ export function resourceFormula(template: string, fields: readonly ResourceField
   return template.replace(/\[\[(\w+)\]\]/g,(token,key:string,offset:number) => {
     const field=fields.find(item=>item.id===key);
     if (!field) throw new Error(`Unknown formula field ${key}`);
-    if (!values) return ` ${field.symbol} `;
+    if (!values) return ` ${template.slice(offset+token.length).startsWith('^')?`{${field.symbol}}`:field.symbol} `;
     const quantity=resourceQuantity(values[key],field.kind);
     const before=template.slice(0,offset),after=template.slice(offset+token.length);
     const bracket=values[key]<0 || after.startsWith('^') || /\\(?:sin|cos|tan|arcsin|arccos|arctan)(?:\^2)?$/.test(before);

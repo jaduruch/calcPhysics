@@ -97,3 +97,19 @@ Inclined Plane integriert die sieben bisherigen Quellen ohne Variantenwahl in ei
 ## Federpendel im Bereich Hooke’s Law
 
 `content/spring-models.ts` liefert Federpendel und kreisendes Federpendel; `physics/mechanics/spring-models.ts` verbindet ausschliesslich explizite Relationen und Inversen. Keine allgemeine Formelauswertung ergänzen. `SpringCalculator` nutzt die gemeinsamen Felder, Einheiten, Reset und Rechenwege. Das normale Federpendel beschreibt ungedämpfte Schwingung um die Gleichgewichtslage; ohne Amplitude bleibt die Kurve ausdrücklich normiert. Das kreisende Federpendel entspricht einer schräg aufgehängten Feder mit horizontaler Kreisbahn (Aufgabe 1 der privat bereitgestellten Lösung 5), nicht einem horizontalen Feder-Masse-System auf einer Unterlage. Unbelastete Länge, rotierende Länge und Dehnung trennen. Winkel gegen die Vertikale, Winkelgeschwindigkeit als Betrag mit beiden möglichen Drehrichtungen. Nur g darf nach erfolgloser Inferenz sichtbar angenommen werden; keine Masse oder Federlänge voraussetzen. Fachvertrag und Grenzfälle stehen in den Physikstandards.
+
+## Erstes Keplersches Gesetz
+
+Die Karte `kepler-ellipse` verwendet `KeplerEllipseCalculator` und den expliziten Relationssolver `physics/mechanics/kepler-ellipse.ts` mit 15 Eingabefeldern. Auch c, p, Peri-/Apoapsisabstand, Fläche sowie sämtliche Theoriekoordinaten, Polarwinkel und Hilfshöhe müssen Eingabegrössen bleiben. X/Y sind auf den Ellipsenmittelpunkt bezogen; x/y auf den Brennpunkt, mit Periapsis auf +x. Die Konstruktion verwendet z = r > 0. Mehrere zulässige Punktlösungen nicht verwerfen; φ modulo 2π behandeln. Bei bestimmtem Punkt steuert dieser die Grafik; ein freier Phasenregler darf nicht widersprüchlich dazu weiterwirken. Beim Kreis keinen Winkel aus dem Radius allein erfinden. Teilresultate und Grenzen siehe `docs/KEPLER.md`.
+
+## Drittes Keplersches Gesetz
+
+`KeplerPeriodCalculator` verbindet beide Umlaufbahnen, ihre Verhältnisse und die Aufteilung M_tot = M + m in einer Karte mit neun Eingaben. Die feste Gravitationskonstante bleibt lesbar in der Theorie/Annahme; keine fehlende Einzelmasse voraussetzen. Bahnverhältnisse sind unabhängig von einer Massenangabe bestimmbar. Alle expliziten Umstellungen und Teilresultate kommen aus `physics/mechanics/kepler-period.ts`; Grafik und Rechenweg verwenden diese Werte. Die normierte Kurve darf keinen unbekannten absoluten Zeit- oder Längenmassstab vortäuschen. Fachvertrag: `docs/KEPLER.md`.
+
+## Impulserhaltung und Rakete
+
+`MomentumCalculator` verbindet Impulsbilanz beziehungsweise ideale Raketengleichung ohne Variantenwahl. Beide nutzen `physics/mechanics/momentum.ts`, gemeinsame Eingaben und ein responsives SVG mit Fokus-Ausgrauung. Raketengleichung ohne äussere Kräfte und mit konstantem u relativ zur Rakete; M enthält verbleibenden Treibstoff. Anfangsgeschwindigkeit und momentanen Massenstrom nicht voraussetzen. Δv und Schub bleiben unabhängig voneinander bestimmbar. Gasgeschwindigkeit im Beobachtersystem ist v − u. Fachvertrag, Quelle und Grenzen: [MOMENTUM.md](../docs/MOMENTUM.md).
+
+## Zentrale Stösse
+
+Die Seite Momentum zeigt vier eigene aufklappbare Karten: Momentum Conservation, Inelastic Collision, Elastic Collision, Rocket Equation. Keine Variantenwahl innerhalb der Impulskarte und keine separaten Stoss-Unterthemen. Sie verwenden die gemeinsame `MomentumCalculator`-Oberfläche und `MomentumDiagram`. Keine eigenen kopierten Seiten-/Feldlayouts. Bei elastischen Stössen ist e = 1 fest; im inelastischen Rechner bleibt e eine manuelle Eingabe oder ein Ergebnis, ohne Standardannahme. Beide Energiesignaturen und alle zulässigen diskreten Geschwindigkeitszweige erhalten. Keine anfängliche Ruhe eines Körpers voraussetzen. Fachvertrag: [COLLISIONS.md](../docs/COLLISIONS.md).

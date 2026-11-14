@@ -4,6 +4,7 @@
  * Reference: https://ssd.jpl.nasa.gov/astro_par.html
  */
 export const unitGroups = {
+  momentum: {si:'kg m/s',units:[{symbol:'kg m/s',factor:1},{symbol:'N s',factor:1}]},
   areaRate: { si:'m²/s',units:[{symbol:'m²/s',factor:1}] },
   angularVelocity: { si: 'rad/s', units: [{ symbol: 'rad/s', factor: 1 }] },
   angularAcceleration: { si: 'rad/s²', units: [{ symbol: 'rad/s²', factor: 1 }] },
@@ -87,6 +88,7 @@ export function getUnit(kind: QuantityKind, symbol: string) {
 
 /** English SI names used in theory; conversion factors remain in unitGroups. */
 export const unitNames: Partial<Record<QuantityKind, string>> = {
+  momentum:'kilogram meters per second',
   areaRate:'square meters per second',
   angularVelocity:'radians per second',angularAcceleration:'radians per second squared',torque:'newton meter',
   viscosity:'pascal second',volumeFlow:'cubic meters per second',massFlow:'kilograms per second',molarMass:'kilograms per mole',

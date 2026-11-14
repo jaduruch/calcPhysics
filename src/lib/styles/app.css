@@ -126,13 +126,16 @@
   .footer-grid > * { min-width: 0; }
   .footer-identity { display: flex; flex-direction: column; gap: 16px; }
   .footer-brand { min-height: 44px; font-size: 1.4rem; }
+  .footer-section { border-inline-start: 2px solid var(--color-diagram-muted); padding-inline-start: 12px; }
   .footer-grid h2 { font-size: .875rem; margin: 0 0 8px; font-weight: 600; }
-  .footer-grid nav > a { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 0; font-size: .8125rem; text-decoration: none; overflow-wrap: anywhere; }
-  .footer-grid nav > a:hover { color: var(--color-accent); text-decoration: underline; }
+  .footer-grid nav a { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 0; font-size: .8125rem; text-decoration: none; overflow-wrap: anywhere; }
+  .footer-grid nav a:hover { color: var(--color-accent); text-decoration: underline; }
   .site-footer p { font-size: .8125rem; color: var(--color-text-muted); line-height: 1.65; }
   .footer-grid nav > p { margin-top: 8px; max-width: 30ch; }
-  .footer-email { overflow-wrap: anywhere; }
-  .footer-grid nav > a > span { min-width: 0; overflow-wrap: anywhere; }
+  .footer-resource-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0 16px; }
+  .footer-grid nav .footer-email { flex-direction: column; align-items: flex-start; gap: 2px; margin-top: 4px; overflow-wrap: anywhere; }
+  .footer-contact-note { color: var(--color-text-muted); font-size: .75rem; line-height: 1.5; max-width: 45ch; }
+  .footer-grid nav a > span { min-width: 0; overflow-wrap: anywhere; }
   .footer-grid svg { flex-shrink: 0; }
   .footer-handle { display: block; color: var(--color-text-muted); font-size: .75rem; }
   .footer-bottom { border-top: 1px solid var(--color-input); padding-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
@@ -170,10 +173,11 @@
     .topic-card { min-height: 200px; }
     .section-heading { flex-wrap: wrap; }
     .footer-inner { padding: 20px 16px 12px; }
-    .footer-grid { grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-areas: "identity project" "identity resources"; gap: 20px; }
+    .footer-grid { grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-areas: "identity project" "resources ."; gap: 20px; }
     .footer-identity { grid-area: identity; }
     .footer-project { grid-area: project; }
     .footer-resources { grid-area: resources; }
+    .footer-resource-links { flex-direction: column; align-items: stretch; }
 
   }
   @media (max-width: 24rem) { .footer-grid { grid-template-columns: minmax(0,1fr); grid-template-areas: "identity" "project" "resources"; } }

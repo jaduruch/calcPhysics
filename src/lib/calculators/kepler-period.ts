@@ -1,0 +1,7 @@
+import type {PeriodSolution} from '../physics/mechanics/kepler-period.ts';
+import {keplerPeriodFields} from '../content/kepler-period.ts';
+import {resourceFormula,resourceQuantity} from './resource-equations.ts';
+import {quantityLatex,prefixes,type ParsedQuantity} from './quantities.ts';
+import {getUnit,unitGroups} from '../physics/units.ts';
+export function keplerPeriodEquations(result:PeriodSolution,units:Record<string,string>){return result.steps.map(step=>{const field=keplerPeriodFields.find(f=>f.id===step.target)!;const numeric=resourceFormula(step.formula,keplerPeriodFields,step.substitution??result.values).replace(/\bG\b/g,String.raw`6.67430\times10^{-11}\,\mathrm{m^3\,kg^{-1}\,s^{-2}}`);return `${field.symbol}=${resourceFormula(step.formula,keplerPeriodFields)}=${numeric}\\approx ${resourceQuantity(result.values[step.target],field.kind,units[field.id]??unitGroups[field.kind].si)}`;});}
+export function keplerPeriodConversions(parsed:Record<string,ParsedQuantity>,units:Record<string,string>){return keplerPeriodFields.flatMap(field=>{const p=parsed[field.id],selected=units[field.id]??unitGroups[field.kind].si;if(p.status!=='valid'||selected===unitGroups[field.kind].si)return [];const u=getUnit(field.kind,selected);return [`${field.symbol}=${quantityLatex(Number(p.number),selected,false)}${p.prefix?`\\cdot ${prefixes.find(i=>i.symbol===p.prefix)!.factor}`:''}\\cdot\\frac{${'factorLatex' in u?u.factorLatex:u.factor}\\,\\mathrm{${unitGroups[field.kind].si}}}{1\\,\\mathrm{${selected}}}\\approx ${resourceQuantity(p.value,field.kind)}`];});}

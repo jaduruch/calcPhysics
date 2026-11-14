@@ -261,8 +261,10 @@ export const pulleyUi = {
 };
 
 export const keplerUi={
+ play:'Play orbit',pause:'Pause orbit',interval:'Time interval Δt/T',reducedMotion:'Animation is disabled by your reduced-motion setting.',timeHelp:'P₀ and P₁ mark t₀ = t₁ − Δt and t₁. The shaded area is swept during Δt; ΔA/A = Δt/T. Times are fractions of a period. M is mean anomaly, E eccentric anomaly and ε eccentricity. The period is not inferred from the ellipse size alone.',
+ pointFromInputs: 'The plotted point follows the entered point quantities. Change the polar angle or coordinates to move it.',
  view:'Ellipse view',section:'3D cone section',orbit:'Orbital plane',resetView:'Reset view',
- viewport:'Rotatable ellipse construction',phase:'Orbital phase t/T',
+ viewport:'Rotatable ellipse construction',phase:'Orbital phase t₁/T',
  controls:'Drag to rotate, or focus the drawing and use the arrow keys. Home resets the view.',
  phaseHelp:'The slider advances time uniformly. The orbiting point moves faster near the attracting focus.',
  description3d:'A plane cuts a double cone. The intersection projects onto the orbital ellipse in the horizontal plane; F₁ and F₂ mark its foci.',
@@ -271,7 +273,6 @@ export const keplerUi={
  calculated:'Ellipse shape follows the validated calculator values; the drawing is normalised by a.',
  constructionNote:'The cone and inclined section are a geometric construction. The orbit shown is their horizontal projection, not motion over the cone.',
  areaHelp:'The shaded sectors start near periapsis and apoapsis. Their areas follow A₁:A₂; their time intervals have the same ratio. Equal intervals produce equal areas. Orbit size and eccentricity are illustrative.',
- desmos:'Open original Desmos model'
 } as const;
 
 export const searchUi = { label: 'Search the site', placeholder: 'Topics, calculators, formulas and constants…', result: 'result', results: 'results', noResults: 'No results found.', more: 'Show more results' } as const;

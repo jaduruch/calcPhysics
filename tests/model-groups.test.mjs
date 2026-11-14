@@ -35,3 +35,5 @@ test('dense topics use coherent cards and existing combined networks remain inta
   assert.strictEqual(groupTopicModels(models.filter(model => model.topicId === 'kinematics')).find(model => model.id === 'uniform-motion'), models.find(model => model.id === 'uniform-motion'));
   assert.deepEqual(groupTopicModels([]), []);
 });
+
+test('momentum shows four independent accordion cards in the requested order',()=>{const cards=groupTopicModels(models.filter(m=>m.topicId==='momentum'));assert.deepEqual(cards.map(m=>m.id),['momentum-balance','inelastic-collision','elastic-collision','rocket-equation']);assert.ok(cards.every(m=>!m.variants));});

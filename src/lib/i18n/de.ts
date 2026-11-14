@@ -101,8 +101,10 @@ export const pulleyUi = {
 };
 
 export const keplerUi={
+ play:'Bahn animieren',pause:'Animation pausieren',interval:'Zeitintervall Δt/T',reducedMotion:'Die Animation ist durch die Einstellung für reduzierte Bewegung deaktiviert.',timeHelp:'P₀ und P₁ markieren t₀ = t₁ − Δt und t₁. Die schattierte Fläche wird während Δt überstrichen; ΔA/A = Δt/T. Zeiten sind Bruchteile einer Umlaufzeit. M ist die mittlere Anomalie, E die exzentrische Anomalie und ε die Exzentrizität. Die Umlaufzeit wird nicht aus der Ellipsengrösse allein angenommen.',
+ pointFromInputs: 'Der dargestellte Punkt folgt den eingegebenen Punktgrössen. Ändere Polarwinkel oder Koordinaten, um ihn zu verschieben.',
  view:'Ellipsenansicht',section:'3D-Kegelschnitt',orbit:'Bahnebene',resetView:'Ansicht zurücksetzen',
- viewport:'Drehbare Ellipsenkonstruktion',phase:'Bahnphase t/T',
+ viewport:'Drehbare Ellipsenkonstruktion',phase:'Bahnphase t₁/T',
  controls:'Zum Drehen ziehen oder die fokussierte Zeichnung mit den Pfeiltasten bedienen. Home setzt die Ansicht zurück.',
  phaseHelp:'Der Regler verschiebt die Zeit gleichmässig. In der Nähe des anziehenden Brennpunkts bewegt sich der Bahnpunkt schneller.',
  description3d:'Eine Ebene schneidet einen Doppelkegel. Die Schnittkurve wird auf die Ellipse in der horizontalen Bahnebene projiziert; F₁ und F₂ markieren ihre Brennpunkte.',
@@ -111,7 +113,6 @@ export const keplerUi={
  calculated:'Die Ellipsenform folgt den validierten Rechnerwerten; die Zeichnung ist auf a normiert.',
  constructionNote:'Kegel und schräger Schnitt sind eine geometrische Konstruktion. Die dargestellte Bahn ist ihre horizontale Projektion, keine Bewegung auf dem Kegel.',
  areaHelp:'Die Flächensektoren beginnen in der Nähe von Periapsis und Apoapsis. Ihre Flächen folgen A₁:A₂; die Zeitintervalle haben dasselbe Verhältnis. Gleiche Intervalle ergeben gleiche Flächen. Bahngrösse und Exzentrizität sind schematisch.',
- desmos:'Desmos-Originalmodell öffnen'
 };
 
 export const searchUi = { label: 'Seite durchsuchen', placeholder: 'Themen, Rechner, Formeln und Konstanten…', result: 'Treffer', results: 'Treffer', noResults: 'Keine Treffer gefunden.', more: 'Weitere Treffer anzeigen' } as const;

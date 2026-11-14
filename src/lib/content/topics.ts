@@ -1,3 +1,5 @@
+import {collisionModels} from './collisions.ts';
+import {momentumModels} from './momentum.ts';
 import {disclaimer} from './disclaimer.ts';
 import {about} from './about.ts';
 import {calculatorHelp} from './calculator-help.ts';
@@ -25,6 +27,7 @@ export interface Topic {
   seo?: { title: string; description: string };
 }
 export const topics: readonly Topic[] = [
+  {id:'momentum',parentId:'mechanics',path:'/mechanics/momentum',title:'Momentum Conservation',description:'Momentum balance, recoil and ideal rocket propulsion with the Tsiolkovsky rocket equation, exhaust velocity and thrust.',symbol:'01.9',published:true},
   {id:'disclaimer',parentId:null,path:'/disclaimer',title:disclaimer.title,description:disclaimer.description,symbol:'i',published:true,kind:'info',seo:{title:'Disclaimer | calcPhysics',description:disclaimer.description}},
   {id:'about',parentId:null,path:'/about',title:about.title,description:about.description,symbol:'i',published:true,kind:'info',seo:{title:'About calcPhysics',description:about.description}},
   {id:'calculator-help',parentId:null,path:'/calculator-help',title:calculatorHelp.title,navigationTitle:'Input help',description:calculatorHelp.description,symbol:'?',published:true,kind:'guide',seo:{title:'Calculator Input Help | calcPhysics',description:calculatorHelp.description}},
@@ -73,6 +76,9 @@ export const topics: readonly Topic[] = [
   { id: 'dynamics', parentId: 'mechanics', path: '/mechanics/dynamics', title: 'Dynamics', description: 'Calculate forces, gravity, kinetic friction and ideal pulleys. On an inclined plane, solve geometry, acceleration and speed without mass; add mass for force components.', symbol: '01.2', published: true, seo: { title: 'Inclined Plane Calculator & Dynamics Theory | calcPhysics', description: 'Calculate weight, normal force, downhill force, kinetic friction and acceleration on an inclined plane. Includes SI conversions, formulas and a force diagram.' } }
 ];
 export const models: readonly ModelDefinition[] = [
+  momentumModels[0],
+  ...[...collisionModels].reverse(),
+  momentumModels[1],
   ...electricalModels,
   ...resourceModels.filter(model=>!model.id.startsWith('book-')),
   springOscillatorModel,circularSpringModel,

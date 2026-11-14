@@ -7,6 +7,8 @@ export const load: PageLoad = ({ params }) => {
   const prefix = params.topic === 'de' || params.topic.startsWith('de/') ? '/de' : '';
   if (path === '/') return { topic: null };
   if (path === '/electromagnetism/transformers') redirect(301, `${prefix}/electromagnetism/inductors`);
+  if (path === '/mechanics/elastic-collisions') redirect(301, `${prefix}/mechanics/momentum#model-elastic-collision`);
+  if (path === '/mechanics/inelastic-collisions') redirect(301, `${prefix}/mechanics/momentum#model-inelastic-collision`);
   const topic = topics.find(topic => topic.published && topic.path === path);
   if (!topic) error(404, 'This topic is not available.');
   return { topic };
