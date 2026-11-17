@@ -38,7 +38,7 @@ output/                  Separate Download-Artefakte, keine automatisch eingebun
 tests/                   Fach-, Inhalts-, Formatierungs- und Registrytests
 ```
 
-`ModelHost` steuert Öffnungszustand, Varianten und Hashlinks. `ModelCalculator` ordnet Fachrechner zu. `ModelCard` erhält typisierte Inhalte und einen Rechner-Snippet; `ModelTheory` stellt die Theorie dar. `QuantityField`, `CalculatorShell`, `CalculatorTools`, `EquationBlock` und `calculator.css` sind gemeinsame Änderungsstellen. Keine Fachseiten oder Feldlayouts kopieren. Der vorhandene Vertrag ist `ModelDefinition` plus fachabhängige Definitionen/Resultattypen, kein universelles `CalculatorDefinition`-Framework.
+`ModelHost` steuert Öffnungszustand, zulässige binäre Varianten und Hashlinks. `content/combined-models.ts` verbindet fachlich kompatible Quellrelationen über explizite Feldzuordnungen; `CombinedCalculator` berechnet mit den bestehenden inversen Fachfunktionen gemeinsame Teilresultate. Nicht kompatible Modelle bleiben eigene Karten. Keine innere Modellwahl mit mehr als zwei Optionen. `ModelCalculator` ordnet Fachrechner zu. `ModelCard` erhält typisierte Inhalte und einen Rechner-Snippet; `ModelTheory` stellt die Theorie dar. `QuantityField`, `CalculatorShell`, `CalculatorTools`, `EquationBlock` und `calculator.css` sind gemeinsame Änderungsstellen. Keine Fachseiten oder Feldlayouts kopieren. Der vorhandene Vertrag ist `ModelDefinition` plus fachabhängige Definitionen/Resultattypen, kein universelles `CalculatorDefinition`-Framework.
 
 ## Themen, Routing und Suche
 

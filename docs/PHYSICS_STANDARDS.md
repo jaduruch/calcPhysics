@@ -206,3 +206,7 @@ Mechanics → Hooke’s Law unter `/mechanics/hookes-law` beschreibt eine ideale
 ## Impuls, Stösse und Raketenantrieb
 
 Die Impulsseite zeigt vier eigene Karten: allgemeine Impulsbilanz, inelastischer Stoss, elastischer Stoss und ideale Raketengleichung. Keine Variantenwahl innerhalb der Impulskarte und keine separaten Stoss-Unterthemen. Fachliche Annahmen, explizite Inversen, Teilresultate und Grenzen stehen in [MOMENTUM.md](MOMENTUM.md) und [COLLISIONS.md](COLLISIONS.md). Insbesondere vorzeichenbehaftete Geschwindigkeiten, Energieumwandlung statt Energievernichtung, fehlende Ruheannahme und die Bezugssysteme der Raketengleichung beachten.
+
+## Starre Körper: Rotationsenergie und Trägheitsmomente
+
+Die drei ergänzten Karten unter Rotation verwenden die expliziten axialen und geometrischen Beziehungen aus [RIGID_BODIES.md](RIGID_BODIES.md). Der Fachvertrag beschreibt alle inversen Zielgrössen, Vorzeichenzweige, Teilresultate, Körper-/Achsenannahmen, Nullfälle und die Grenze zur allgemeinen räumlichen Kreiselbewegung. Die als Wiederholung gekennzeichneten Vorlesungsinhalte sind nicht Teil dieser Ergänzung.

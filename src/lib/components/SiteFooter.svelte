@@ -24,7 +24,7 @@
      <a href={localPath('/calculator-help')}>{text('Calculator guide')}</a>
      <a href={localPath('/si-units-and-constants')}>{text('SI Units & Physical Constants')}</a>
     </div>
-    <a class="footer-email" href="mailto:calcphysics@outlook.com"><span>calcphysics@outlook.com</span><span class="footer-contact-note">{text('Suggestions, missing or incorrect formulas, and bug reports.')}</span></a>
+    <div class="footer-contact"><a class="footer-email" href="mailto:calcphysics@outlook.com">calcphysics@outlook.com</a><span class="footer-contact-note">{text('Suggestions, missing or incorrect formulas, and bug reports.')}</span></div>
    </nav>
   </div>
   <div class="footer-bottom"><p>calcPhysics</p>

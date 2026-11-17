@@ -28,7 +28,7 @@ test('every calculator, theory and inverse remains available exactly once within
 });
 
 test('dense topics use coherent cards and existing combined networks remain intact', () => {
-  const counts = { kinematics: 5, dynamics: 4, rotation: 4, 'work-energy': 4, 'fluid-statics': 5, 'fluid-flow': 4, 'thermal-expansion': 3, 'optical-imaging': 3, photometry: 3, filters: 2 };
+  const counts = { kinematics: 5, dynamics: 7, rotation: 17, 'work-energy': 9, 'fluid-statics': 10, 'fluid-flow': 8, 'thermal-expansion': 4, 'optical-imaging': 5, photometry: 6, filters: 2 };
   for (const [topic, count] of Object.entries(counts)) assert.equal(groupTopicModels(models.filter(model => model.topicId === topic)).length, count, topic);
   const direct = models.filter(model => model.topicId === 'direct-current');
   assert.deepEqual(groupTopicModels(direct), direct);

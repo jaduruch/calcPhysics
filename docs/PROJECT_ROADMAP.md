@@ -17,18 +17,21 @@ Stand: 17.11.2026, lokaler Repositoryzustand. Diese Übersicht ersetzt die veral
 | Footer | Gruppierte Projekt-, Hilfe-/Referenz- und Rechtslinks; E-Mail, Instagram, GitHub mit Logos ohne Pfeile; Sprachwechsel |
 | Prüfwerkzeuge | Fach-/Inhalts-/Registrytests mit Node, Svelte-/Typprüfung, Produktionsbuild; gezielte Browserprüfungen separat |
 
-Die aktuelle Themenliste steht in [AGENTS.md](../AGENTS.md); die Registry bleibt die ausführbare Quelle. Quellumfang und sichtbare Karten nicht verwechseln: Elektrotechnik enthält 44 zugrunde liegende Rechendefinitionen, 29 registrierte Definitionen und 22 Karten. Die Formelbuch-Zahlen beschreiben Quellbeziehungen, keine Zahl zusätzlicher Karten.
+Die aktuelle Themenliste steht in [AGENTS.md](../AGENTS.md); die Registry bleibt die ausführbare Quelle. Quellumfang und sichtbare Karten nicht verwechseln: Elektrotechnik enthält 44 zugrunde liegende Rechendefinitionen, 29 registrierte Definitionen und 25 Karten. Die Formelbuch-Zahlen beschreiben Quellbeziehungen, keine Zahl zusätzlicher Karten.
 
 ## Aktuelle verbindliche Modellstruktur
 
 - Kinematics: fünf Karten (Uniform Motion, Uniformly Accelerated Motion, Projectile Motion, Free Fall, Velocity Components). Wurfbewegung ist ein kombinierter Rechner mit 17 Eingaben; keine separaten vertikalen/waagrechten Wurfkarten und keine Sonderfall-Schnellwahl. Negative Abwurfwinkel liefern keine Scheitelgrössen.
-- Dynamics: vier Karten; kombinierte schiefe Ebene mit 14 Eingaben und massenunabhängigen Teilresultaten. Gleitreibung für bereits hangabwärts gleitende Körper, keine Haftreibung. Dynamische Flaschenzugskizze.
+- Dynamics: sieben Karten; kombinierte schiefe Ebene mit 14 Eingaben und massenunabhängigen Teilresultaten. Gleitreibung für bereits hangabwärts gleitende Körper, keine Haftreibung. Dynamische Flaschenzugskizze.
 - Hooke’s Law: Hookesches Gesetz, Federpendel und kreisendes Federpendel als drei Karten.
 - Kepler: drei Karten; erstes Gesetz mit 15 Eingaben, drittes mit neun. ε, eigene Kegelschnittkonstruktion, Phasen-/Zeitregler und Play/Pause. Kein öffentlicher Link zum nutzereigenen Desmos-Modell.
+- Rotation: sechs Kinematikkarten plus Energie starrer Körper, Drehimpuls/Drehmoment und neun eigenständige Trägheitsmoment-/Steinerkarten; [Fachvertrag und Prüfgrenzen](RIGID_BODIES.md).
 - Momentum: vier eigenständige aufklappbare Karten in der Reihenfolge Momentum Conservation, Inelastic Collision, Elastic Collision, Rocket Equation. Keine Auswahl innerhalb der Impulskarte und keine separaten Stoss-Unterthemen.
 - Transformator: Ideal/Real-Umschaltung; Wirkungsgradfeld im Idealmodus vollständig entfernt, Eingaben für den Realmodus bleiben erhalten.
 
 Fachverträge: [Physik1/Physik2](RESOURCE_CONTENT.md), [Formelbuch](FORMULA_BOOK.md), [Elektrotechnik](ELECTRICITY.md), [Kepler](KEPLER.md), [Impuls/Rakete](MOMENTUM.md), [Stösse](COLLISIONS.md). Private Quellen/Renderdateien bleiben ausserhalb des Repositories. Externe Instagram-Icons sind Download-Artefakte, keine Website-Assets.
+
+Zusammengeführte Eingabeflächen und unabhängige Modellkarten ersetzen die bisherigen Mehrfach-Auswahlen; echte binäre Konfigurationen bleiben erhalten. [Umfang und Fachvertrag](COMBINED_CALCULATORS.md).
 
 ## Laufende Pflege im beauftragten Umfang
 

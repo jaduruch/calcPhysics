@@ -1,39 +1,45 @@
-# calcPhysics
+# calcPhysics ⚛️
 
-Physikplattform mit Englisch als Standardsprache und deutscher Fassung unter `/de/`. Sechs aktive Hauptthemen, Theorie und inverse Rechner in aufklappbaren Modellkarten, zentrale Einheiten-/Präfix-/Ausdruckseingaben und dynamische SVG-Grafiken. Home bietet eine Suche über die veröffentlichten Inhalte und eine SI-Referenz. Der aktuelle Umfang und verbindliche Entscheidungen stehen in [AGENTS.md](AGENTS.md).
+Physics calculators and theory, available in English and German. Calculate unknown quantities, follow the formulas and explore diagrams across mechanics, thermodynamics, electricity, waves, optics and modern physics.
 
-## Lokale Entwicklung
+**[Open calcPhysics](https://calcphysics.com)** · **[Try the input guide](https://calcphysics.com/calculator-help)**
 
-Node.js ab 22.17 verwenden; die getestete Version steht in `.nvmrc`:
+<table>
+  <tr>
+    <td><img src="docs/images/home.png" alt="calcPhysics home page with search and physics topics in dark mode" width="760" /></td>
+  </tr>
+</table>
+
+## 🧮 What you can do
+
+- Solve for different variables and follow the calculation steps.
+- Enter expressions such as `(1 + 3) * 2` or `1k + 1m`, with unit conversion and SI prefixes.
+- Explore model diagrams, orbital geometry and an interactive Bloch sphere.
+- Search topics and look up SI units and physical constants.
+
+<img src="docs/images/calculator.png" alt="Interactive velocity, displacement and time example with input fields and a worked result" width="560" />
+
+## 🛠️ Run locally
+
+Built with **SvelteKit, TypeScript and KaTeX**. Use Node.js **22.17+**; `.nvmrc` pins the tested version.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Die von Vite ausgegebene lokale Adresse öffnen (normalerweise http://localhost:5173).
+Open the local URL printed by Vite. To validate changes:
 
 ```sh
 npm run check
 npm test
 npm run build
-npm run preview
 ```
 
-Der Produktionsbuild verwendet den Netlify-Adapter. Canonical-Origin, Sitemap/robots und Preview-Sperren sind konfiguriert; Details und datierte frühere Messungen: [SEO.md](docs/SEO.md). Lokaler Code und Build sind kein Nachweis eines aktuellen Live-Deployments. Keine Veröffentlichung ohne Auftrag.
+Physics functions live in `src/lib/physics/`, model content in `src/lib/content/` and shared UI in `src/lib/components/`. Tests use Node’s built-in test runner.
 
-## Struktur und Arbeitsregeln
+## 📬 Feedback & contributing
 
-- `src/lib/content/`: Themenregistry, Modellinhalte und Gruppierung der sichtbaren Karten.
-- `src/lib/physics/`: reine Fachfunktionen; `units.ts` führt Einheiten und SI-Konversionen zentral.
-- `src/lib/calculators/`: begrenzter Ausdrucksparser, Zahl-/Präfixformatierung und Ergebnisadapter.
-- `src/lib/i18n/`: englische/deutsche UI, redaktionelle Übersetzungen und Locale-Regeln.
-- `src/lib/components/`: gemeinsame Seiten-/Karten-/Feldbausteine und Fachansichten.
-- `src/lib/styles/`: zentrale Theme-/Grössentokens und gemeinsame Styles.
-- `src/routes/`: Home, datengetriebene Themenroute, Sitemap und robots.
-- `tests/`: Fach-, Inhalts-, Registry- und Formatierungstests mit Nodes eingebautem Testläufer.
-- `output/instagram-icons/`: separate Downloads, nicht auf der Website eingebunden.
+Found a bug, a missing formula or an incorrect result? [Open an issue](https://github.com/jaduruch/calcPhysics/issues) or email [calcphysics@outlook.com](mailto:calcphysics@outlook.com).
 
-[AGENTS.md](AGENTS.md), [src/AGENTS.md](src/AGENTS.md) und der [Modellseitenstandard](docs/MODEL_PAGE_STANDARD.md) halten die bestätigten Regeln fest. Uniform Motion bleibt die Designreferenz. [Architektur](docs/ARCHITECTURE.md) und [Projektstand/Roadmap](docs/PROJECT_ROADMAP.md) trennen implementierten Stand und spätere Vorhaben. Die deutsche UI- und Fachtextabdeckung wird automatisch mitgeprüft. Fachliche Grenzen und Prüfabdeckung der Rechner bleiben modellabhängig.
-
-Für Implementierungsänderungen Fachtests, Svelte-/Typprüfung, Build und relevante Browserprüfungen durchführen. Für reine Dokumentänderungen reichen Konsistenz- und Linkprüfung. Bei Zweifeln vor der betroffenen Änderung nachfragen.
+Before contributing, read the [project rules](AGENTS.md) and [model page standard](docs/MODEL_PAGE_STANDARD.md). Internal documentation is in German. Check each model’s assumptions and verify results before practical use; see the [disclaimer](https://calcphysics.com/disclaimer).

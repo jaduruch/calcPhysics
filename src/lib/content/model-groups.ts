@@ -1,6 +1,9 @@
+import {combinedSpecs,combinedDefinition} from './combined-models.ts';
+import {unitGroups,unitNames} from '../physics/units.ts';
+import {resourceFormula} from '../calculators/resource-equations.ts';
 import type { ModelDefinition } from './model-types.ts';
-/** Editorial presentation only: solver IDs, domains and inverse equations are unchanged. */
-export const modelGroups: readonly { topic: string; title: string; members: readonly string[]; integrated?: boolean }[] = [
+/** Explicit calculator families, preserved source aliases and genuine binary configurations. */
+const legacyGroups: readonly { topic: string; title: string; members: readonly string[]; integrated?: boolean }[] = [
   {"topic": "kinematics", "title": "Free Fall", "members": ["book-free-fall-height", "book-free-fall-speed", "book-average-fall-speed", "book-free-fall-speed-time"]},
   {"topic": "kinematics", "title": "Projectile Motion", "integrated": true, "members": ["oblique-throw", "book-oblique-flight-time", "book-oblique-range", "book-oblique-apex-height", "book-oblique-trajectory", "book-oblique-vertical-velocity", "book-oblique-apex-time", "vertical-throw", "book-vertical-position", "book-vertical-velocity", "book-projectile-energy", "book-maximum-height", "book-vertical-apex-time", "horizontal-throw", "book-horizontal-trajectory", "book-falling-direction", "book-horizontal-speed-time", "book-falling-direction-depth"]},
   {"topic": "kinematics", "title": "Velocity Components", "members": ["book-speed-components", "book-launch-cos", "book-launch-sin"]},
@@ -54,6 +57,13 @@ export const modelGroups: readonly { topic: string; title: string; members: read
   {"topic": "three-phase", "title": "Star & Delta Connections", "members": ["star-system", "delta-system"]},
 ];
 
+const combinedMembers=new Set(combinedSpecs.flatMap(s=>s.members));
+export const modelGroups = [
+ ...legacyGroups.map(g=>({...g,members:g.members.filter(id=>!combinedMembers.has(id))})).filter(g=>g.members.length>1),
+ ...combinedSpecs.map(s=>({topic:legacyGroups.find(g=>g.members.includes(s.members[0]))!.topic,title:s.title,members:s.members,integrated:true}))
+];
+const binaryVariants=new Set(['series-rlc','rc-high-pass','rl-high-pass','star-system','open-pipe']);
+
 export function groupTopicModels(models: readonly ModelDefinition[]): ModelDefinition[] {
   const applicable = modelGroups.filter(group => group.members.some(id => models.some(model => model.id === id)));
   const byMember = new Map(applicable.flatMap(group => group.members.map(id => [id, group] as const)));
@@ -65,7 +75,14 @@ export function groupTopicModels(models: readonly ModelDefinition[]): ModelDefin
     emitted.add(group.members[0]);
     const members = group.members.map(id => models.find(item => item.id === id)).filter((item): item is ModelDefinition => !!item);
     if (members.length < 2) return members;
+    const combined=combinedDefinition(members[0].id);
+    if(combined) return [{...members[0],title:combined.title,combinedId:combined.id,integratedModels:members,
+      variables:combined.fields.map(f=>({name:f.name,symbol:f.symbol,unit:unitGroups[f.kind].si,unitName:unitNames[f.kind]??unitGroups[f.kind].si})),
+      formulas:combined.relations.flatMap(r=>Object.entries(r.formulas).map(([key,formula])=>{const f=combined.fields.find(f=>f.id===(r.keys[key]??key))!;return {label:f.name,expression:`${f.symbol}=${resourceFormula(formula,combined.fields)}`};})),
+      notes:combined.id==='book-speed-components'?combined.assumptions.map(text=>({text})):members.flatMap(m=>m.notes??[]).filter((n,i,a)=>a.findIndex(x=>x.text===n.text&&x.expression===n.expression)===i),
+      references:members.flatMap(m=>m.references??[]).filter((r,i,a)=>a.findIndex(x=>x.url===r.url)===i)}];
     if (group.integrated) return [{...members[0],integratedModels:members}];
+    if(members.length!==2||!binaryVariants.has(members[0].id))return members;
     return [{ ...members[0], title: group.title, variants: members.map(member => ({ model: member, label: member.title })) }];
   });
 }

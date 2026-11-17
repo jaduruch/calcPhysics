@@ -1,6 +1,7 @@
 export interface ModelDefinition {
   id: string;
   topicId: string;
+  combinedId?: string;
   integratedModels?: readonly ModelDefinition[];
   variants?: readonly { model: ModelDefinition; label: string }[];
   title: string;

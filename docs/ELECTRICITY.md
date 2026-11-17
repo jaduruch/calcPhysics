@@ -1,6 +1,6 @@
 # Electricity & Magnetism
 
-Stand 14.11.2026: neun Unterthemen mit 44 zugrunde liegenden Rechendefinitionen, 29 registrierten Definitionen und 22 sichtbaren Karten im bestehenden Modellkartenstandard. Three-Phase Systems enthält Stern, Dreieck und Generator gemeinsam. Englisch bleibt die Standardsprache. Die Themen sind lokal implementiert; kein Hosting oder Deployment wurde beauftragt.
+Stand 17.11.2026: neun Unterthemen mit 44 zugrunde liegenden Rechendefinitionen, 29 registrierten Definitionen und 25 sichtbaren Karten im bestehenden Modellkartenstandard. Three-Phase Systems enthält Stern, Dreieck und Generator gemeinsam. Englisch bleibt die Standardsprache. Die Themen sind lokal implementiert; kein Hosting oder Deployment wurde beauftragt.
 
 ## Umfang und Referenz
 

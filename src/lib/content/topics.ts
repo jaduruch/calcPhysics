@@ -1,3 +1,4 @@
+import {rigidModels} from './rigid-body.ts';
 import {collisionModels} from './collisions.ts';
 import {momentumModels} from './momentum.ts';
 import {disclaimer} from './disclaimer.ts';
@@ -33,7 +34,7 @@ export const topics: readonly Topic[] = [
   {id:'calculator-help', seo: {"title": "Calculator Guide: Inputs, Units & Expressions | calcPhysics", "description": "Try interactive examples for unknown quantities, arithmetic expressions, SI prefixes, unit conversions and display rounding in calcPhysics."},parentId:null,path:'/calculator-help',title:calculatorHelp.title,navigationTitle:'Input help',description:calculatorHelp.description,symbol:'?',published:true,kind:'guide'},
   {id:'hookes-law', seo: {"title": "Hooke’s Law & Spring Pendulum Calculators | calcPhysics", "description": "Calculate spring force, extension, spring constant and spring pendulum motion, including a conical spring pendulum. With formulas and calculation steps."},parentId:'mechanics',path:'/mechanics/hookes-law',title:'Hooke’s Law',description:'Calculate spring restoring force, spring constant and signed extension or compression with Hooke’s law.',symbol:'01.8',published:true},
   {id:'keplers-laws', seo: {"title": "Kepler’s Laws: Orbits & Periods | calcPhysics", "description": "Calculate elliptical orbits, swept areas and orbital periods using Kepler’s three laws. Explore ellipse geometry with an interactive 3D model."},parentId:'mechanics',path:'/mechanics/keplers-laws',title:'Kepler’s Laws',description:'Explore elliptical orbits, equal swept areas and orbital periods with inverse calculators and a rotating 3D cone-section model.',symbol:'01.7',published:true},
-  {id:'rotation',parentId:'mechanics',path:'/mechanics/rotation',title:'Rotation',description:'Angular displacement, circular motion, constant angular acceleration and inverse relations.',symbol:'01.5',published:true},
+  {id:'rotation',parentId:'mechanics',path:'/mechanics/rotation',title:'Rotation',description:'Angular motion, rigid-body energy, angular momentum, moments of inertia and the parallel-axis theorem.',symbol:'01.5',published:true},
   {id:'work-energy',parentId:'mechanics',path:'/mechanics/work-and-energy',title:'Work, Energy & Power',description:'Work, kinetic and potential energy, frictional dissipation and translational, rotational and electrical power.',symbol:'01.6',published:true},
   {id:'photometry',parentId:'optics',path:'/optics/photometry',title:'Light & Photometry',description:'Luminous intensity, flux, energy, illuminance, luminance and solid angles.',symbol:'05.6',published:true},
   {id:'fiber-optics',parentId:'optics',path:'/optics/fiber-optics',title:'Fiber Optics',description:'Optical power transmission ratios, signed decibel gain and absolute power levels in dBm.',symbol:'05.7',published:true},
@@ -154,7 +155,8 @@ export const models: readonly ModelDefinition[] = [
     references: [{ title: inclinedPlaneUi.source, url: 'https://openstax.org/books/university-physics-volume-1/pages/6-2-friction' }]
   },
   ...kinematicModels,
-  ...resourceModels.filter(model=>model.id.startsWith('book-'))
+  ...resourceModels.filter(model=>model.id.startsWith('book-')),
+  ...rigidModels
 ];
 export function childrenOf(parentId: string | null) {
   const children = topics.filter(topic => topic.parentId === parentId && !topic.kind);
