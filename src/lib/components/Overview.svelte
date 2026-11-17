@@ -28,7 +28,10 @@
   <p class="lead">{topic ? text(topic.description) : ui.homeDescription}</p>
   {#each topic?.references ?? [] as reference}<p><a href={reference.url}>{text(reference.title)}</a></p>{/each}
 </section>
-{#if !topic}<SiteSearch />{/if}
+{#if !topic}
+  <p class="guide-link"><a class="primary-link" href={localPath("/calculator-help")}>{text("How does it work?")}</a></p>
+  <SiteSearch />
+{/if}
 {#if topic?.id === 'disclaimer'}
   <Disclaimer />
 {:else if topic?.id === 'about'}
@@ -50,3 +53,8 @@
     <div class="topic-grid">{#each listedChildren as child}<TopicCard topic={child} />{/each}</div>
   </section>
 {/if}
+
+<style>
+  .guide-link { margin: 0 0 24px; }
+  .guide-link .primary-link { margin-top: 0; min-height: 44px; }
+</style>

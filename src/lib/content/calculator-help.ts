@@ -9,3 +9,11 @@ export const calculatorHelp = {
   'Results show three significant figures; calculations use unrounded values. The info button explains formulas and assumptions. Reset clears the calculator.'
  ]
 } as const;
+
+export const helpExamples=[
+ {id:'motion',title:'Calculate an unknown quantity',hint:'For constant velocity, s is displacement from the starting point. Enter any two quantities; leave the third blank.'},
+ {id:'expression',title:'Try an expression',hint:'Try (1 + 3) * 2, 2^3 or 1 / 0. Only valid finite results are accepted.'},
+ {id:'prefix',title:'Try prefixes',hint:'Try 1k + 1m in meters. Here m inside the input is the milli prefix; the unit is selected separately.'},
+ {id:'units',title:'Try changing units',hint:'Load 36 km/h and 90°. Then change a unit: the typed value stays unchanged and its interpretation changes.'},
+ {id:'precision',title:'See display rounding',hint:'Try 1 / 3. The result shows three significant figures; the value before display rounding is shown separately. Reset clears this example.'}
+] as const;

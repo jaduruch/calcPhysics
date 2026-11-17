@@ -1,4 +1,5 @@
 import { basePath, localeFromPath, languagePath } from './i18n/locale.ts';
+import { translateText } from './i18n/translate.ts';
 import { germanText } from './i18n/text-de.ts';
 import { topics, type Topic } from './content/topics.ts';
 
@@ -6,8 +7,8 @@ export const site = {
   origin: 'https://calcphysics.com',
   name: 'calcPhysics',
   author: 'Jana Ruch',
-  homeTitle: 'Physics Calculators & Theory | calcPhysics',
-  homeDescription: 'Explore physics theory and calculate motion and forces with SI prefixes, unit conversions, step-by-step formulas and diagrams for uniform motion and inclined planes.'
+  homeTitle: 'Physics Calculators, Formulas & Theory | calcPhysics',
+  homeDescription: 'Physics calculators for mechanics, electricity, thermodynamics, waves and optics. Solve formulas with unit conversions, calculation steps and diagrams.'
 } as const;
 // Netlify preview contexts set VITE_INDEXABLE=false; local development is never indexable.
 export const indexable = import.meta.env?.DEV !== true && import.meta.env?.VITE_INDEXABLE !== 'false';
@@ -25,16 +26,18 @@ export function pageMetadata(path: string) {
   const german = localeFromPath(pathname) === 'de';
   const base = basePath(pathname);
   const topic = topics.find(topic => topic.published && topic.path === base);
-  if (german && (base === '/' || topic)) return {
-    title: topic?.seo?.title&&germanText[topic.seo.title] ? germanText[topic.seo.title] : `${topic ? germanText[topic.title] ?? topic.title : 'Physik verstehen und berechnen'} | ${site.name}`,
-    description: topic ? germanText[topic.seo?.description??topic.description] ?? germanText[topic.description] ?? topic.description : 'Physik verstehen: Rechner, Theorie, SI-Einheiten und nachvollziehbare Rechenwege.',
-    canonical: canonicalUrl(pathname)
-  };
-  if (pathname !== '/' && !topic) return null;
+  if (base !== '/' && !topic) return null;
+  const localized = (value: string) => translateText(value, german ? 'de' : 'en');
+  const title = topic
+    ? topic.seo?.title ? localized(topic.seo.title)
+      : topic.kind ? `${localized(topic.title)} | ${site.name}`
+      : `${localized(topic.title)}${german ? ': Rechner & Formeln' : ': Calculators & Formulas'} | ${site.name}`
+    : german ? 'Physik-Rechner, Formeln & Theorie | calcPhysics' : site.homeTitle;
   return {
-    title: topic ? (topic.seo?.title ?? `${topic.title}: Physics Theory & Calculators | ${site.name}`) : site.homeTitle,
-    description: topic ? (topic.seo?.description ?? topic.description) : site.homeDescription,
-    canonical: canonicalUrl(topic?.path ?? '/')
+    title,
+    description: topic ? localized(topic.seo?.description ?? topic.description)
+      : german ? 'Physik-Rechner für Mechanik, Elektrotechnik, Thermodynamik, Wellen und Optik. Formeln mit Einheitenumrechnung, Rechenwegen und Grafiken berechnen.' : site.homeDescription,
+    canonical: canonicalUrl(pathname)
   };
 }
 function xml(value: string): string {

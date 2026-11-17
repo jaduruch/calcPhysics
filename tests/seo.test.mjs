@@ -19,7 +19,7 @@ test('published pages have unique useful titles and canonical metadata', () => {
   const pages = paths.map(pageMetadata);
   assert.equal(new Set(pages.map(page => page.title)).size, pages.length);
   assert.ok(pages.every(page => page.description.length > 40 && page.canonical.startsWith(site.origin)));
-  assert.match(pageMetadata('/mechanics/kinematics').title, /Uniform Motion Calculator/);
+  assert.match(pageMetadata('/mechanics/kinematics').title, /Kinematics: Motion & Projectile Calculator/);
   assert.ok(pageMetadata('/optics'));
   assert.equal(pageMetadata('/unknown'), null);
 });
@@ -60,4 +60,16 @@ test('structured data matches published pages and their visible breadcrumbs', ()
   assert.ok(pageStructuredData('/optics'));
   assert.equal(structuredDataJson('/unknown'), null);
   assert.ok(!pageStructuredData('/')['@graph'].some(item => item['@type'] === 'BreadcrumbList'));
+});
+
+test('localized metadata describes the current calculators with concise unique page summaries', () => {
+  const pages=publishedPaths().map(pageMetadata);
+  assert.equal(new Set(pages.map(p=>p.description)).size,pages.length);
+  assert.ok(pages.every(p=>p.title.length<100 && p.description.length<250));
+  assert.match(pageMetadata('/de').title,/Physik-Rechner/);
+  assert.match(pageMetadata('/').description,/electricity/);
+  assert.match(pageMetadata('/de/mechanics/momentum').description,/elastische/);
+  assert.match(pageMetadata('/mechanics/hookes-law').description,/conical/);
+  assert.equal(pageMetadata('/de/calculator-help').title,'Rechnerhilfe: Eingaben, Einheiten & Ausdrücke | calcPhysics');
+  assert.equal(pageMetadata('/mechanics/kinematics?x=1#test').canonical,pageMetadata('/mechanics/kinematics').canonical);
 });

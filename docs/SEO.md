@@ -15,6 +15,12 @@ Canonical-URLs enthalten weder Queryparameter noch Fragmente. Nicht veröffentli
 
 Bei späterem Domainwechsel die zentrale Origin und die expliziten Netlify-Redirectregeln zusammen aktualisieren. Einheiten-/Rechnerparameter sind keine eigenen indexierbaren Seiten. Deutsche Routen unter `/de/`, eigene Canonicals und reziproke `hreflang`-Verknüpfungen für en/de sind bereits implementiert. Deutsche Themen-/SEO-Texte sind übersetzt und Teil der Katalogprüfung; neue/geänderte Inhalte vollständig in beiden Sprachen führen.
 
+## Metadatenpflege am 17.11.2026
+
+Startseite und Schwerpunktseiten erhalten aktuelle, eigenständige Titel und Beschreibungen in beiden Sprachen. Die Startbeschreibung deckt alle klassischen Hauptbereiche ab; Impuls nennt auch Stösse, Hooke auch Federpendel und die Eingabehilfe ihre interaktiven Beispiele. Sonstige Rechnerseiten verwenden kurze lokalisierte Zusätze „Calculators & Formulas“ beziehungsweise „Rechner & Formeln“. Informationsseiten erhalten keinen Rechnerzusatz. Vorhandene Fachbeschreibungen bleiben die gemeinsame Rückfallquelle. Keine starren Zeichenlimits als Google-Vorgabe: Titel und Beschreibungen sollen prägnant sein und den tatsächlichen Inhalt benennen.
+
+Open Graph ergänzt die Sprachregion und alternative Sprache; Twitter-Summary-Metadaten verwenden dieselben Seitentexte. Es wird kein nicht vorhandenes Vorschaubild angegeben. Canonical, hreflang, strukturierte Daten und Vorschau-Sperren bleiben zentral. Tests prüfen eindeutige Titel/Beschreibungen und aktuelle Inhalte. Änderungen sind lokal und werden erst nach Veröffentlichung für Suchmaschinen erreichbar.
+
 ## Bereits geprüfter Live-Zustand am 30.10.2026
 
 - `https://calcphysics.com/mechanics/kinematics`: HTTP 200.
