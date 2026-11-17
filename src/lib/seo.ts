@@ -26,8 +26,8 @@ export function pageMetadata(path: string) {
   const base = basePath(pathname);
   const topic = topics.find(topic => topic.published && topic.path === base);
   if (german && (base === '/' || topic)) return {
-    title: `${topic ? germanText[topic.title] ?? topic.title : 'Physik verstehen und berechnen'} | ${site.name}`,
-    description: topic ? germanText[topic.description] ?? topic.description : 'Physik verstehen: Rechner, Theorie, SI-Einheiten und nachvollziehbare Rechenwege.',
+    title: topic?.seo?.title&&germanText[topic.seo.title] ? germanText[topic.seo.title] : `${topic ? germanText[topic.title] ?? topic.title : 'Physik verstehen und berechnen'} | ${site.name}`,
+    description: topic ? germanText[topic.seo?.description??topic.description] ?? germanText[topic.description] ?? topic.description : 'Physik verstehen: Rechner, Theorie, SI-Einheiten und nachvollziehbare Rechenwege.',
     canonical: canonicalUrl(pathname)
   };
   if (pathname !== '/' && !topic) return null;

@@ -1,81 +1,55 @@
-# Projekt-Roadmap
+# Projektstand und weitere Arbeit
 
-## Phase 0 – Spezifikation und Produktabgleich
+Stand: 17.11.2026, lokaler Repositoryzustand. Diese Übersicht ersetzt die veraltete Phasenplanung aus dem anfänglichen Spezifikationsauftrag. Implementierte Funktionen, offene Prüfungen und mögliche spätere Vorhaben sind getrennt. Neue Inhalte oder Veröffentlichung benötigen weiterhin einen Auftrag.
 
-Lieferumfang sind `AGENTS.md` und die vier Dokumente in `docs/`. Noch kein Setup, keine Installation und keine Website. Bestand: nur README, keine technische Migration nötig.
+## Bereits umgesetzt
 
-Bestätigt: Englisch ist die Standardsprache; Deutsch folgt später als Sprachoption.
+| Bereich | Stand |
+| --- | --- |
+| Technische Basis | SvelteKit/Svelte, TypeScript strict, Vite, KaTeX, Netlify-Adapter; Node-Version in `.nvmrc` |
+| Seiten | Home, sechs aktive Hauptthemen und veröffentlichte Unterthemen aus der Registry; englische und deutsche Routen |
+| Gemeinsame UI | ModelCard/ModelHost/ModelTheory, gemeinsame Eingabefelder, Einheitenmenüs, Rechner-/Ergebnisflächen, Theme, responsive Navigation |
+| Eingaben | Zentraler Ausdrucksparser und Präfixe; Grad als Winkelstandard; Rohtexte bleiben beim Einheitenwechsel erhalten |
+| Physik | Explizite inverse Solver, Teilresultate und modellgebundene Grafiken; unterschiedliche fachliche Vollständigkeit im Bestand, keine pauschale Erfüllungsbehauptung |
+| Inhaltserweiterungen | Physik1/Physik2, Formelbuch-Physikkapitel, Elektrotechnik, Kepler, Hookesches Gesetz/Federpendel, Impuls/Stösse/Rakete |
+| Recherche/Navigation | Lokale Vollseitensuche mit Hierarchie-Linkpillen; SI-Einheiten/Konstantenreferenz |
+| Informationsseiten | Rechnerhilfe, About und Haftungsausschluss, ohne „Subject overview“ und ohne Physik-Themenkachel |
+| Footer | Gruppierte Projekt-, Hilfe-/Referenz- und Rechtslinks; E-Mail, Instagram, GitHub mit Logos ohne Pfeile; Sprachwechsel |
+| Prüfwerkzeuge | Fach-/Inhalts-/Registrytests mit Node, Svelte-/Typprüfung, Produktionsbuild; gezielte Browserprüfungen separat |
 
-Bestätigt: Das Prinzip von elecalculate.com bleibt – nach unterschiedlichen Grössen auflösen und mit Ergebnissen weiterrechnen. calcPhysics soll mathematisch anspruchsvoller werden und Differential-/Integralrechnung nachvollziehbar einführen.
+Die aktuelle Themenliste steht in [AGENTS.md](../AGENTS.md); die Registry bleibt die ausführbare Quelle. Quellumfang und sichtbare Karten nicht verwechseln: Elektrotechnik enthält 44 zugrunde liegende Rechendefinitionen, 29 registrierte Definitionen und 22 Karten. Die Formelbuch-Zahlen beschreiben Quellbeziehungen, keine Zahl zusätzlicher Karten.
 
-Bestätigte Zielgruppen: Lernende auf höherem mathematischem Niveau und Ingenieurinnen und Ingenieure für einfache physikalische Berechnungen in der Industrie. Jedes Thema bietet die zwei Hauptbereiche «Theory» und «Calculate». Übungsaufgaben, Quiz und Lernfortschrittsfunktionen sind derzeit nicht vorgesehen. Voraussetzungen und fachliche Tiefe werden je Thema festgelegt, statt die ganze Plattform auf eine einzelne Schulstufe zu begrenzen.
+## Aktuelle verbindliche Modellstruktur
 
-Weitere Entscheidungen erst vor der betreffenden Phase: seitenübergreifende gespeicherte Berechnungsketten, freie Funktionseingaben und Produktionsdomain. Diese Fragen blockieren die technischen Grundlagen nicht. Konten, CMS und Monetarisierung sind nicht eingeplant.
+- Kinematics: fünf Karten (Uniform Motion, Uniformly Accelerated Motion, Projectile Motion, Free Fall, Velocity Components). Wurfbewegung ist ein kombinierter Rechner mit 17 Eingaben; keine separaten vertikalen/waagrechten Wurfkarten und keine Sonderfall-Schnellwahl. Negative Abwurfwinkel liefern keine Scheitelgrössen.
+- Dynamics: vier Karten; kombinierte schiefe Ebene mit 14 Eingaben und massenunabhängigen Teilresultaten. Gleitreibung für bereits hangabwärts gleitende Körper, keine Haftreibung. Dynamische Flaschenzugskizze.
+- Hooke’s Law: Hookesches Gesetz, Federpendel und kreisendes Federpendel als drei Karten.
+- Kepler: drei Karten; erstes Gesetz mit 15 Eingaben, drittes mit neun. ε, eigene Kegelschnittkonstruktion, Phasen-/Zeitregler und Play/Pause. Kein öffentlicher Link zum nutzereigenen Desmos-Modell.
+- Momentum: vier eigenständige aufklappbare Karten in der Reihenfolge Momentum Conservation, Inelastic Collision, Elastic Collision, Rocket Equation. Keine Auswahl innerhalb der Impulskarte und keine separaten Stoss-Unterthemen.
+- Transformator: Ideal/Real-Umschaltung; Wirkungsgradfeld im Idealmodus vollständig entfernt, Eingaben für den Realmodus bleiben erhalten.
 
-Abnahme: nachvollziehbare Architektur, dokumentierte Annahmen und ein vereinbarter erster vertikaler Anwendungsfall.
+Fachverträge: [Physik1/Physik2](RESOURCE_CONTENT.md), [Formelbuch](FORMULA_BOOK.md), [Elektrotechnik](ELECTRICITY.md), [Kepler](KEPLER.md), [Impuls/Rakete](MOMENTUM.md), [Stösse](COLLISIONS.md). Private Quellen/Renderdateien bleiben ausserhalb des Repositories. Externe Instagram-Icons sind Download-Artefakte, keine Website-Assets.
 
-## Aktueller Stand und nächster Erweiterungsschritt
+## Laufende Pflege im beauftragten Umfang
 
-Lokales Grundgerüst Home → Mechanics → Kinematics ist vorhanden. Home führt alle Hauptthemen; Mechanics, Thermodynamics, Electricity & Magnetism, Oscillations & Waves, Optics und Modern Physics sind aktiv. Optics führt Total Internal Reflection mit Grenzwinkel und Strahlenskizze. Oscillations & Waves führt Doppler Effect mit einem akustischen Modell und animierten Wellenfronten. Modern Physics führt Quantum mit dem Qubit-Simulator und animierter 3D-Blochkugel. Thermodynamics ist eine Themenübersicht mit der Unterseite Ideal Gases und dem ersten Modell Ideal Gas Law. Mechanics enthält Kinematics mit Uniform Motion, Uniformly Accelerated Motion, Vertical Throw, Horizontal Throw und Oblique Throw sowie Dynamics. Uniform Motion ist mit Theorie, vier Eingaben, Präfix-/Einheitenunterstützung, automatischen Resultaten, KaTeX-Rechenweg und zwei SVG-Diagrammen implementiert und vom Nutzer vorerst als Referenz akzeptiert. Seit 03.11.2026 sind zusätzlich Inclined Plane unter Dynamics sowie neun Elektrotechnik-Unterthemen mit 44 expliziten Rechenmodellen in 30 Karten beauftragt und implementiert. Three-Phase Systems bündelt Stern, Dreieck und Generator. Umfang und Quellen stehen in [ELECTRICITY.md](ELECTRICITY.md). Weitere Modelle und Veröffentlichung bleiben auftragsgebunden.
+1. Vollständige deutsche Katalogabdeckung erhalten. `tests/localization.test.mjs` prüft UI, Fach-/SI-Inhalte, dynamische Feldnamen und Quelltextliterale. Der frühere Teilübersetzungshinweis ist entfernt; neue englische Resttexte sind Fehler.
+2. Unterstützte Inversen, minimale Eingabekombinationen, Lösungszweige, Singularitäten, Widersprüche und unabhängige Teilresultate fachlich prüfen. Bestehende Lücken konkret benennen und im bearbeiteten Umfang beheben.
+3. Gemeinsame Gestaltung zentral pflegen; Modellseiten nicht kopieren. Explizit bestätigte Kartenstrukturen erhalten.
+4. Bei UI-/Grafikänderungen Mobil/Laptop, beide Themes, Tastatur/Pointer/Touch, Fokus/Ausgrauung und Rückkehr zum Normalzustand prüfen. Screenreader- oder Kontrastprüfungen nicht als erledigt behaupten, wenn sie nicht durchgeführt wurden.
+5. Für Implementierungsänderungen `npm test`, `npm run check`, `npm run build`; für reine Dokumentänderungen Konsistenz und Links prüfen.
 
-Mit dem zweiten Modell abgeschlossen: Uniform-Motion-Bindung von `ModelCard` gelöst und gemeinsame Feld-/Ergebnisdarstellung samt Styles extrahiert. Den akzeptierten Aufbau erhalten; Details und Änderungsstellen stehen im [Modellseitenstandard](MODEL_PAGE_STANDARD.md). Die folgenden Phasen beschreiben den weiteren Plan, nicht bereits vollständig erledigte Qualitäts-/Veröffentlichungsprüfungen.
+## Offen beziehungsweise nur bei neuem Auftrag
 
-Die Erweiterung vom 10.11.2026 ergänzt die Formelthemen aus Physik1/Physik2 mit 15 Unterseiten und 32 neuen Rechnerdefinitionen sowie einer Snell-Karte über den bestehenden Solver. Details und bewusst ausgelassene qualitative Lernziele stehen in [RESOURCE_CONTENT.md](RESOURCE_CONTENT.md). Dies ersetzt für diese Modelle die bisherige spätere Planung; es ist kein Veröffentlichungsauftrag.
+Keine freie Funktionseingabe, kein allgemeines CAS, keine persistenten Berechnungsketten oder globale Wertübernahme zwischen Themen. Konten, Datenbank, CMS, Bezahlung, Quiz, Übungen und Lernfortschritt sind nicht vorgesehen. Zusätzliche Fachmodelle nicht aus einer historischen Phasenliste ableiten.
 
-Die Erweiterung vom 11.11.2026 setzt zusätzlich alle Formelbeziehungen des Formelbuch-Physikkapitels um, mit expliziten inversen Zielgrössen, vier weiteren Unterthemen und fünf Temperaturskalen. Abdeckung und Korrekturen: [FORMULA_BOOK.md](FORMULA_BOOK.md). Der Implementierungsauftrag beinhaltet keine Produktionsveröffentlichung.
+Modellgebundene Numerik und eigene 3D-Projektionen sind vorhanden. Allgemeine Integrations-/ODE-Werkzeuge, Plotly, Three.js und Worker benötigen einen konkreten fachlichen oder gemessenen technischen Bedarf. Die Plattform bleibt nicht auf eine einzelne Schulstufe beschränkt; Voraussetzungen und Tiefe sind je Modell festzulegen.
 
-Die Erweiterung vom 12.11.2026 ergänzt Mechanics → Kepler’s Laws mit drei inversen Rechnern und einer interaktiven SVG-Kegelschnittkonstruktion aus dem bereitgestellten Desmos-Modell. Details: [KEPLER.md](KEPLER.md).
+CI ist noch nicht eingerichtet; die Fachtests verwenden den eingebauten Node-Testläufer, kein Vitest. Automatisierung separat beauftragen. Performanceziele und Accessibility-Ziele sind Prüfaufgaben, keine durch den bisherigen Funktionsumfang nachgewiesenen Erfüllungen.
 
-## Phase 1 – Technische und gestalterische Grundlage
+## Veröffentlichungsreife
 
-Nach Implementierungsauftrag SvelteKit und TypeScript einrichten, kompatible Versionen pinnen, Lockdatei und Node-Version dokumentieren. CSS-Tokens, Hell-/Dunkel-Schalter mit initialer Systemübernahme, Navigation, Übersichts-/Themenseitenvorlagen und KaTeX integrieren. Themenregistry als gemeinsame Quelle für Routen und Navigation etablieren. Englische Inhalte und URLs ohne Sprachpräfix verwenden; UI-Texte in einem englischen Wörterbuch führen und `/de/` für die spätere Erweiterung reservieren.
+Canonical-Origin `https://calcphysics.com`, lokalisierte Metadaten, Sitemap/robots, Preview-Sperren und Netlify-Konfiguration sind im Repository vorhanden. Daraus folgt weder ein Deployment noch ein überprüfter aktueller Live-Zustand. Eine Veröffentlichung nur auf ausdrücklichen Auftrag.
 
-Vitest, Typ-/Svelte-Prüfung und Produktionsbuild in GitHub CI ergänzen. Netlify-Adapter konfigurieren; Vorschauhosting erst bei entsprechendem Auftrag verbinden. Keine Datenbank oder Anmeldung.
+Vor Veröffentlichung: Fachreview und relevante Prüfungen, mobile Performance, Tastatur/Screenreader und Theme-Kontraste; Canonical-/Sprachlinks, 404 und Weiterleitungen prüfen. Domain-/Weiterleitungsdetails und datierte frühere Messungen: [SEO.md](SEO.md). Der letzte erfolgreiche Deploy soll als Rückfallstand verfügbar sein; keine unbestätigte Betriebssicherheit versprechen.
 
-Abnahme: responsive Grundstruktur mit lesbarem vorgerendertem Inhalt, vollständiger Tastaturbedienung und beiden Themes. Unveröffentlichte Themen sind keine leeren öffentlichen Seiten. Theme-Kontraste prüfen, initiales Bundle messen.
-
-## Phase 2 – Vertikaler Pilot: gleichförmige Bewegung
-
-Ein vollständiges Thema mit direkt verlinkbaren Bereichen «Theory» und «Calculate», vier automatisch bestimmte Zielgrössen, SI-/Anzeigeeinheiten, automatischer Berechnung, Rechenweg, SVG und Weg-Zeit-Diagramm. Lokale Folgeergebnisse und Herkunftsanzeige gehören zum Pilot, nicht erst zum späteren Ausbau.
-
-Mit diesem kleinen Thema werden Rechnervertrag, Definitionsbereiche und Invalidierung geprüft. Erst die zweite konkrete Rechneranforderung rechtfertigt zusätzliche Abstraktionen. Für die aktuellen Geraden SVG verwenden. Plotly erst bei weitergehenden wissenschaftlichen Diagrammanforderungen ergänzen und dessen Bundle budgetieren.
-
-Abnahme: alle Modi fachlich getestet; `0`, fehlende Eingaben, Nulldivision, Einheitenwechsel und Folgefehler korrekt; keine veralteten Resultate. Rechenweg und Diagramm stimmen mit den Resultaten überein. Browserprüfung des Hauptablaufs, mobile Performance und zugängliche Diagrammalternative. Zusätzlich wird der schnelle Direkteinstieg in «Calculate» geprüft: Zielgrösse wählen, Beispielwerte durch eigene Werte ersetzen, Einheiten anpassen und Ergebnis samt Modellgrenzen beurteilen, ohne zuvor Theorie durchlaufen zu müssen.
-
-## Phase 3 – Kinematik und analytische Analysis
-
-Gleichmässig beschleunigte Bewegung, vertikaler, horizontaler und schiefer Wurf sind als vier zusätzliche Modellkarten unter Kinematics umgesetzt. Freier Fall ist der Sonderfall v₀ = 0 im vertikalen Modell. Beide Zeitlösungen bei beschleunigter Bewegung werden angezeigt; Koordinaten, Anfangsbedingungen und erster Bodenkontakt sind explizit. Der schiefe Wurf verwendet Abwurfgeschwindigkeit, Winkel und Abwurfhöhe; seine Flugbahn endet ebenfalls beim ersten Bodenkontakt.
-
-Anhand dieser Modelle Ableitungen und bestimmte Integrale vermitteln: Position, Geschwindigkeit, Beschleunigung und Fläche unter der Kurve. Geschwindigkeitsbetrag und gerichtete Geschwindigkeit unterscheiden. Synchronisierte Skizzen und Diagramme, pausierbare Animationen.
-
-Abnahme: neue Themen benötigen Definition, Fachfunktionen, Theorie und gegebenenfalls spezielle Skizzen, jedoch keine kopierten vollständigen Seiten. Grenzfälle wie `a = 0`, unterschiedliche Abwurfhöhen und negative gerichtete Werte sind geprüft. Analytische Zusammenhänge erhalten unabhängige Referenztests.
-
-## Phase 4 – Dynamik und kontrollierte Weiterverwendung
-
-Newtonsche Gesetze, Reibung und schiefe Ebene mit Kraftskizzen ergänzen. Haft-/Gleitreibung und Richtungsannahmen getrennt behandeln. Themenübergreifende explizite Wertübernahme mit Dimensions- und Bedeutungsprüfung hinzufügen, wenn die Produktentscheidung dies bestätigt.
-
-Abnahme: Herkunft bleibt nachvollziehbar; gleiche Einheit führt nicht zu falscher Zuordnung. Keine Zyklen oder still überschriebenen Eingaben. Widersprüchliche Bedingungen werden erklärt.
-
-## Phase 5 – Numerische Verfahren und weitere Fachgebiete
-
-Zuerst einen begrenzten numerischen Lernfall wählen, etwa ein bestimmtes Integral einer unterstützten Funktion. Danach bei fachlichem Bedarf Bewegung mit Widerstand als Differentialgleichung. Numerik erhält Toleranzen, Grenzen, Fehlerschätzung und Nichtkonvergenzstatus. Worker nur nach Messung ergänzen.
-
-Weitere Themen schrittweise priorisieren: Thermodynamik, Elektrizität und Magnetismus, Schwingungen und Wellen, Optik, Moderne Physik. Jedes Gebiet bekommt eine Übersicht und geprüfte Modelle, bevor es öffentlich erscheint. Es besteht keine Zusage, alle Gebiete gleichzeitig fertigzustellen.
-
-3D nur für ausgewählte räumliche Phänomene. Freie Funktionseingaben, CAS, persistente Arbeitsbereiche oder CMS sind separate Entscheidungen mit eigenem Nutzen- und Komplexitätsnachweis.
-
-Abnahme: numerische Beispiele stimmen innerhalb dokumentierter Toleranzen mit Referenzen überein; schwierige Eingaben terminieren kontrolliert. Darstellung unterscheidet analytische Lösung und Näherung.
-
-## Deutsche Sprachoption – schrittweise umgesetzt
-
-Seit 10.11.2026: Sprachwechsel English / Deutsch im Footer, deutsche vorgerenderte Routen unter `/de/`, übersetzte Navigation, Themenbeschreibungen und gemeinsame Bedienung. Die Kinematik-Meldungen und Uniform-Motion-Theorie sind übersetzt. Weitere Fachinhalte werden schrittweise ergänzt; die deutsche Oberfläche weist auf englische Restinhalte hin. Stabile Themen-IDs verbinden die Sprachfassungen. Deutsche Seiten unter `/de/` veröffentlichen; Sprachschalter, lokalisierte Zahlenformate, HTML-Sprache, Metadaten und reziproke Sprachalternativen ergänzen. Fehlende Fachübersetzungen bleiben ausdrücklich als englische Restinhalte erkennbar.
-
-Abnahme: Beide Sprachen verwenden dieselbe Fachlogik; Sprachwechsel verändert keine physikalischen Werte. Längere deutsche Texte, Dezimalkomma/-punkt, fehlende Übersetzungen und SEO-Verknüpfungen sind geprüft. Die vollständige Fachübersetzung ist noch offen.
-
-## Veröffentlichungsreife und laufende Pflege
-
-Schon ab dem Pilot kontinuierlich prüfen, vor jeder Veröffentlichung abschliessen: Fachreview, Typprüfung, Tests, Produktionsbuild, mobile Performance, Tastatur/Screenreader und Theme-Kontraste. Vorhandene Ergebnisse müssen auch bei Renderingfehlern einer optionalen Visualisierung verständlich bleiben.
-
-Vor dem ersten Produktionsstart Domain und Canonical-Basis setzen, Sitemap/robots prüfen, 404 und Weiterleitungen testen sowie Preview-Indexierung verhindern. Produktion erst nach Veröffentlichungsauftrag. Ein letzter erfolgreicher Deploy muss als Rückfallstand verfügbar bleiben.
-
-Danach Abhängigkeiten gezielt pflegen, Fehler mit reproduzierbaren Eingaben dokumentieren und fachliche Änderungen samt Quellen nachführen. Neue Infrastruktur entsteht aus gemessenem Bedarf. Zeitaufwand und Termine werden nach dem ersten Pilot geschätzt, nicht aus einer noch unvalidierten Gesamtplanung abgeleitet.
+Bei Zweifeln zu Umfang, Begriffen oder Produktentscheidungen nachfragen, bevor abhängige Änderungen erfolgen. Keine Termine, neuen Features oder Veröffentlichungsfreigaben aus dieser Übersicht ableiten.

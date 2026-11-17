@@ -1,17 +1,17 @@
 # calcPhysics
 
-English physics reference and calculation platform. Available: Home → Mechanics → Kinematics (Uniform Motion) and Dynamics (Inclined Plane), using shared expandable model cards with info buttons for theory. Inclined Plane calculates weight, normal/downhill forces, kinetic friction and acceleration with a force sketch. Other main subjects are visible as unavailable; Uniform Motion now calculates s₀, s, v or t automatically with keyboard-entered SI prefixes (e.g. `1.5k`) and complete KaTeX result equations rounded to three significant figures.
+Physikplattform mit Englisch als Standardsprache und deutscher Fassung unter `/de/`. Sechs aktive Hauptthemen, Theorie und inverse Rechner in aufklappbaren Modellkarten, zentrale Einheiten-/Präfix-/Ausdruckseingaben und dynamische SVG-Grafiken. Home bietet eine Suche über die veröffentlichten Inhalte und eine SI-Referenz. Der aktuelle Umfang und verbindliche Entscheidungen stehen in [AGENTS.md](AGENTS.md).
 
-## Local development
+## Lokale Entwicklung
 
-Use Node.js 22.17 or newer (the tested version is in `.nvmrc`), then:
+Node.js ab 22.17 verwenden; die getestete Version steht in `.nvmrc`:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open the URL printed by Vite (normally http://localhost:5173).
+Die von Vite ausgegebene lokale Adresse öffnen (normalerweise http://localhost:5173).
 
 ```sh
 npm run check
@@ -20,16 +20,20 @@ npm run build
 npm run preview
 ```
 
-The production build uses the Netlify adapter and canonical domain `https://calcphysics.com`. Sitemap and robots.txt are generated automatically from the published topics. Production domain redirects are in `_redirects`; deploy previews are noindex. See [SEO configuration and mobile audit](docs/SEO.md). These repository changes require deployment to take effect on the live site; no deployment was performed in this task.
+Der Produktionsbuild verwendet den Netlify-Adapter. Canonical-Origin, Sitemap/robots und Preview-Sperren sind konfiguriert; Details und datierte frühere Messungen: [SEO.md](docs/SEO.md). Lokaler Code und Build sind kein Nachweis eines aktuellen Live-Deployments. Keine Veröffentlichung ohne Auftrag.
 
-## Structure
+## Struktur und Arbeitsregeln
 
-- `src/lib/physics/units.ts`: shared unit catalogue and SI conversion factors for all calculators.
-- `src/lib/content/topics.ts`: shared subject hierarchy, publication status and model metadata.
-- `src/lib/i18n/en.ts`: English UI strings; German is planned.
-- `src/lib/components/`: shared cards, quantity fields, calculator shell/tools, equation blocks, unit menu, theme toggle and KaTeX renderer.
-- `src/lib/styles/calculator.css`: shared calculator styling; common sizes are tokens in `app.css`.
-- `src/lib/styles/`: exact reference palette and responsive styles.
-- `src/routes/`: Home and data-driven published overview routes.
+- `src/lib/content/`: Themenregistry, Modellinhalte und Gruppierung der sichtbaren Karten.
+- `src/lib/physics/`: reine Fachfunktionen; `units.ts` führt Einheiten und SI-Konversionen zentral.
+- `src/lib/calculators/`: begrenzter Ausdrucksparser, Zahl-/Präfixformatierung und Ergebnisadapter.
+- `src/lib/i18n/`: englische/deutsche UI, redaktionelle Übersetzungen und Locale-Regeln.
+- `src/lib/components/`: gemeinsame Seiten-/Karten-/Feldbausteine und Fachansichten.
+- `src/lib/styles/`: zentrale Theme-/Grössentokens und gemeinsame Styles.
+- `src/routes/`: Home, datengetriebene Themenroute, Sitemap und robots.
+- `tests/`: Fach-, Inhalts-, Registry- und Formatierungstests mit Nodes eingebautem Testläufer.
+- `output/instagram-icons/`: separate Downloads, nicht auf der Website eingebunden.
 
-See [AGENTS.md](AGENTS.md), [source implementation rules](src/AGENTS.md) and the [accepted model page standard](docs/MODEL_PAGE_STANDARD.md) for shared change locations and the reference layout. Uniform Motion is the accepted baseline for future models. The physics solver is UI-independent and covered by automated tests. Run `npm test` (Node’s built-in test runner, without additional test dependencies). Browser interaction and visual checks are separate from these unit tests.
+[AGENTS.md](AGENTS.md), [src/AGENTS.md](src/AGENTS.md) und der [Modellseitenstandard](docs/MODEL_PAGE_STANDARD.md) halten die bestätigten Regeln fest. Uniform Motion bleibt die Designreferenz. [Architektur](docs/ARCHITECTURE.md) und [Projektstand/Roadmap](docs/PROJECT_ROADMAP.md) trennen implementierten Stand und spätere Vorhaben. Die deutsche UI- und Fachtextabdeckung wird automatisch mitgeprüft. Fachliche Grenzen und Prüfabdeckung der Rechner bleiben modellabhängig.
+
+Für Implementierungsänderungen Fachtests, Svelte-/Typprüfung, Build und relevante Browserprüfungen durchführen. Für reine Dokumentänderungen reichen Konsistenz- und Linkprüfung. Bei Zweifeln vor der betroffenen Änderung nachfragen.

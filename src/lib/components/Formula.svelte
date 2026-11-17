@@ -1,7 +1,9 @@
 <script lang="ts">
+  import {text} from '#lib/i18n/runtime.ts';
   import katex from 'katex';
   let { expression, wrap = false }: { expression: string; wrap?: boolean } = $props();
-  const renderExpression = $derived(wrap ? expression.replace(/(=|\\approx\b)/g, String.raw`\allowbreak $1\nobreak `) : expression);
+  const localizedExpression=$derived(expression.replace(/\\(text|mathrm)\{constant\}/g,(_,command:string)=>`\\${command}{${text('constant')}}`));
+  const renderExpression = $derived(wrap ? localizedExpression.replace(/(=|\\approx\b)/g, String.raw`\allowbreak $1\nobreak `) : localizedExpression);
   const markup = $derived(katex.renderToString(wrap ? `\\displaystyle ${renderExpression}` : renderExpression, { displayMode: !wrap, output: 'htmlAndMathml', trust: false, throwOnError: true }));
 </script>
 <div class="formula" class:wrappable={wrap}>{@html markup}</div>

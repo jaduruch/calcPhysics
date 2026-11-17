@@ -28,7 +28,7 @@
       {#each model.notes ?? [] as note}
         <div class="derivative-note"><p>{text(note.text)}</p>{#if note.expression}<Formula expression={note.expression} />{/if}</div>
       {/each}
-      {#each model.references ?? [] as reference}<p class="theory-source"><a href={reference.url}>{reference.title}</a></p>{/each}
+      {#each model.references ?? [] as reference}<p class="theory-source"><a href={reference.url}>{text(reference.title)}</a></p>{/each}
 </div>
 <style>
   .derivative-note { max-width: var(--theory-width); margin-top: 20px; }

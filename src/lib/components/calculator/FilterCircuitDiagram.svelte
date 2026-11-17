@@ -1,4 +1,5 @@
 <script lang="ts">
+ import {text as translate} from '#lib/i18n/runtime.ts';
   import '#lib/styles/circuit-diagram.css';
   import { electricalUi as text } from '#lib/i18n/runtime.ts';
   let { rc, highPass }: { rc: boolean; highPass: boolean } = $props();
@@ -19,7 +20,7 @@
     {:else if shuntComponent==='C'}<path class="wire" d="M400 105V123M400 147V165"/><path class="resistor" d="M375 123H425M375 147H425"/>
     {:else}<path class="resistor" d="M400 105a10 10 0 0 1 0 20a10 10 0 0 1 0 20a10 10 0 0 1 0 20"/>{/if}
     <g class="quantity resistance"><text x="210" y="105" text-anchor="middle"><tspan class="symbol">{seriesComponent}</tspan></text><text x="440" y="140"><tspan class="symbol">{shuntComponent}</tspan></text></g>
-    <g class="quantity voltage"><text x="20" y="102"><tspan class="symbol">U</tspan><tspan baseline-shift="sub" font-size="12">in</tspan></text><path class="arrow" d="M460 105V165" marker-end={`url(#${id}-voltage-arrow)`}/><text x="470" y="140"><tspan class="symbol">U</tspan><tspan baseline-shift="sub" font-size="12">out</tspan></text></g>
+    <g class="quantity voltage"><text x="20" y="102"><tspan class="symbol">U</tspan><tspan baseline-shift="sub" font-size="12">in</tspan></text><path class="arrow" d="M460 105V165" marker-end={`url(#${id}-voltage-arrow)`}/><text x="470" y="140"><tspan class="symbol">U</tspan><tspan baseline-shift="sub" font-size="12">{translate('out')}</tspan></text></g>
   </svg>
   <figcaption>{text.filterCircuitDescription}</figcaption>
 </figure>

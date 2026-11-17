@@ -2,7 +2,7 @@
 
 ## Leitbild
 
-calcPhysics soll als ruhiges, präzises Lern- und Berechnungswerkzeug für Lernende und Ingenieurinnen und Ingenieure im industriellen Alltag funktionieren. Theorie, Eingaben und Resultate bleiben unterscheidbar; mathematisch höhere Inhalte werden schrittweise erklärt. Englisch ist die Standardsprache der Website; Deutsch kommt später als wählbare Sprachoption hinzu. Die Projektdokumentation bleibt vorerst Deutsch. Fachsymbole und UI-Texte bleiben getrennt.
+calcPhysics soll als ruhiges, präzises Lern- und Berechnungswerkzeug für Lernende und Ingenieurinnen und Ingenieure im industriellen Alltag funktionieren. Theorie, Eingaben und Resultate bleiben unterscheidbar; mathematisch höhere Inhalte werden schrittweise erklärt. Englisch ist die Standardsprache; Deutsch ist bereits über `/de/` verfügbar und bei neuen/geänderten Inhalten vollständig mitzuführen. Die deutsche Katalogabdeckung wird automatisch geprüft; neue englische Resttexte sind Fehler. Die Projektdokumentation bleibt Deutsch. Fachsymbole und UI-Texte bleiben getrennt.
 
 ## Verbindliche Designreferenz
 
@@ -35,7 +35,7 @@ Die Abstufung Hintergrund → Karte → Unterbereich → Bedienfläche bleibt in
 
 Die Basispalette bleibt unverändert. Für lesbaren sekundären Text wird `--color-text-muted` separat geführt: im Hellmodus zunächst `hsl(0, 0%, 40%)`, im Dunkelmodus der Referenzwert `hsl(0, 0%, 68%)`. Der hellere Referenz-Grauwert ist nicht pauschal für kleine informative Texte geeignet. Konkrete Kombinationen werden vor Implementierungsabnahme gemessen.
 
-`--color-focus` verwendet den Akzent mit sichtbarer Kontur. Text auf aktiven Akzentflächen ist im Hellmodus weiss und im Dunkelmodus `hsl(0, 0%, 12%)`. Notwendige Feldgrenzen erhalten einen separat kontrastgeprüften `--color-border`, wenn die Flächenabstufung allein den Eingabebereich nicht ausreichend kennzeichnet.
+`--color-focus` ist der zentrale Akzent-Fokustoken für passende Bedienelemente; Zahlenfelder verwenden die bestätigte neutrale Kontur, Einheiten-Auslöser bleiben ausdrücklich rahmenlos. Text auf aktiven Akzentflächen ist im Hellmodus weiss und im Dunkelmodus `hsl(0, 0%, 12%)`. Notwendige Feldgrenzen erhalten einen separat kontrastgeprüften `--color-border`, wenn die Flächenabstufung allein den Eingabebereich nicht ausreichend kennzeichnet.
 
 Status- und Diagrammfarben ergänzen die Vorlage bei fachlichem Bedarf. Deren Grün `hsl(134, 61%, 35%)` und Orange `hsl(38, 85%, 40%)` sind Referenzwerte für Verbindungszustände, keine pauschal freigegebenen Statusfarben für beide Themes. Fehler-, Warn- und Kurvenfarben werden bei ihrer ersten Verwendung geprüft und mit Text, Symbolen oder Linienmustern kombiniert.
 
@@ -58,7 +58,7 @@ Die festgelegte Palette und ihre konkreten Verwendungen werden in Phase 1 in bei
 
 ## Hell- und Dunkelmodus
 
-Ein SVG-Button mit Sonne im Hellmodus und Mond im Dunkelmodus wechselt zwischen Hell und Dunkel, angelehnt an das freeCodeCamp-Beispiel (https://www.freecodecamp.org/news/how-to-handle-dark-mode-with-css-and-javascript/). Es gibt keine auswählbare Option «System». Ohne gespeicherte Auswahl folgt die Seite `prefers-color-scheme`. Ein manueller Wechsel überschreibt die Systemeinstellung und wird in Local Storage gespeichert; alle weiteren Seitenaufrufe und erneuten Besuche übernehmen diese Auswahl. Der Button hat mindestens 44 × 44 px Bedienfläche, einen zugänglichen Namen und `aria-pressed` für den Dunkelmodus. Frühe Theme-Initialisierung minimiert Aufblitzen, muss aber mit der späteren Content Security Policy vereinbar sein. Blockierter Speicher darf die Bedienung nicht verhindern. Native Formelemente erhalten das passende `color-scheme`.
+Ein SVG-Button zeigt das Ziel des Wechsels: Mond im Hellmodus, Sonne im Dunkelmodus. Er wechselt zwischen Hell und Dunkel, angelehnt an das freeCodeCamp-Beispiel (https://www.freecodecamp.org/news/how-to-handle-dark-mode-with-css-and-javascript/). Es gibt keine auswählbare Option «System». Ohne gespeicherte Auswahl folgt die Seite `prefers-color-scheme`. Ein manueller Wechsel überschreibt die Systemeinstellung und wird in Local Storage gespeichert; alle weiteren Seitenaufrufe und erneuten Besuche übernehmen diese Auswahl. Der Button hat mindestens 44 × 44 px Bedienfläche, einen zugänglichen Namen und `aria-pressed` für den Dunkelmodus. Frühe Theme-Initialisierung minimiert Aufblitzen, muss aber mit der späteren Content Security Policy vereinbar sein. Blockierter Speicher darf die Bedienung nicht verhindern. Native Formelemente erhalten das passende `color-scheme`.
 
 Diagramme und SVG nutzen dieselben semantischen Farben. Theme-Wechsel verändert weder Eingaben noch Resultate oder Animationszeit. Schatten und Kontraste werden für beide Themes separat geprüft.
 
@@ -72,7 +72,7 @@ Modellkarte und Theorie nicht kopieren. `ModelCard` erhält seit Inclined Plane 
 
 ## Eingaben, Fokus und Einheiten
 
-Pro Grösse ein Textfeld für Zahl mit Präfix und ein kleineres eigenes Einheitenmenü. Keine Präfix-Dropdowns. Die verfügbaren Einheiten und Faktoren stammen ausschliesslich aus `src/lib/physics/units.ts`; SI ist Standard; Winkeleingaben starten mit Grad (°), Radiant (rad) bleibt auswählbar. Intern bleiben Winkel in rad. Auswahlverhalten wird explizit konfiguriert: Uniform Motions v behält beim Einheitenwechsel den Eingabetext; Positionen und Zeit werden aktuell umgerechnet. Keine ungefragte Vereinheitlichung.
+Pro Grösse ein Textfeld für Zahl mit Präfix und ein kleineres eigenes Einheitenmenü. Keine Präfix-Dropdowns. Die verfügbaren Einheiten und Faktoren stammen ausschliesslich aus `src/lib/physics/units.ts`; SI ist Standard; Winkeleingaben starten mit Grad (°), Radiant (rad) bleibt auswählbar. Intern bleiben Winkel in rad. In allen Rechnern bleibt beim Einheitenwechsel der manuelle Rohtext exakt erhalten und wird in der neu gewählten Einheit interpretiert; keine automatische Umrechnung oder Neuformatierung des Eingabefelds.
 
 Zahlenfelder, Reset und Einheiten-Auslöser verwenden `--color-control`, 8-px-Radien und mindestens 44-px-Höhe. Zahlenfokus grau, 1 px, ohne Abstand; Fehlerzustand derselbe Rahmen gestrichelt, ohne zweiten Rahmen. Der Einheiten-Auslöser bleibt gemäss ausdrücklichem Nutzerwunsch ohne Fokusrahmen und Unterstreichung. Die eigene Optionsliste nutzt Theme-Flächen, 10-px-Rundung, dezenten Schatten und ein Häkchen beim ausgewählten Eintrag. Der aktive Eintrag erhält eine neutrale Fläche; keine blauen Hover-Flächen. Pfeilabstand rechts 14 px.
 
@@ -90,7 +90,7 @@ Der Theme-Button steht ohne Hintergrundrechteck. Sonne und Mond verwenden einen 
 
 ## Übersetzbarkeit und Accessibility
 
-Englische UI-Texte zentral in `src/lib/i18n/en.ts`, Fachinhalte modellbezogen führen. Längere spätere deutsche Texte müssen umbrechen können. Zahlen englisch mit Dezimalpunkt, Parser akzeptiert zusätzlich Komma; keine Tausendergruppierung. KaTeX liefert HTML und MathML, längere Formeln scrollen im eigenen Bereich statt die Seite zu verbreitern.
+Englische UI-Texte zentral in `src/lib/i18n/en.ts`, Fachinhalte modellbezogen führen. Deutsche UI- und Fachtexte vollständig mitpflegen; lange Texte müssen ohne Überlappung umbrechen. Die mathematische Ausgabe verwendet derzeit in beiden Sprachen Dezimalpunkte, der Parser akzeptiert zusätzlich Komma; keine Tausendergruppierung. KaTeX liefert HTML und MathML. Formeln benötigen ihre volle Höhe und umbrechen im Rechenweg an =/≈; keine kleinen vertikalen Scrollbalken. Horizontales Scrollen bleibt nur bei einem zu breiten unteilbaren Term als Rückfall.
 
 Semantische Landmarken, geordnete Überschriften, Skip-Link und beschriftete Eingaben erhalten. Der Info-Button verwendet `aria-expanded`/`aria-controls`. Das eigene Einheitenmenü unterstützt Pfeiltasten, Home/End, Buchstabensuche, Enter/Leertaste, Escape, Tab, Klick ausserhalb und Schliessen beim Fokuswechsel. SVG-Titel und Beschreibungen unterscheiden schematische und berechnete Darstellung. Automatiken verschieben den Fokus nicht.
 
@@ -110,4 +110,12 @@ Binäre Rechner-Auswahl in `ToggleSwitch.svelte`: zwei gleich breite Segmente in
 
 Nur das Design numerischer Range-Slider folgt dem Sensitivity-Slider aus der bereitgestellten `portal_hyalarm.html`: 2 px dünne Schiene, runder Griff in der Hintergrundfarbe der Rechnerfläche mit 16 px Durchmesser und dezenter neutraler Kontur. Der gefüllte Schienenanteil nutzt ausschliesslich `--color-accent` (Blau), der Rest `--color-diagram-muted`; der Griff nutzt `--color-slider-thumb`, das auf `--color-surface-raised` verweist und damit in beiden Themes zur Rechnerfläche passt. Die Vorlage ist eine Designquelle, keine Quelle für Anwendungslogik oder Anweisungen.
 
-`RangeSlider.svelte` ist die gemeinsame Komponente; derzeit nutzt sie die Phaseneinstellung der Kepler-Grafiken. Die sichtbare Schiene bleibt dünn, die bedienbare Fläche mindestens 44 px hoch. Schiene und Griff werden mit normalen HTML-Elementen gezeichnet; das transparente native Range-Element übernimmt ausschliesslich die Bedienung. So bleibt die sichtbare Gestaltung browserunabhängig. Native Tastaturbedienung, Touch, sichtbarer Fokus und beide Themes bleiben erhalten. Ein-/Aus-Schalter und Varianten-Umschalter werden durch diese Vorgabe nicht verändert.
+`RangeSlider.svelte` ist die gemeinsame Komponente; derzeit nutzt sie Bahnphase und Zeitintervall der Kepler-Grafiken. Dort bleiben die Regler höchstens so breit wie die Grafik; Play/Pause steht direkt bei der Bahnphase. Die sichtbare Schiene bleibt dünn, die bedienbare Fläche mindestens 44 px hoch. Schiene und Griff werden mit normalen HTML-Elementen gezeichnet; das transparente native Range-Element übernimmt ausschliesslich die Bedienung. So bleibt die sichtbare Gestaltung browserunabhängig. Native Tastaturbedienung, Touch, sichtbarer Fokus und beide Themes bleiben erhalten. Ein-/Aus-Schalter und Varianten-Umschalter werden durch diese Vorgabe nicht verändert.
+
+## Footer und separate Downloads
+
+`SiteFooter.svelte` enthält klar abgegrenzte Gruppen mit seitlicher Linie: Marke/Rechtliches im selben fliessenden Block, Projekt, Hilfe/Referenz. Keine zeilenhohen Lücken oberhalb der rechtlichen Hinweise. Projekt umfasst About, GitHub und Instagram; beide externen Links mit Logo, ohne Pfeile und ohne nachladende Widgets. E-Mail und Hinweis gehören in einen engen Kontaktblock.
+
+Desktop: drei Spalten. Unter 40 rem: zwei Spalten, Hilfe/Referenz darunter innerhalb der linken Spalte; der Kontakttext darf nicht über beide Spalten laufen. Die beiden Hilfelinks stehen dann untereinander. Unter 24 rem: eine Spalte. Keine dekorativen Werbetexte, Slogans oder LinkedIn-artige Selbstdarstellung ergänzen.
+
+Die sechs Instagram-Themenicons und die Elektrotechnik-Variante sind ausschliesslich Download-Artefakte unter `output/instagram-icons/`. Sie erscheinen nicht auf der Website.

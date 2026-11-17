@@ -2,10 +2,10 @@ import { page } from '$app/state';
 import * as en from './en.ts';
 import * as de from './de.ts';
 import { localeFromPath, languagePath } from './locale.ts';
-import { germanText } from './text-de.ts';
+import {translateText} from './translate.ts';
 export function isGerman(): boolean { return localeFromPath(page.url.pathname) === 'de'; }
 export function localPath(path: string): string { return languagePath(path, localeFromPath(page.url.pathname)); }
-export function text(value: string): string { return isGerman() ? germanText[value] ?? germanText[value.toLowerCase()] ?? value : value; }
+export function text(value: string): string { return translateText(value,isGerman()?'de':'en'); }
 function dictionary<T extends Record<string, string>>(english: T, german: Partial<Record<keyof T, string>>): { [K in keyof T]: string } {
   return new Proxy(english, { get(target, key: string) { return isGerman() ? german[key] ?? target[key] : target[key]; } });
 }

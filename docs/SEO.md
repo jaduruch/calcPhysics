@@ -13,7 +13,7 @@
 
 Canonical-URLs enthalten weder Queryparameter noch Fragmente. Nicht veröffentlichte oder unbekannte Pfade bekommen keine vermeintlich gültigen SEO-Metadaten; die Fehlerseite bleibt `noindex`. Die Sitemap und interne Seitennavigation stammen aus derselben Themenregistry. Eigene Modellrouten wurden nicht neu eingeführt.
 
-Bei späterem Domainwechsel die zentrale Origin und die expliziten Netlify-Redirectregeln zusammen aktualisieren. Einheiten-/Rechnerparameter sind keine eigenen indexierbaren Seiten. Deutsch erhält erst bei vorhandenen Übersetzungen eigene URLs und reziproke hreflang-Verknüpfungen.
+Bei späterem Domainwechsel die zentrale Origin und die expliziten Netlify-Redirectregeln zusammen aktualisieren. Einheiten-/Rechnerparameter sind keine eigenen indexierbaren Seiten. Deutsche Routen unter `/de/`, eigene Canonicals und reziproke `hreflang`-Verknüpfungen für en/de sind bereits implementiert. Deutsche Themen-/SEO-Texte sind übersetzt und Teil der Katalogprüfung; neue/geänderte Inhalte vollständig in beiden Sprachen führen.
 
 ## Bereits geprüfter Live-Zustand am 30.10.2026
 

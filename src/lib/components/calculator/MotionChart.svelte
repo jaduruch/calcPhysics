@@ -1,5 +1,6 @@
 <script lang="ts">
   import { formatAxisLabel } from '#lib/visualization/axis-label.ts';
+  import {text as translate} from '#lib/i18n/runtime.ts';
   import { chartUi as text } from '#lib/i18n/runtime.ts';
   let { title, yLabel, times, values, description, shape, xLabel = 't [s]', schematic = false, color = 'default', xBounds, marker }: {
     title: string; yLabel: string; times: number[]; values: number[]; description: string; shape: 'position' | 'velocity'; xBounds?: {min:number;max:number}; xLabel?: string; schematic?: boolean; color?: 'default' | 'current'; marker?: { time: number; value: number };
@@ -31,10 +32,10 @@
 {/snippet}
 
 <figure>
-  <figcaption><strong>{title}</strong></figcaption>
+  <figcaption><strong>{translate(title)}</strong></figcaption>
   <svg style:width="calc(390px * var(--graphic-scale))" style:max-width="100%" viewBox="0 0 390 270" role="img" aria-labelledby={`${id}-title ${id}-description`}>
-    <title id={`${id}-title`}>{title} — {yLabel}</title>
-    <desc id={`${id}-description`}>{description}{!hasData ? ` ${text.empty}` : ''}</desc>
+    <title id={`${id}-title`}>{translate(title)} — {yLabel}</title>
+    <desc id={`${id}-description`}>{translate(description)}{!hasData ? ` ${text.empty}` : ''}</desc>
     <defs>
       <marker id={`${id}-arrow`} viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto">
         <path d="M0 0L8 4L0 8Z" fill="var(--color-text-muted)" />

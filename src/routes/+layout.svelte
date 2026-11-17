@@ -47,7 +47,7 @@
   {/each}
 {/snippet}
 <header class="site-header"><div class="header-inner">
-  <a class="brand" href={localPath("/")} aria-label="calcPhysics home"><span class="brand-mark" aria-hidden="true"></span>calc<span>Physics</span></a>
+  <a class="brand" href={localPath("/")} aria-label={text('calcPhysics home')}><span class="brand-mark" aria-hidden="true"></span>calc<span>Physics</span></a>
   <nav class="desktop-navigation" aria-label={ui.mainNavigation}>{@render navigationLinks()}</nav>
   <ThemeToggle />
   <details class="mobile-menu" bind:this={mobileMenu} onfocusout={menuFocusOut}>

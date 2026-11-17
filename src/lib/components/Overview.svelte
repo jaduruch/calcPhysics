@@ -1,6 +1,6 @@
 <script lang="ts">
   import { childrenOf, models, topics, type Topic } from '#lib/content/topics.ts';
-  import { ui, text, localPath, isGerman } from '#lib/i18n/runtime.ts';
+  import { ui, text, localPath } from '#lib/i18n/runtime.ts';
   import TopicCard from './TopicCard.svelte';
   import {groupTopicModels} from '#lib/content/model-groups.ts';
   import ModelHost from './ModelHost.svelte';
@@ -17,7 +17,7 @@
   const parent = $derived(topics.find(item => item.id === topic?.parentId));
 </script>
 
-<nav class="breadcrumbs" aria-label="Breadcrumb">
+<nav class="breadcrumbs" aria-label={text('Breadcrumb')}>
   <ol><li>{#if topic}<a href={localPath("/")}>{ui.home}</a>{:else}<span aria-current="page">{ui.home}</span>{/if}</li>
   {#if parent}<li><a href={localPath(parent.path)}>{text(parent.title)}</a></li>{/if}
   {#if topic}<li><span aria-current="page">{text(topic.title)}</span></li>{/if}</ol>
@@ -26,9 +26,8 @@
   {#if topic && !topic.kind}<p class="eyebrow">{ui.subjectLabel}</p>{/if}
   <h1 id="page-title">{topic ? text(topic.title) : ui.homeTitle}</h1>
   <p class="lead">{topic ? text(topic.description) : ui.homeDescription}</p>
-  {#each topic?.references ?? [] as reference}<p><a href={reference.url}>{reference.title}</a></p>{/each}
+  {#each topic?.references ?? [] as reference}<p><a href={reference.url}>{text(reference.title)}</a></p>{/each}
 </section>
-{#if isGerman()&&!topic?.kind}<p class="translation-notice" lang="de">Die deutsche Fassung wird schrittweise ergänzt. Noch nicht übersetzte Fachtexte und Rechnerbeschriftungen erscheinen auf Englisch.</p>{/if}
 {#if !topic}<SiteSearch />{/if}
 {#if topic?.id === 'disclaimer'}
   <Disclaimer />

@@ -1,70 +1,71 @@
 <script lang="ts">
+  import {text} from '#lib/i18n/runtime.ts';
   import Formula from './Formula.svelte';
   import { baseUnits, namedUnits, commonUnits, physicalConstants } from '#lib/content/si-reference.ts';
 </script>
 
 <div class="si-reference">
-  <nav aria-label="On this page">
-    <a href="#base-units">Base units</a>
-    <a href="#derived-units">Named derived units</a>
-    <a href="#unit-relationships">Unit relationships</a>
-    <a href="#constants">Constants</a>
+  <nav aria-label={text("On this page")}>
+    <a href="#base-units">{text("Base units")}</a>
+    <a href="#derived-units">{text("Named derived units")}</a>
+    <a href="#unit-relationships">{text("Unit relationships")}</a>
+    <a href="#constants">{text("Constants")}</a>
   </nav>
-  <p>The International System of Units (SI) uses seven base units. Products and powers of these units describe other physical quantities. There are infinitely many possible combinations; the tables below cover all 22 derived units with special names and a selection of common relationships.</p>
+  <p>{text("The International System of Units (SI) uses seven base units. Products and powers of these units describe other physical quantities. There are infinitely many possible combinations; the tables below cover all 22 derived units with special names and a selection of common relationships.")}</p>
   <section id="base-units" aria-labelledby="base-heading">
-    <h2 id="base-heading">The seven SI base units</h2>
+    <h2 id="base-heading">{text("The seven SI base units")}</h2>
     <!-- Scrollable tables must be reachable with the keyboard. -->
     <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-    <div class="table-scroll" role="region" aria-label="SI base units" tabindex="0">
+    <div class="table-scroll" role="region" aria-label={text("SI base units")} tabindex="0">
       <table>
-        <thead><tr><th scope="col">Quantity</th><th scope="col">Typical symbol</th><th scope="col">Unit</th><th scope="col">Unit symbol</th></tr></thead>
-        <tbody>{#each baseUnits as unit}<tr><th scope="row">{unit.quantity}</th><td><Formula expression={unit.symbol} /></td><td>{unit.name}</td><td><Formula expression={`\\mathrm{${unit.unit}}`} /></td></tr>{/each}</tbody>
+        <thead><tr><th scope="col">{text("Quantity")}</th><th scope="col">{text("Typical symbol")}</th><th scope="col">{text("Unit")}</th><th scope="col">{text("Unit symbol")}</th></tr></thead>
+        <tbody>{#each baseUnits as unit}<tr><th scope="row">{text(unit.quantity)}</th><td><Formula expression={unit.symbol} /></td><td>{text(unit.name)}</td><td><Formula expression={`\\mathrm{${unit.unit}}`} /></td></tr>{/each}</tbody>
       </table>
     </div>
   </section>
   <section id="derived-units" aria-labelledby="derived-heading">
-    <h2 id="derived-heading">Derived units with special names</h2>
-    <p>Here, [F] means “the SI unit of force”, rather than its numerical value or dimension. Quantity symbols depend on context: F can denote force, while the upright unit symbol F denotes farad.</p>
+    <h2 id="derived-heading">{text("Derived units with special names")}</h2>
+    <p>{text("Here, [F] means “the SI unit of force”, rather than its numerical value or dimension. Quantity symbols depend on context: F can denote force, while the upright unit symbol F denotes farad.")}</p>
     <!-- Scrollable tables must be reachable with the keyboard. -->
     <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-    <div class="table-scroll" role="region" aria-label="Named SI derived units" tabindex="0">
+    <div class="table-scroll" role="region" aria-label={text("Named SI derived units")} tabindex="0">
       <table>
-        <thead><tr><th scope="col">Quantity</th><th scope="col">Unit name</th><th scope="col">Unit relationship</th></tr></thead>
-        <tbody>{#each namedUnits as unit}<tr><th scope="row">{unit.quantity}</th><td>{unit.name}</td><td><Formula expression={unit.expression} /></td></tr>{/each}</tbody>
+        <thead><tr><th scope="col">{text("Quantity")}</th><th scope="col">{text("Unit name")}</th><th scope="col">{text("Unit relationship")}</th></tr></thead>
+        <tbody>{#each namedUnits as unit}<tr><th scope="row">{text(unit.quantity)}</th><td>{text(unit.name)}</td><td><Formula expression={unit.expression} /></td></tr>{/each}</tbody>
       </table>
     </div>
-    <p>Radian and steradian have unit one; their names preserve the distinction between plane and solid angle. Lumen and lux retain sr to show that distinction. Hertz and becquerel also share the same base-unit expression but describe different quantities.</p>
-    <p>A temperature interval of 1 °C equals an interval of 1 K. Temperature readings have an offset:</p>
+    <p>{text("Radian and steradian have unit one; their names preserve the distinction between plane and solid angle. Lumen and lux retain sr to show that distinction. Hertz and becquerel also share the same base-unit expression but describe different quantities.")}</p>
+    <p>{text("A temperature interval of 1 °C equals an interval of 1 K. Temperature readings have an offset:")}</p>
     <Formula expression={String.raw`\frac{t}{\mathrm{{}^\circ C}} = \frac{T}{\mathrm{K}} - 273.15`} />
   </section>
   <section id="unit-relationships" aria-labelledby="relationships-heading">
-    <h2 id="relationships-heading">Common unit relationships</h2>
+    <h2 id="relationships-heading">{text("Common unit relationships")}</h2>
     <!-- Scrollable tables must be reachable with the keyboard. -->
     <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-    <div class="table-scroll" role="region" aria-label="Common unit relationships" tabindex="0">
+    <div class="table-scroll" role="region" aria-label={text("Common unit relationships")} tabindex="0">
       <table>
-        <thead><tr><th scope="col">Quantity</th><th scope="col">SI unit</th></tr></thead>
-        <tbody>{#each commonUnits as unit}<tr><th scope="row">{unit.quantity}</th><td><Formula expression={unit.expression} /></td></tr>{/each}</tbody>
+        <thead><tr><th scope="col">{text("Quantity")}</th><th scope="col">{text("SI unit")}</th></tr></thead>
+        <tbody>{#each commonUnits as unit}<tr><th scope="row">{text(unit.quantity)}</th><td><Formula expression={unit.expression} /></td></tr>{/each}</tbody>
       </table>
     </div>
-    <p>Torque and energy share the same base-unit expression. Torque is conventionally written in N·m rather than J to keep the quantities distinct. Matching units is a necessary check on an equation, but does not by itself prove the physics is correct.</p>
+    <p>{text("Torque and energy share the same base-unit expression. Torque is conventionally written in N·m rather than J to keep the quantities distinct. Matching units is a necessary check on an equation, but does not by itself prove the physics is correct.")}</p>
   </section>
   <section id="constants" aria-labelledby="constants-heading">
-    <h2 id="constants-heading">Physical constants</h2>
-    <p>The first seven constants define the SI through fixed, exact numerical values. Other constants can be measured or derived. Parentheses indicate the standard uncertainty in the final digits: 6.674 30(15) means 6.674 30 ± 0.000 15.</p>
+    <h2 id="constants-heading">{text("Physical constants")}</h2>
+    <p>{text("The first seven constants define the SI through fixed, exact numerical values. Other constants can be measured or derived. Parentheses indicate the standard uncertainty in the final digits: 6.674 30(15) means 6.674 30 ± 0.000 15.")}</p>
     <!-- Scrollable tables must be reachable with the keyboard. -->
     <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-    <div class="table-scroll" role="region" aria-label="Physical constants" tabindex="0">
+    <div class="table-scroll" role="region" aria-label={text("Physical constants")} tabindex="0">
       <table>
-        <thead><tr><th scope="col">Constant</th><th scope="col">Value in SI units</th><th scope="col">Status</th></tr></thead>
-        <tbody>{#each physicalConstants as constant}<tr><th scope="row">{constant.name}</th><td><Formula expression={constant.expression} /></td><td>{constant.note}</td></tr>{/each}</tbody>
+        <thead><tr><th scope="col">{text("Constant")}</th><th scope="col">{text("Value in SI units")}</th><th scope="col">{text("Status")}</th></tr></thead>
+        <tbody>{#each physicalConstants as constant}<tr><th scope="row">{text(constant.name)}</th><td><Formula expression={constant.expression} /></td><td>{text(constant.note)}</td></tr>{/each}</tbody>
       </table>
     </div>
-    <p>Gravitational acceleration g depends on location and is not the gravitational constant G. The calculators use 9.81 m/s² as a default approximation for g; it is not an exact SI defining value.</p>
+    <p>{text("Gravitational acceleration g depends on location and is not the gravitational constant G. The calculators use 9.81 m/s² as a default approximation for g; it is not an exact SI defining value.")}</p>
   </section>
   <section aria-labelledby="sources-heading">
-    <h2 id="sources-heading">Sources</h2>
-    <p>Unit definitions and relationships: <a href="https://www.bipm.org/en/publications/si-brochure">BIPM, SI Brochure, 9th edition, version 4.01 (2026)</a>. Defining values: <a href="https://www.bipm.org/en/measurement-units/si-defining-constants">BIPM defining constants</a>. Measured and derived constants: <a href="https://physics.nist.gov/cuu/pdf/wallet_2022.pdf">NIST, CODATA 2022 recommended values</a>.</p>
+    <h2 id="sources-heading">{text("Sources")}</h2>
+    <p>{text("Unit definitions and relationships:")} <a href="https://www.bipm.org/en/publications/si-brochure">{text("BIPM, SI Brochure, 9th edition, version 4.01 (2026)")}</a>{text(". Defining values:")} <a href="https://www.bipm.org/en/measurement-units/si-defining-constants">{text("BIPM defining constants")}</a>{text(". Measured and derived constants:")} <a href="https://physics.nist.gov/cuu/pdf/wallet_2022.pdf">{text("NIST, CODATA 2022 recommended values")}</a>.</p>
   </section>
 </div>
 

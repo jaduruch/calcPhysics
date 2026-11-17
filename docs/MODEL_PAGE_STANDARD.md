@@ -4,7 +4,7 @@
 
 Uniform Motion wurde vom Nutzer vorerst als Referenz für Aufbau, Gestaltung und Bedienung akzeptiert. Dieser Stand ist die Grundlage für neue Modelle, keine Aufforderung, bereits weitere Themen zu implementieren oder zu veröffentlichen. Die Arbeitsregeln für künftige Implementierungen stehen in [src/AGENTS.md](../src/AGENTS.md); die Farbpalette steht im [Designsystem](DESIGN_SYSTEM.md), die fachlichen Regeln in den [Physikstandards](PHYSICS_STANDARDS.md).
 
-Electricity & Magnetism verwendet für neun Unterthemen und 44 Modelle in 22 Karten ebenfalls dieselben Modellkarten, Felder, Einheitenmenüs und Ergebnisbausteine. Der modellabhängige Elektrotechnik-Rechner steuert explizite SI-Funktionen an; Details siehe [ELECTRICITY.md](ELECTRICITY.md).
+Electricity & Magnetism verwendet für neun Unterthemen mit 44 zugrunde liegenden Rechendefinitionen, 29 registrierten Definitionen und 22 sichtbaren Karten ebenfalls dieselben Modellkarten, Felder, Einheitenmenüs und Ergebnisbausteine. Der modellabhängige Elektrotechnik-Rechner steuert explizite SI-Funktionen an; Details siehe [ELECTRICITY.md](ELECTRICITY.md).
 
 Seit 03.11.2026 verwendet auch Inclined Plane unter Mechanics → Dynamics die gemeinsame Oberfläche. Ihre Physik, Eingabegrössen und Visualisierungen dürfen fachlich anders sein. Uniform Motion hat vier Eingabegrössen und zwei Diagramme; das ist kein Zwang für jedes künftige Modell. Die nachfolgende Zuordnung unterscheidet bereits gemeinsame Implementierung und noch nötige Wiederverwendung.
 
@@ -34,11 +34,11 @@ Seit 03.11.2026 verwendet auch Inclined Plane unter Mechanics → Dynamics die g
 | Achsen, Raster, Kurven und Pfeile | [MotionChart.svelte](../src/lib/components/calculator/MotionChart.svelte) |
 | Wissenschaftliche Achsenbeschriftung | [axis-label.ts](../src/lib/visualization/axis-label.ts) |
 | Zeit-Zusatzformat | [duration.ts](../src/lib/calculators/duration.ts) |
-| Gemeinsame UI-Texte und Sprachwahl | [en.ts](../src/lib/i18n/en.ts), [de.ts](../src/lib/i18n/de.ts), [runtime.ts](../src/lib/i18n/runtime.ts); Footer in `+layout.svelte` |
+| Gemeinsame UI-Texte und Sprachwahl | [en.ts](../src/lib/i18n/en.ts), [de.ts](../src/lib/i18n/de.ts), [runtime.ts](../src/lib/i18n/runtime.ts); Footer in `SiteFooter.svelte`, eingebunden im Root-Layout |
 
 Gemeinsame Komponenten importieren, nicht kopieren. Nur Eigenschaften, die bewusst pro Modell variieren, werden als typisierte Props/Definitionen/Snippets übergeben. Keine themenspezifischen CSS-Überschreibungen für dieselben Felder, Menüs oder Diagrammachsen anlegen.
 
-## Gemeinsame Basis seit dem zweiten Modell
+## Vorhandene gemeinsame Basis
 
 Die vorherige direkte Bindung an Uniform Motion ist gelöst. `ModelCard` erhält eine typisierte `ModelDefinition` und einen Rechner-Snippet. `ModelHost` ordnet den Rechner zu. Variablen, Formeln, Erklärung und Quellen stammen aus den jeweiligen Modelldaten. Uniform Motions Ableitungstext wird nicht auf Dynamics angezeigt.
 
@@ -117,7 +117,7 @@ Bei gemeinsamen Designänderungen die gemeinsame Quelle bearbeiten und mehrere A
 
 Für neue Modelle: Fachtests für alle Zielgrössen, Einheiten, Präfixe, Grenzfälle, Rundung und Invalidierung; `npm test`, `npm run check`, `npm run build`. Für gemeinsame UI: Laptop/Mobil, beide Themes, leere/ungültige/gültige Zustände, Tastatur und Fokus prüfen, soweit Browserwerkzeuge vorhanden sind. Dokumentationsänderungen allein benötigen Konsistenz- und Linkprüfung.
 
-## Zweites Modell: Inclined Plane
+## Dynamics: Inclined Plane
 
 Dynamics liegt unter `/mechanics/dynamics`; die zugehörige Karte enthält die schiefe Ebene. Masse ist nur für Kraftbeträge erforderlich; Geometrie, Beschleunigung und Geschwindigkeit erscheinen unabhängig davon. μₖ und g sind optional mit sichtbaren Standardannahmen. Ausgegeben werden Gewichtskraft, Normalkraft, Hangabtriebskraft, Gleitreibungskraft, resultierende Kraft und Beschleunigung als vollständige KaTeX-Rechenwege. Bei Nicht-SI-Eingaben werden Masse und Winkel zuerst konvertiert. Eine SVG-Kraftskizze ersetzt fachgerecht die Zeitdiagramme von Uniform Motion. Details und Modellgrenzen stehen in den Physikstandards; die gemeinsame Gestaltung wird davon nicht dupliziert.
 
@@ -129,7 +129,7 @@ Ergebnis- und Umrechnungsgleichungen verwenden den gemeinsamen `Formula`-Baustei
 
 Fokusbezug zur Skizze: `QuantityField` meldet den Fokus seines Zahlenfelds über den optionalen Callback `onfocuschange`. Inclined Plane markiert bei fokussiertem α-Feld Winkelbogen, Winkelfläche und Beschriftung mit der gemeinsamen Akzentfarbe. Bei Fokus auf L wird die gesamte geneigte Strecke samt L markiert, bei h die senkrechte Höhendifferenz samt h. Die Markierung endet bei Fokusverlust, funktioniert auch per Tastatur und verändert weder Geometrie noch Rechenwerte. Keine modellspezifische Fokuslogik in `QuantityField` einbauen.
 
-Inclined Plane bietet zusätzlich L und h als Längenfelder mit derselben globalen Einheitenliste. Zwei Werte aus L, h und α bestimmen die dritte Grösse; widersprüchliche Dreifachangaben sind ungültig. v_end ist eine manuelle Eingabe oder ein berechnetes Resultat aus Ruhe. Es gilt v_end² = 2aL bzw. ohne Reibung v_end² = 2gh. Damit sind auch inverse Geometrierechnungen möglich; kein v₀-Feld. Geometrie- und Geschwindigkeitsresultate bleiben unterhalb der Eingaben im gemeinsamen Rechenweg. Dynamics zeigt vier thematisch gebündelte Karten statt 14 einzelner Akkordeons; verwandte Rechnungen werden innerhalb der Karten umgeschaltet. Fachliche Sonderfälle siehe Physikstandards.
+Inclined Plane bietet zusätzlich L und h als Längenfelder mit derselben globalen Einheitenliste. Zwei Werte aus L, h und α bestimmen die dritte Grösse; widersprüchliche Dreifachangaben sind ungültig. v_end ist eine manuelle Eingabe oder ein berechnetes Resultat aus Ruhe. Es gilt v_end² = 2aL bzw. ohne Reibung v_end² = 2gh. Damit sind auch inverse Geometrierechnungen möglich; kein v₀-Feld. Geometrie- und Geschwindigkeitsresultate bleiben unterhalb der Eingaben im gemeinsamen Rechenweg. Dynamics zeigt vier thematisch gebündelte Karten statt 14 einzelner Akkordeons; verwandte Rechnungen werden bei fachlichem Bedarf innerhalb der Karten umgeschaltet. Inclined Plane ist ein kombinierter Rechner ohne solche Variantenwahl. Fachliche Sonderfälle siehe Physikstandards.
 
 ## Quantum: Qubit
 
@@ -141,7 +141,7 @@ Oscillations & Waves ist eine Übersicht; Doppler Effect liegt unter `/oscillati
 
 ## Optics: Total Internal Reflection
 
-Optics ist eine Übersicht mit der Unterseite `/optics/total-internal-reflection`. Die Modellkarte verwendet gemeinsame Felder für n₁, n₂ und θ₁, Einheitenmenüs, Reset, Theorie und Ergebnisgleichungen. Zwei Indizes reichen für den Grenzwinkel beziehungsweise die Aussage, dass Totalreflexion in dieser Richtung nicht möglich ist. θ₁ ergänzt Brechungs-/Reflexionswinkel und die Einordnung. Winkel starten in rad, optional °; Ergebnisse zeigen beide Darstellungen ohne SI-Präfix. Die SVG-Skizze steht unter den Resultaten, unterscheidet schematische und berechnete Geometrie und zeigt bei Totalreflexion keinen propagierenden gebrochenen Strahl. Gleiche Indizes erzeugen keinen reflektierten Strahl. Kein zusätzliches Farbsystem, keine neue Bibliothek.
+Optics ist eine Übersicht mit der Unterseite `/optics/total-internal-reflection`. Die Modellkarte verwendet gemeinsame Felder für n₁, n₂ und θ₁, Einheitenmenüs, Reset, Theorie und Ergebnisgleichungen. Zwei Indizes reichen für den Grenzwinkel beziehungsweise die Aussage, dass Totalreflexion in dieser Richtung nicht möglich ist. θ₁ ergänzt Brechungs-/Reflexionswinkel und die Einordnung. Winkel starten in Grad (°), Radiant (rad) bleibt auswählbar; Ergebnisse zeigen beide Darstellungen ohne SI-Präfix. Die SVG-Skizze steht unter den Resultaten, unterscheidet schematische und berechnete Geometrie und zeigt bei Totalreflexion keinen propagierenden gebrochenen Strahl. Gleiche Indizes erzeugen keinen reflektierten Strahl. Kein zusätzliches Farbsystem, keine neue Bibliothek.
 
 ## Formelthemen aus Physik1 und Physik2
 
@@ -183,7 +183,7 @@ Die Karte Projectile Motion (deutsch: Wurfbewegung) integriert die 18 bisherigen
 
 Die Metadaten dürfen TeX-Indexnotation enthalten; Eingabe-IDs, URLs und sprachneutrale Solver-Schlüssel ändern sich dadurch nicht. Keine modellabhängigen HTML-/CSS-Ersatzlösungen ergänzen. Symbole bleiben mit dem zugehörigen Eingabefeld verknüpft und werden mit HTML/MathML und `trust: false` ausgegeben.
 
-## Kombinierter Rechner: Schiefe Ebene (13.11.2026)
+## Kombinierter Rechner: Schiefe Ebene
 
 Inclined Plane integriert die sieben bisherigen Quellen ohne Variantenwahl in einer Eingabefläche mit 14 Grössen: L, h, α, v_end, m, μ_k, g, Gewichtskraft, Normalkraft, Hangabtriebskraft, Reibungskraft, resultierende Kraft, Hebekraft und Beschleunigung. `physics/mechanics/incline-combined.ts` verbindet explizite Fachrelationen; bekannte Werte werden vor den sichtbaren Standardannahmen μ_k = 0 und g = 9.81 m/s² ausgewertet. Die Hebekraft gilt für gleichförmiges Hinaufgleiten und ist nicht die resultierende Kraft beim freien Hinabgleiten. Alle zulässigen Winkelzweige bleiben erhalten. Endgeschwindigkeit gilt weiterhin aus Ruhe; bei negativer Beschleunigung keine solche Geschwindigkeit erfinden. Ungültige Eingaben sperren nur abhängige Ergebnisse. Alte Inhalts-IDs öffnen über `integratedModels` dieselbe Karte; keine separate Schnellwahl für die bisherigen Formeln.
 
@@ -197,7 +197,7 @@ Inclined Plane integriert die sieben bisherigen Quellen ohne Variantenwahl in ei
 
 ## Gemeinsamer Footer und Haftungsausschluss
 
-`SiteFooter.svelte` bietet Projekt (About und Instagram @calcphysics), Hilfe/Referenz, rechtliche Hinweise sowie den kontexttreuen Sprachwechsel. Die Gestaltung liegt zentral in `styles/app.css`: beschriftete Bereiche im bisherigen Spaltendesign. Marke und rechtliche Hinweise stehen gemeinsam in einem unabhängig fliessenden Block; Legal folgt mit kurzem Abstand direkt unter der Marke und wartet nicht auf die Höhe anderer Spalten. Projekt und Hilfe/Referenz bleiben separate Bereiche. Mobil stehen Marke/Rechtliches und Projekt nebeneinander; Hilfe/Referenz nutzt darunter die ganze Breite. Die Bereiche sind mit einer dezenten seitlichen Linie und gemeinsamem Einzug visuell begrenzt; die Linie umfasst nur den tatsächlichen Gruppeninhalt. Die beiden Hilfelinks sind kompakt gruppiert. E-Mail-Adresse und ihr Hinweis bilden einen einzigen Kontaktlink mit engem Textabstand. Keine zeilenhohen Grid-Lücken oberhalb von Legal erzeugen. Bestehende Theme-Tokens und 44-px-Linkziele verwenden. Instagram wird nur als externer Link eingebunden, nicht als nachladendes Widget. `/disclaimer` und `/de/disclaimer` sind Informationsseiten mit Inhalt aus `content/disclaimer.ts`, deutscher Fassung in `text-de.ts`, Suche und Sitemap; keine Themenüberschrift und kein Eintrag als Physik-Hauptthema. Inhalt: Modellgrenzen, Sorgfalt/Ergebnisprüfung, Haftungsbeschränkung im gesetzlich zulässigen Umfang mit Vorbehalt zwingender Haftung sowie externe Links. Keine uneingeschränkte Haftungsfreiheit oder Garantie rechtlicher Wirksamkeit behaupten.
+`SiteFooter.svelte` bietet Projekt (About, GitHub und Instagram @calcphysics), Hilfe/Referenz, rechtliche Hinweise sowie den kontexttreuen Sprachwechsel. Die Gestaltung liegt zentral in `styles/app.css`: beschriftete Bereiche im bisherigen Spaltendesign. Marke und rechtliche Hinweise stehen gemeinsam in einem unabhängig fliessenden Block; Legal folgt mit kurzem Abstand direkt unter der Marke und wartet nicht auf die Höhe anderer Spalten. Projekt und Hilfe/Referenz bleiben separate Bereiche. Unter 40 rem stehen Marke/Rechtliches und Projekt nebeneinander; Hilfe/Referenz bleibt darunter innerhalb der linken Spalte, einschliesslich des Kontakttexts. Unter 24 rem stehen alle Gruppen untereinander. Die Bereiche sind mit einer dezenten seitlichen Linie und gemeinsamem Einzug visuell begrenzt; die Linie umfasst nur den tatsächlichen Gruppeninhalt. Die beiden Hilfelinks sind kompakt gruppiert und stehen auf schmalen Bildschirmen untereinander. GitHub und Instagram haben Logos und keine ausgehenden Pfeile. E-Mail-Adresse und ihr Hinweis bilden einen einzigen Kontaktlink mit engem Textabstand. Keine zeilenhohen Grid-Lücken oberhalb von Legal erzeugen. Bestehende Theme-Tokens und 44-px-Linkziele verwenden. Instagram wird nur als externer Link eingebunden, nicht als nachladendes Widget. `/disclaimer` und `/de/disclaimer` sind Informationsseiten mit Inhalt aus `content/disclaimer.ts`, deutscher Fassung in `text-de.ts`, Suche und Sitemap; keine Themenüberschrift und kein Eintrag als Physik-Hauptthema. Inhalt: Modellgrenzen, Sorgfalt/Ergebnisprüfung, Haftungsbeschränkung im gesetzlich zulässigen Umfang mit Vorbehalt zwingender Haftung sowie externe Links. Keine uneingeschränkte Haftungsfreiheit oder Garantie rechtlicher Wirksamkeit behaupten.
 
 ## Mechanics: Momentum Conservation
 
@@ -206,3 +206,11 @@ Inclined Plane integriert die sieben bisherigen Quellen ohne Variantenwahl in ei
 ## Mechanics: Collisions
 
 Die Impulsseite zeigt vier eigenständige aufklappbare Karten in der Reihenfolge Momentum Conservation, Inelastic Collision, Elastic Collision, Rocket Equation. Kein zusätzliches Dropdown innerhalb der Impulskarte und keine separaten Stoss-Unterthemen. `MomentumCalculator` und `MomentumDiagram` werden gemeinsam mit der Impulsseite verwendet. Eingaben umfassen Einzel-/Gesamtimpulse, Impulsänderungen, kinetische Energien, Energieverlust sowie im inelastischen Fall die Stosszahl. Alle diskreten Energiezweige bleiben sichtbar; die Lösungsauswahl steuert die Grafik. Fachvertrag: [COLLISIONS.md](COLLISIONS.md).
+
+## Vollständige deutsche Fassung
+
+Alle UI-Wörterbücher, redaktionellen Fachkataloge, SI-Tabellen, Informationsseiten, Grafikbeschreibungen und Fehlertexte sind auf Deutsch gepflegt. Die englische Standardsprache bleibt erhalten. Der bisherige pauschale Hinweis auf eine nur teilweise Übersetzung ist entfernt. Symbole, Einheitenzeichen, stabile IDs und Sprachpfade werden nicht übersetzt.
+
+`i18n/translate.ts` löst Texte zentral auf, einschliesslich nummerierter Widerstands-/Kapazitäts-/Induktivitätsfelder. `Formula` lokalisiert das erklärende „constant“ in mathematischer Textnotation; die Mathematik bleibt unverändert. `MotionChart`, `ModelTheory`, `SiReference`, Layout und Fehlerseite nutzen dieselbe Übersetzungsquelle.
+
+`tests/localization.test.mjs` prüft alle englischen UI-Schlüssel, exportierten Fach-/SI-Texte, dynamische Netzwerkfelder und Svelte-Textaufrufe sowie feste sichtbare/zugängliche Literale. Neue unübersetzte Einträge lassen die Prüfung fehlschlagen. Marken, Sprach-Eigennamen und mathematische Zeichen bleiben unverändert. Browserprüfung ergänzt die Katalogtests für veröffentlichte deutsche Routen und Modellvarianten.

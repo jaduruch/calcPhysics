@@ -12,8 +12,8 @@
 <figure><figcaption>{text('Third law — relative orbit comparison')}</figcaption>
  <svg viewBox="0 0 440 360" role="img" aria-labelledby={`${id}-title ${id}-desc`}>
  <title id={`${id}-title`}>{text('Third law — relative orbit comparison')}</title><desc id={`${id}-desc`}>{text(scene.known?'Periods scale with the three-halves power of the semi-major axes. Both axes are normalized to the larger reference orbit; no unknown absolute scale is assumed.':'Schematic proportionality T ∝ a^(3/2). Enter orbit measurements to show the known relative positions.')} {#if scene.masses}{text('The bar shows each individual mass as a fraction of the total mass.')}{/if}</desc>
- <g class:muted={focused!==null&&!['T','T2','periodRatio'].includes(focused)}><path d="M55 40V270 M55 40l-4 8m4-8l4 8" class="axis"/><text x="12" y="28">{#if scene.known}T/T<tspan baseline-shift="sub" font-size="9">ref</tspan>{:else}T{/if}</text></g>
- <g class:muted={focused!==null&&!['a','a2','axisRatio'].includes(focused)}><path d="M55 270H395 M395 270l-8-4m8 4l-8 4" class="axis"/><text x="350" y="305">{#if scene.known}a/a<tspan baseline-shift="sub" font-size="9">ref</tspan>{:else}a{/if}</text></g>
+ <g class:muted={focused!==null&&!['T','T2','periodRatio'].includes(focused)}><path d="M55 40V270 M55 40l-4 8m4-8l4 8" class="axis"/><text x="12" y="28">{#if scene.known}T/T<tspan baseline-shift="sub" font-size="9">{text('ref')}</tspan>{:else}T{/if}</text></g>
+ <g class:muted={focused!==null&&!['a','a2','axisRatio'].includes(focused)}><path d="M55 270H395 M395 270l-8-4m8 4l-8 4" class="axis"/><text x="350" y="305">{#if scene.known}a/a<tspan baseline-shift="sub" font-size="9">{text('ref')}</tspan>{:else}a{/if}</text></g>
  <path d={curve} class="curve" class:muted={focused!==null&&!['M','centralMass','companionMass','periodRatio','axisRatio'].includes(focused)}/>
  {#if scene.known}
  <text x="39" y="287">0</text><text x="39" y="63">1</text><text x="370" y="287">1</text>
