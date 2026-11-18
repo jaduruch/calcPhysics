@@ -38,7 +38,7 @@
 <ModelCard model={displayed} {index} bind:open bind:element>
   {#snippet calculator()}
     <noscript>
-      {#each model.variants ?? [{ model, label: model.title }] as variant}
+      {#each model.variants?.slice(1) ?? [] as variant}
         <section aria-label={text(variant.label)}><h4>{text(variant.label)}</h4><ModelTheory model={variant.model} /></section>
       {/each}
     </noscript>

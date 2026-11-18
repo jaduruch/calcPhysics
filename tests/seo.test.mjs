@@ -19,7 +19,7 @@ test('published pages have unique useful titles and canonical metadata', () => {
   const pages = paths.map(pageMetadata);
   assert.equal(new Set(pages.map(page => page.title)).size, pages.length);
   assert.ok(pages.every(page => page.description.length > 40 && page.canonical.startsWith(site.origin)));
-  assert.match(pageMetadata('/mechanics/kinematics').title, /Kinematics: Motion & Projectile Calculator/);
+  assert.match(pageMetadata('/mechanics/kinematics').title, /Kinematics with Step-by-Step Solution/);
   assert.ok(pageMetadata('/optics'));
   assert.equal(pageMetadata('/unknown'), null);
 });
@@ -72,4 +72,22 @@ test('localized metadata describes the current calculators with concise unique p
   assert.match(pageMetadata('/mechanics/hookes-law').description,/conical/);
   assert.equal(pageMetadata('/de/calculator-help').title,'Rechnerhilfe: Eingaben, Einheiten & Ausdrücke | calcPhysics');
   assert.equal(pageMetadata('/mechanics/kinematics?x=1#test').canonical,pageMetadata('/mechanics/kinematics').canonical);
+});
+
+
+test('every published language pair is included in the existing sitemap', () => {
+  const xml = sitemapXml();
+  for (const path of publishedPaths()) {
+    assert.ok(xml.includes(`<loc>${canonicalUrl(path)}</loc>`), path);
+    const germanPath = path === '/' ? '/de' : `/de${path}`;
+    if (!path.startsWith('/de')) assert.ok(publishedPaths().includes(germanPath), path);
+  }
+});
+test('calculator metadata advertises localized equation solutions without changing info pages', () => {
+  assert.match(pageMetadata('/mechanics/kinematics').title, /with Step-by-Step Solution/);
+  assert.match(pageMetadata('/de/mechanics/kinematics').title, /mit Schritt-für-Schritt-Lösungsweg/);
+  for (const path of ['/about', '/calculator-help', '/modern-physics/quantum']) {
+    const metadata = pageMetadata(path);
+    if (metadata) assert.doesNotMatch(metadata.title, /Step-by-Step Solution/);
+  }
 });

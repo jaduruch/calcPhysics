@@ -1,5 +1,6 @@
 /** German UI. Complete UI dictionaries; tests require parity with English. */
 export const ui = {
+  stepByStepSolution: 'Schritt-für-Schritt-Lösungsweg',
   homeTitle: 'Physikrechner und Theorie',
   homeDescription: 'Rechner, Formeln und Modellannahmen zu Mechanik, Thermodynamik, Elektrotechnik, Wellen, Optik und Quantenphysik.',
   mainNavigation: 'Hauptnavigation', menu: 'Hauptmenü', home: 'Startseite', subjects: 'Physik entdecken', subjectLabel: 'Themenübersicht',

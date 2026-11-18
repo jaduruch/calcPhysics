@@ -1,7 +1,7 @@
 import { basePath, localeFromPath, languagePath } from './i18n/locale.ts';
 import { translateText } from './i18n/translate.ts';
 import { germanText } from './i18n/text-de.ts';
-import { topics, type Topic } from './content/topics.ts';
+import { models, topics, type Topic } from './content/topics.ts';
 
 export const site = {
   origin: 'https://calcphysics.com',
@@ -28,15 +28,18 @@ export function pageMetadata(path: string) {
   const topic = topics.find(topic => topic.published && topic.path === base);
   if (base !== '/' && !topic) return null;
   const localized = (value: string) => translateText(value, german ? 'de' : 'en');
+  const hasSolution = !!topic && models.some(model => model.topicId === topic.id && model.calculator !== 'qubit');
+  const solutionSuffix = german ? 'mit Schritt-für-Schritt-Lösungsweg' : 'with Step-by-Step Solution';
   const title = topic
     ? topic.seo?.title ? localized(topic.seo.title)
       : topic.kind ? `${localized(topic.title)} | ${site.name}`
       : `${localized(topic.title)}${german ? ': Rechner & Formeln' : ': Calculators & Formulas'} | ${site.name}`
     : german ? 'Physik-Rechner, Formeln & Theorie | calcPhysics' : site.homeTitle;
+  const description = topic ? localized(topic.seo?.description ?? topic.description)
+    : german ? 'Physik-Rechner für Mechanik, Elektrotechnik, Thermodynamik, Wellen und Optik. Formeln mit Einheitenumrechnung, Rechenwegen und Grafiken berechnen.' : site.homeDescription;
   return {
-    title,
-    description: topic ? localized(topic.seo?.description ?? topic.description)
-      : german ? 'Physik-Rechner für Mechanik, Elektrotechnik, Thermodynamik, Wellen und Optik. Formeln mit Einheitenumrechnung, Rechenwegen und Grafiken berechnen.' : site.homeDescription,
+    title: hasSolution ? `${localized(topic!.title)} ${solutionSuffix} | ${site.name}` : title,
+    description: hasSolution ? `${description} ${german ? 'Mit Schritt-für-Schritt-Lösungsweg.' : 'With Step-by-Step Solution.'}` : description,
     canonical: canonicalUrl(pathname)
   };
 }

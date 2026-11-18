@@ -1,4 +1,5 @@
 export const ui = {
+  stepByStepSolution: 'Step-by-step solution',
   homeTitle: 'Physics calculators and theory',
   homeDescription: 'Calculators, formulas and model assumptions for mechanics, thermodynamics, electricity, waves, optics and quantum physics.',
   mainNavigation: 'Main navigation', menu: 'Main menu',

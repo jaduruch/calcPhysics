@@ -8,7 +8,7 @@
 <div class="theory-content">
       <div class="theory-layout">
         <div class="variables-section">
-          <h5>{ui.variables}</h5>
+          <h3>{ui.variables}</h3>
           <dl class="variables-list">
             {#each model.variables as variable}
               <div class="variable-row">
@@ -19,7 +19,7 @@
           </dl>
         </div>
         <div class="formulas-section">
-          <h5>{ui.keyFormulas}</h5>
+          <h3>{ui.keyFormulas}</h3>
           {#each model.formulas as formula}
             <div class="formula-row"><span class="formula-label">{text(formula.label)}</span><Formula expression={formula.expression} /></div>
           {/each}
@@ -35,7 +35,7 @@
   .theory-source { margin-top: 16px; font-size: .75rem; color: var(--color-text-muted); }
   .derivative-note p { margin: 0; max-width: 70ch; font-size: .875rem; color: var(--color-text-muted); }
   .theory-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); max-width: var(--theory-width); gap: 24px; }
-  .theory-content h5 { color: var(--color-text-muted); font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 10px; }
+  .theory-content h3 { color: var(--color-text-muted); font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 10px; }
   .variables-list { margin: 0; }
   .variable-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; padding: 8px 0; }
   .variable-row dt { display: flex; align-items: baseline; gap: 12px; }
