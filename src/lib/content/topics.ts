@@ -76,6 +76,10 @@ export const topics: readonly Topic[] = [
   { id: 'kinematics', seo: {"title": "Kinematics: Motion & Projectile Calculator | calcPhysics", "description": "Calculate uniform and accelerated motion, projectile trajectories, free fall and velocity components. Includes unit conversions, formulas and motion diagrams."}, parentId: 'mechanics', path: '/mechanics/kinematics', title: 'Kinematics', description: 'Explore uniform and uniformly accelerated motion, vertical, horizontal and oblique throws. Calculate positions, velocities, flight times and trajectories with unit conversions and motion diagrams.', symbol: '01.1', published: true },
   { id: 'dynamics', seo: {"title": "Dynamics: Inclined Plane & Forces | calcPhysics", "description": "Calculate forces, kinetic friction and ideal pulleys. Solve inclined-plane geometry, acceleration and speed independently of mass."}, parentId: 'mechanics', path: '/mechanics/dynamics', title: 'Dynamics', description: 'Calculate forces, gravity, kinetic friction and ideal pulleys. On an inclined plane, solve geometry, acceleration and speed without mass; add mass for force components.', symbol: '01.2', published: true }
 ];
+const bodyForcesModel: ModelDefinition = { id: 'body-forces', topicId: 'dynamics', calculator: 'resource', presentation: 'simulation', title: 'Net Force & Torque in a Rigid Body', variables: [], formulas: [
+    { label: 'Net force', expression: String.raw`m\ddot{\mathbf r}_{SP}=\mathbf F_1+\mathbf F_2` },
+    { label: 'Torque', expression: String.raw`I_{SP}\ddot{\theta}=\sum_i(\mathbf r_i\times\mathbf F_i)_z` }
+  ] };
 export const models: readonly ModelDefinition[] = [
   momentumModels[0],
   ...[...collisionModels].reverse(),
@@ -155,7 +159,7 @@ export const models: readonly ModelDefinition[] = [
     references: [{ title: inclinedPlaneUi.source, url: 'https://openstax.org/books/university-physics-volume-1/pages/6-2-friction' }]
   },
   ...kinematicModels,
-  ...resourceModels.filter(model=>model.id.startsWith('book-')),
+  ...resourceModels.filter(model=>model.id.startsWith('book-') && !['book-orthogonal-force', 'book-kinetic-friction', 'book-weight'].includes(model.id)).flatMap(model => model.id === 'book-gravitation' ? [model, bodyForcesModel] : [model]),
   ...rigidModels
 ];
 export function childrenOf(parentId: string | null) {

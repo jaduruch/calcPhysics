@@ -213,3 +213,5 @@ Die Beziehungsauswahl stammt vollständig aus dem privaten Formelbuch. Öffentli
 | 63 | `book-image-focal-sizes` | Focal Length from Image Size and Distance |
 
 Verifikation: 345 fachliche und Darstellungs-Tests, `npm run check` und Produktionsbuild erfolgreich. Gezielte Browserprüfung von elf repräsentativen Rechnern mit Mehrfachlösungen, Invalidierung, Einheitenwechsel und leeren Zielfeldern; Laptop/Mobil in beiden Themes, Tastaturbedienung des erweiterten Temperaturmenüs, Reset, deutsche Route und bestehende Optikskizzen geprüft.
+
+`book-orthogonal-force`, `book-kinetic-friction` und `book-weight` bleiben als geprüfte Quellbeziehungen erhalten, sind jedoch auf ausdrücklichen Nutzerwunsch nicht mehr als Karten registriert und erscheinen weder in Dynamics noch in der Seitensuche. Die Formelbuch-Abdeckungszahlen zählen weiterhin Quellbeziehungen.

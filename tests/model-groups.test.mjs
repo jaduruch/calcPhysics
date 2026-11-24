@@ -28,7 +28,7 @@ test('every calculator, theory and inverse remains available exactly once within
 });
 
 test('dense topics use coherent cards and existing combined networks remain intact', () => {
-  const counts = { kinematics: 5, dynamics: 7, rotation: 17, 'work-energy': 9, 'fluid-statics': 10, 'fluid-flow': 8, 'thermal-expansion': 4, 'optical-imaging': 5, photometry: 6, filters: 2 };
+  const counts = { kinematics: 5, dynamics: 5, rotation: 17, 'work-energy': 9, 'fluid-statics': 10, 'fluid-flow': 8, 'thermal-expansion': 4, 'optical-imaging': 5, photometry: 6, filters: 2 };
   for (const [topic, count] of Object.entries(counts)) assert.equal(groupTopicModels(models.filter(model => model.topicId === topic)).length, count, topic);
   const direct = models.filter(model => model.topicId === 'direct-current');
   assert.deepEqual(groupTopicModels(direct), direct);
@@ -37,3 +37,8 @@ test('dense topics use coherent cards and existing combined networks remain inta
 });
 
 test('momentum shows four independent accordion cards in the requested order',()=>{const cards=groupTopicModels(models.filter(m=>m.topicId==='momentum'));assert.deepEqual(cards.map(m=>m.id),['momentum-balance','inelastic-collision','elastic-collision','rocket-equation']);assert.ok(cards.every(m=>!m.variants));});
+
+test('Dynamics keeps the requested five-card order', () => {
+  assert.deepEqual(groupTopicModels(models.filter(model => model.topicId === 'dynamics')).map(model => model.id),
+    ['inclined-plane', 'book-force', 'book-gravitation', 'body-forces', 'book-pulley-force']);
+});

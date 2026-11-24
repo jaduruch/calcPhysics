@@ -32,7 +32,7 @@ for(const d of formulaBookDefinitions){
   }
   for(const rule of Object.values(d.rules))katex.renderToString(resourceFormula(rule,d.fields),{throwOnError:true,trust:false});
   assert.ok(topics.some(topic=>topic.id===d.topic&&topic.published));
-  assert.ok(models.some(model=>model.id===d.id));
+  assert.equal(models.some(model=>model.id===d.id), !['book-orthogonal-force', 'book-kinetic-friction', 'book-weight'].includes(d.id));
  });
 }
 test('formula-book fixture and implementation inventories agree',()=>{

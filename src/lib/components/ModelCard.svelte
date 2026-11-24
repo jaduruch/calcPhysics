@@ -25,7 +25,7 @@
       <ModelTheory {model} />
     </section>
     <section class="calculate-panel" aria-labelledby={`${model.id}-calculate-heading`}>
-      <div class="panel-heading"><h3 id={`${model.id}-calculate-heading`}>{ui.calculate}</h3></div>
+      <div class="panel-heading"><h3 id={`${model.id}-calculate-heading`}>{model.presentation === 'simulation' ? text('Simulation') : ui.calculate}</h3></div>
       {@render calculator()}
     </section>
   </div>

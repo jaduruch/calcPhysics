@@ -7,8 +7,6 @@ const legacyGroups: readonly { topic: string; title: string; members: readonly s
   {"topic": "kinematics", "title": "Free Fall", "members": ["book-free-fall-height", "book-free-fall-speed", "book-average-fall-speed", "book-free-fall-speed-time"]},
   {"topic": "kinematics", "title": "Projectile Motion", "integrated": true, "members": ["oblique-throw", "book-oblique-flight-time", "book-oblique-range", "book-oblique-apex-height", "book-oblique-trajectory", "book-oblique-vertical-velocity", "book-oblique-apex-time", "vertical-throw", "book-vertical-position", "book-vertical-velocity", "book-projectile-energy", "book-maximum-height", "book-vertical-apex-time", "horizontal-throw", "book-horizontal-trajectory", "book-falling-direction", "book-horizontal-speed-time", "book-falling-direction-depth"]},
   {"topic": "kinematics", "title": "Velocity Components", "members": ["book-speed-components", "book-launch-cos", "book-launch-sin"]},
-  {"topic": "dynamics", "title": "Forces & Friction", "members": ["book-force", "book-orthogonal-force", "book-kinetic-friction"]},
-  {"topic": "dynamics", "title": "Weight & Gravitation", "members": ["book-weight", "book-gravitation"]},
   {"topic": "dynamics", "title": "Inclined Plane", "integrated": true, "members": ["inclined-plane", "book-slope-geometry", "book-normal-force", "book-slope-component", "book-slope-raising", "book-slope-lowering", "book-slope-acceleration"]},
   {"topic": "dynamics", "title": "Ideal Pulleys", "members": ["book-pulley-force", "book-pulley-distance"]},
   {"topic": "rotation", "title": "Rotation, Frequency & Period", "members": ["book-revolutions", "book-angular-frequency", "book-rotation-period", "book-angular-period", "book-rotation-count"]},
