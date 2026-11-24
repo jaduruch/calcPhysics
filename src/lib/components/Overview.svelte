@@ -25,7 +25,7 @@
 <section class="intro" aria-labelledby="page-title">
   {#if topic && !topic.kind}<p class="eyebrow">{ui.subjectLabel}</p>{/if}
   <h1 id="page-title">{topic ? text(topic.title) : ui.homeTitle}</h1>
-  <p class="lead">{topic ? text(topic.description) : ui.homeDescription}</p>
+  {#if topic?.id !== 'about'}<p class="lead">{topic ? text(topic.description) : ui.homeDescription}</p>{/if}
   {#each topic?.references ?? [] as reference}<p><a href={reference.url}>{text(reference.title)}</a></p>{/each}
 </section>
 {#if !topic}

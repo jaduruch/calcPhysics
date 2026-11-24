@@ -1,11 +1,11 @@
 export const about = {
  title:'About calcPhysics',
- description:"The expertise behind calcPhysics: electronics training, physics studies at ETH Zurich and experience developing technical calculators.",
+ description:"I'm a physics student at ETH Zurich, and I'm building calcPhysics to visualize, explain, and document the most important topics I encounter during my studies.",
  paragraphs:[
-  "My background combines training in electronics with my current physics studies at ETH Zurich. calcPhysics brings together that practical experience and the theoretical foundations of my studies.",
-  "I developed elecalculate during my apprenticeship as an electronics technician. With calcPhysics, I am building on that experience and expanding the project into physics. The electrical engineering content from elecalculate is now part of calcPhysics.",
-  "I focus on physically consistent models, clearly stated assumptions and transparent derivations. Formula rearrangements and numerical edge cases are checked with automated tests. Each model states its conditions and limits.",
-  "As I progress through my physics studies, I continue to expand calcPhysics with new topics and deepen the existing content."
+  "I'm a physics student at ETH Zurich, and I'm building calcPhysics to visualize, explain, and document the most important topics I encounter during my studies. My goal is to make physical concepts easier to understand through interactive calculators, graphs, and clear explanations.",
+  "During my apprenticeship as an electronics technician, I developed elecalculate as a personal calculation tool. We were allowed to use an offline computer during our final exams, so I started building a collection of calculators to automate calculations and reduce the risk of human error.",
+  "calcPhysics builds on that original project. All the electrical engineering content from elecalculate is now included under Electricity & Magnetism, but the website goes much further. It supports both English and German and offers more detailed explanations, interactive visualizations, and even 3D models.",
+  "I develop the content alongside my physics studies, so the website grows as my knowledge expands. I aim to keep the explanations clear, the calculations accurate, and the underlying assumptions transparent."
  ],
- linkLabel:"Electrical engineering from elecalculate"
+ linkLabel:'Electricity & Magnetism'
 } as const;
