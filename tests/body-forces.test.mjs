@@ -79,3 +79,24 @@ test('body boundary follows zoom, panning and rotated outline', async()=>{
  near(bounds.left,240);near(bounds.right,410);near(bounds.top,120);near(bounds.bottom,350);
  assert.equal(crossesBodyViewEdge(end,start,{x:0,y:0,zoom:1}),false);
 });
+
+test('touch pinch anchors zoom and combines it with panning at all zoom limits', async()=>{
+ const {pinchBodyView}=await import('../src/lib/visualization/body-forces-view.ts');
+ const start={view:{x:10,y:20,zoom:1},anchor:{x:110,y:220},midpoint:{x:200,y:400},distance:100,screenToView:0.5};
+ const same=pinchBodyView(start,start.midpoint,100);
+ assert.deepEqual(same,start.view);
+ const pan=pinchBodyView(start,{x:240,y:380},100);
+ near(pan.x,-10);near(pan.y,30);near(pan.zoom,1);
+ for(const distance of [0,50,200,10000]){
+  const moved={x:230,y:440},view=pinchBodyView(start,moved,distance);
+  assert.ok(view.zoom>=0.4&&view.zoom<=5);
+  // The original world anchor follows the moving finger midpoint on screen.
+  near((start.anchor.x-view.x)*view.zoom,(start.anchor.x-start.view.x)*start.view.zoom+(moved.x-start.midpoint.x)*start.screenToView*start.view.zoom);
+  near((start.anchor.y-view.y)*view.zoom,(start.anchor.y-start.view.y)*start.view.zoom+(moved.y-start.midpoint.y)*start.screenToView*start.view.zoom);
+ }
+ // Rebase after a finger lifts: a new gesture starts without a camera jump.
+ const first=pinchBodyView(start,{x:250,y:450},150);
+ const rebased={...start,view:first,midpoint:{x:250,y:450},distance:90};
+ const resumed=pinchBodyView(rebased,rebased.midpoint,90);
+ near(resumed.x,first.x);near(resumed.y,first.y);near(resumed.zoom,first.zoom);
+});

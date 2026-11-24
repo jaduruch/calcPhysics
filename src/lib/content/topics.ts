@@ -1,3 +1,4 @@
+import {inertiaDerivationModel} from './inertia-derivations.ts';
 import {rigidModels} from './rigid-body.ts';
 import {collisionModels} from './collisions.ts';
 import {momentumModels} from './momentum.ts';
@@ -160,7 +161,8 @@ export const models: readonly ModelDefinition[] = [
   },
   ...kinematicModels,
   ...resourceModels.filter(model=>model.id.startsWith('book-') && !['book-orthogonal-force', 'book-kinetic-friction', 'book-weight'].includes(model.id)).flatMap(model => model.id === 'book-gravitation' ? [model, bodyForcesModel] : [model]),
-  ...rigidModels
+  ...rigidModels,
+  inertiaDerivationModel
 ];
 export function childrenOf(parentId: string | null) {
   const children = topics.filter(topic => topic.parentId === parentId && !topic.kind);

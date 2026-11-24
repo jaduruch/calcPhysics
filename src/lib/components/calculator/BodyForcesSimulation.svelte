@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import {bodyOutline, crossesBodyViewEdge} from '#lib/visualization/body-forces-view.ts';
+  import {bodyOutline, crossesBodyViewEdge, pinchBodyView, type PinchView} from '#lib/visualization/body-forces-view.ts';
   import { text } from '#lib/i18n/runtime.ts';
   import { initialBody, rotate, stepBody, intersectingResultant, constrainForcePair, type Vector, type AppliedForce } from '#lib/physics/mechanics/body-forces.ts';
   let svg: SVGSVGElement;
@@ -9,7 +9,25 @@
   let viewY = $state(0);
   let panning = $state(false);
   let panStart = {x:0,y:0,viewX:0,viewY:0,scale:1};
+  const touches = new Map<number, {x:number;y:number}>();
+  let pinch: PinchView | null = null;
+  let dragPointer: number | null = null;
   function resetView() { zoom=1;viewX=0;viewY=0; }
+  function touchPair() {
+    const [a,b]=[...touches.values()];
+    return {midpoint:{x:(a.x+b.x)/2,y:(a.y+b.y)/2},distance:Math.hypot(b.x-a.x,b.y-a.y)};
+  }
+  function registerTouch(e: PointerEvent) {
+    if(e.pointerType!=='touch')return false;
+    touches.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    svg.setPointerCapture(e.pointerId);
+    if(touches.size<2)return false;
+    dragging=null;dragPointer=null;panning=true;
+    const pair=touchPair();
+    const anchor=position({clientX:pair.midpoint.x,clientY:pair.midpoint.y});
+    pinch={view:{x:viewX,y:viewY,zoom},anchor,midpoint:pair.midpoint,distance:Math.max(1,pair.distance),screenToView:svg.getScreenCTM()!.inverse().a};
+    return true;
+  }
   function changeZoom(factor: number, anchor?: Vector) {
     const next=Math.max(0.4,Math.min(5,zoom*factor));
     const point=anchor??{x:viewX+330/zoom,y:viewY+230/zoom};
@@ -19,16 +37,40 @@
     zoom=next;
   }
   function startPan(e: PointerEvent) {
-    if(e.button!==0 || dragging)return;
-    panning=true;
+    if(e.button!==0)return;
+    if(registerTouch(e))return;
+    if(dragging)return;
+    panning=true;dragPointer=e.pointerId;
     panStart={x:e.clientX,y:e.clientY,viewX,viewY,scale:svg.getScreenCTM()!.inverse().a};
     svg.setPointerCapture(e.pointerId);
   }
   function movePointer(e: PointerEvent) {
+    if(touches.has(e.pointerId))touches.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pinch&&touches.size>=2){
+      const pair=touchPair(),next=pinchBodyView(pinch,pair.midpoint,pair.distance);
+      viewX=next.x;viewY=next.y;zoom=next.zoom;return;
+    }
+    if(e.pointerId!==dragPointer)return;
     if(panning){viewX=panStart.viewX-(e.clientX-panStart.x)*panStart.scale;viewY=panStart.viewY-(e.clientY-panStart.y)*panStart.scale;}
     else update(e);
   }
-  function endPointer() {dragging=null;panning=false;}
+  function endPointer(e: PointerEvent) {
+    // Capture can move between SVG descendants without ending the gesture.
+    if(e.type==='lostpointercapture'&&svg.hasPointerCapture(e.pointerId))return;
+    const wasPinching=pinch!==null;
+    const wasTouch=touches.delete(e.pointerId);
+    if(e.pointerId!==dragPointer&&!wasTouch)return;
+    dragging=null;dragPointer=null;panning=false;pinch=null;
+    if(wasPinching&&touches.size===1){
+      const [id,point]=[...touches.entries()][0];
+      panning=true;dragPointer=id;
+      panStart={x:point.x,y:point.y,viewX,viewY,scale:svg.getScreenCTM()!.inverse().a};
+    }else if(touches.size>=2){
+      const pair=touchPair();
+      pinch={view:{x:viewX,y:viewY,zoom},anchor:position({clientX:pair.midpoint.x,clientY:pair.midpoint.y}),midpoint:pair.midpoint,distance:Math.max(1,pair.distance),screenToView:svg.getScreenCTM()!.inverse().a};
+      panning=true;
+    }
+  }
   function viewKey(e: KeyboardEvent) {
     if(e.target!==svg)return;
     const step=30/zoom;
@@ -71,7 +113,7 @@
     dx:resultant.force.x*85,dy:-resultant.force.y*85
   } : null);
   function rewind() { running=false; body=initialBody(); }
-  function position(e: MouseEvent) {
+  function position(e: {clientX:number;clientY:number}) {
     const p = new DOMPoint(e.clientX,e.clientY).matrixTransform(svg.getScreenCTM()!.inverse());
     return {x:p.x,y:p.y};
   }
@@ -90,10 +132,11 @@
   }
   function beginDrag(e: PointerEvent, i: number, kind: 'point' | 'force') {
     e.stopPropagation();
-    stopForEdit();selected=i;dragging=kind;
+    if(e.button!==0 || registerTouch(e))return;
+    stopForEdit();selected=i;dragging=kind;dragPointer=e.pointerId;panning=false;
     const p=position(e),a=arrows[i];
     dragOffset={x:p.x-a.x-(kind==='force'?a.dx:0),y:p.y-a.y-(kind==='force'?a.dy:0)};
-    (e.currentTarget as SVGCircleElement).setPointerCapture(e.pointerId);
+    svg.setPointerCapture(e.pointerId);
   }
   function update(e: PointerEvent) {
     if (!dragging || selected===null) return;
@@ -148,14 +191,17 @@
     <button aria-pressed={equalMagnitude} aria-label={text('Equal force magnitudes')} onclick={()=>toggleConstraint('equal')}>|F₁| = |F₂|</button>
     <button aria-pressed={parallel} aria-label={text('Parallel or antiparallel forces')} onclick={()=>toggleConstraint('parallel')}>F₁ ∥ F₂</button>
     <button onclick={()=>{if(reduced){advance(0.1);}else{running=!running;}}}>{reduced?text('Step'):running?text('Pause'):text('Play')}</button>
-    <button onclick={()=>{rewind();resetView();}}>{text('Reset motion')}</button>
+    <button onclick={rewind}>{text('Reset motion')}</button>
   </div>
   <p class="assumptions">{text('Active constraints remain in effect while editing either force. Parallel includes opposite directions. Switching off preserves the current arrows.')}</p>
-  <p class="assumptions">{text('Scroll to zoom; drag the background to pan. Focus the diagram to use arrow keys, + / − and Home.')}</p>
+  <p class="assumptions">{text('Scroll or pinch with two fingers to zoom; drag the background with one finger or the mouse to pan. Focus the diagram to use arrow keys, + / − and Home.')}</p>
   <div class="viewport">
   <div class="controls view-controls" role="group" aria-label={text('Diagram view')}>
     <button aria-label={text('Zoom in')} disabled={zoom>=5} onclick={()=>changeZoom(1.25)}>+</button>
     <button aria-label={text('Zoom out')} disabled={zoom<=0.4} onclick={()=>changeZoom(0.8)}>−</button>
+    <button aria-label={text('Reset view')} title={text('Reset view')} onclick={resetView}>
+      <svg class="view-reset-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V4m0 0L2 7m3-3 3 3M5 19h15m0 0-3-3m3 3-3 3M5 19l9-9m0 0h-4m4 0v4"/></svg>
+    </button>
   </div>
   <!-- Custom interactive SVG viewport: focus enables documented pan/zoom keys; child handles retain their own keyboard controls. -->
   <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
@@ -195,5 +241,5 @@
   <p class="assumptions">{text('Illustrative planar motion from rest: m = 1 kg, I about SP = 0.6 kg m². Fixed mass distribution; no gravity, friction or collisions. Application points move with the body; force directions stay fixed in space. Dashed lines show lines of action. Playback pauses when the body reaches the current view boundary. Reset motion preserves the forces.')}</p>
 </div>
 <style>
-  .simulation{max-width:52rem}p{line-height:1.6}.controls{display:flex;flex-wrap:wrap;gap:8px}button{background:var(--color-control);color:var(--color-text);border:0;border-radius:8px;min-height:44px;padding:8px 14px;cursor:pointer}button[aria-pressed=true]{outline:2px solid currentColor;font-weight:700;box-shadow:inset 0 -3px currentColor} .viewport{position:relative;margin-top:16px}.view-controls{position:absolute;top:8px;left:8px;z-index:1;pointer-events:none;flex-direction:column}.view-controls button{pointer-events:auto;width:44px;height:44px;min-height:44px;padding:0;border-radius:50%;display:grid;place-items:center;font-size:1.25rem}svg{aspect-ratio:660/460;cursor:grab;width:100%;display:block;overflow:hidden;touch-action:none;background:var(--color-surface);border-radius:8px;color:var(--color-text)}svg.panning{cursor:grabbing}.body{fill:color-mix(in srgb,var(--color-surface) 84%,var(--color-text) 16%);stroke:none}.force{pointer-events:none;stroke:currentColor;stroke-width:2.5}.action{pointer-events:none;stroke:var(--color-text-muted);stroke-width:1;stroke-dasharray:7 6}.applied-force{color:var(--color-accent)}.applied-force text,.resultant text{fill:var(--color-text)}.resultant{pointer-events:none;color:var(--color-text-muted)}.resultant line{stroke:currentColor;stroke-width:2.5;stroke-dasharray:6 4}.reference{pointer-events:none;stroke:currentColor;stroke-width:2}.origin{stroke:var(--color-diagram-muted);stroke-width:2}.handle{fill:transparent;cursor:grab}.handle:focus{stroke:currentColor;stroke-dasharray:3 3;outline:none}.assumptions{font-size:.85rem;color:var(--color-text-muted)}
+  .simulation{max-width:52rem}p{line-height:1.6}.controls{display:flex;flex-wrap:wrap;gap:8px}button{background:var(--color-control);color:var(--color-text);border:0;border-radius:8px;min-height:44px;padding:8px 14px;cursor:pointer}button[aria-pressed=true]{outline:2px solid currentColor;font-weight:700;box-shadow:inset 0 -3px currentColor} .viewport{position:relative;margin-top:16px}.view-controls{position:absolute;top:8px;left:8px;z-index:1;pointer-events:none;flex-direction:column}.view-controls button{pointer-events:auto;width:44px;height:44px;min-height:44px;padding:0;border-radius:50%;display:grid;place-items:center;font-size:1.25rem}.viewport > svg{aspect-ratio:660/460;cursor:grab;width:100%;display:block;overflow:hidden;touch-action:none;background:var(--color-surface);border-radius:8px;color:var(--color-text)}.viewport > svg.panning{cursor:grabbing}.view-reset-icon{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.body{fill:color-mix(in srgb,var(--color-surface) 84%,var(--color-text) 16%);stroke:none}.force{pointer-events:none;stroke:currentColor;stroke-width:2.5}.action{pointer-events:none;stroke:var(--color-text-muted);stroke-width:1;stroke-dasharray:7 6}.applied-force{color:var(--color-accent)}.applied-force text,.resultant text{fill:var(--color-text)}.resultant{pointer-events:none;color:var(--color-text-muted)}.resultant line{stroke:currentColor;stroke-width:2.5;stroke-dasharray:6 4}.reference{pointer-events:none;stroke:currentColor;stroke-width:2}.origin{stroke:var(--color-diagram-muted);stroke-width:2}.handle{fill:transparent;cursor:grab}.handle:focus{stroke:currentColor;stroke-dasharray:3 3;outline:none}.assumptions{font-size:.85rem;color:var(--color-text-muted)}
 </style>

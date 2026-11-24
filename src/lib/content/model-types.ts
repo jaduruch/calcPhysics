@@ -5,7 +5,7 @@ export interface ModelDefinition {
   integratedModels?: readonly ModelDefinition[];
   variants?: readonly { model: ModelDefinition; label: string }[];
   title: string;
-  presentation?: 'simulation';
+  presentation?: 'simulation' | 'derivation';
   searchTerms?: readonly string[];
   calculator: 'kinematics' | 'resource' | 'total-reflection' | 'doppler' | 'qubit' | 'ideal-gas' | 'uniform-motion' | 'inclined-plane' | 'electrical';
   variables: readonly { name: string; symbol: string; subscript?: string; unit: string; unitName: string }[];

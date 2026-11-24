@@ -16,3 +16,21 @@ export function crossesBodyViewEdge(before: BodyState, after: BodyState, view: B
   return (a.left>=view.x&&b.left<view.x)||(a.right<=right&&b.right>right)||
     (a.top>=view.y&&b.top<view.y)||(a.bottom<=bottom&&b.bottom>bottom);
 }
+
+export type PinchView = {
+  view: BodyView;
+  anchor: {x:number;y:number};
+  midpoint: {x:number;y:number};
+  distance: number;
+  screenToView: number;
+};
+/** Anchored two-finger zoom with simultaneous translation, independent of DOM updates. */
+export function pinchBodyView(start: PinchView, midpoint: {x:number;y:number}, distance: number): BodyView {
+  const zoom=Math.max(0.4,Math.min(5,start.view.zoom*distance/start.distance));
+  const ratio=start.view.zoom/zoom;
+  return {
+    zoom,
+    x:start.anchor.x-(start.anchor.x-start.view.x)*ratio-(midpoint.x-start.midpoint.x)*start.screenToView*ratio,
+    y:start.anchor.y-(start.anchor.y-start.view.y)*ratio-(midpoint.y-start.midpoint.y)*start.screenToView*ratio
+  };
+}
